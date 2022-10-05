@@ -14,4 +14,6 @@
 void RunTaskManager( void )
 {
 	InitSafetyTask();
+	InitInternalCommsTask();
+	InitMotorTask();
 }
