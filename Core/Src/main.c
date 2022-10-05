@@ -125,7 +125,14 @@ int main(void)
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
+  /*+----------------------------------------------+
+  	|                                              |
+  	|       !!!!!!!IMPORTANT!!!!                   |
+  	|RunTaskManager() is the only function to run! |
+  	|                                              |
+  	+----------------------------------------------+
+  */
+  RunTaskManager();
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
