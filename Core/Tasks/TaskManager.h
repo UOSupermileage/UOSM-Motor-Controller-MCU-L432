@@ -10,7 +10,8 @@
 
 #include <stdint.h>
 
-void RunTaskManager( void );
+
+void RunTaskManager(void);
 
 
 #endif /* TASKS_TASKMANAGER_H_ */
