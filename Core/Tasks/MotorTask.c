@@ -12,7 +12,7 @@
 
 #include "SerialDebugDriver.h"
 
-extern SPI_HandleTypeDef hspi1;
+#include "tmc/ic/TMC4671/TMC4671.h"
 
 // Function alias - replace with the driver api
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
@@ -42,17 +42,16 @@ PRIVATE void MotorTask(void *argument)
 	uint32_t cycleTick = osKernelGetTickCount();
 	DebugPrint("motor");
 
-	uint16_t size = 10;
-	uint8_t message[10] = "motor\n\r"; // unsigned 8 bit integer array (utf8 = 8 bit int per char)
 
 	for(;;)
 	{
 		cycleTick += TIMER_MOTOR_TASK;
 		osDelayUntil(cycleTick);
 
-		DebugPrint("Sending message to motor controller:");
-		DebugPrint(message);
-		HAL_SPI_Transmit(&hspi1, message, size, 100);
-		DebugPrint("Message sent");
+		DebugPrint("Writing int to motor controller");
+		tmc4671_writeInt(0, 0, 8);
+		DebugPrint("Reading int from motor controller");
+		int32_t i = tmc4671_readInt(0, 0);
+		DebugPrint(i);
 	}
 }
