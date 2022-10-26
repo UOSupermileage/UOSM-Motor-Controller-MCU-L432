@@ -14,6 +14,7 @@
 
 // Our headers
 #include "ApplicationTypes.h"
+#include "SPIMotorDriver.h"
 
 PUBLIC void InitMotorTask(void);
 PRIVATE void MotorTask(void *argument);

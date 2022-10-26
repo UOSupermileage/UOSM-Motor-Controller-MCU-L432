@@ -19,7 +19,7 @@
 
 #define STACK_SIZE 128*4
 #define MOTOR_TASK_PRIORITY (osPriority_t) osPriorityHigh1
-#define TIMER_MOTOR_TASK 1000UL
+#define TIMER_MOTOR_TASK 100UL
 
 PUBLIC void InitMotorTask(void);
 PRIVATE void MotorTask(void *argument);
@@ -40,18 +40,20 @@ PUBLIC void InitMotorTask(void)
 PRIVATE void MotorTask(void *argument)
 {
 	uint32_t cycleTick = osKernelGetTickCount();
-	DebugPrint("motor");
+	DebugPrint("Initializing MotorTask");
 
+
+	initMotor();
 
 	for(;;)
 	{
+		DebugPrint("Loop");
+
 		cycleTick += TIMER_MOTOR_TASK;
 		osDelayUntil(cycleTick);
 
-		DebugPrint("Writing int to motor controller");
-		tmc4671_writeInt(0, 0, 8);
-		DebugPrint("Reading int from motor controller");
-		int32_t i = tmc4671_readInt(0, 0);
-		DebugPrint(i);
+		DebugPrint("Motor loop");
+
+		rotateMotorRight();
 	}
 }

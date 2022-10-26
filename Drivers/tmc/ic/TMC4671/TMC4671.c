@@ -39,6 +39,7 @@ int32_t tmc4671_readInt(uint8_t motor, uint8_t address)
 void tmc4671_writeInt(uint8_t motor, uint8_t address, int32_t value)
 {
 	// write address
+	// address | 0x80 turns the MSB into a one. Thus saying, write at address
 	tmc4671_readwriteByte(motor, address|0x80, false);
 
 	// write value
