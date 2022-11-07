@@ -18,7 +18,10 @@
 // TMC headers
 #include "tmc/ic/TMC4671/TMC4671.h"
 
-#define DEFAULT_MOTOR  0
+#define TMC4671_CS 0
+#define TMC6200_CS 1
+#define TMC6200_EEPROM_1_CS 2
+#define TMC6200_EEPROM_2_CS 3
 
 uint8_t tmc4671_readwriteByte(uint8_t motor, uint8_t data, uint8_t lastTransfer);
 
@@ -29,5 +32,7 @@ void rotateMotorRight();
 void rotateMotorLeft();
 
 void stopMotor();
+
+void setCS(uint8_t cs, GPIO_PinState state);
 
 #endif /* USERDRIVERS_SPIMOTORDRIVER_H_ */
