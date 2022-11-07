@@ -23,16 +23,26 @@
 #define TMC6200_EEPROM_1_CS 2
 #define TMC6200_EEPROM_2_CS 3
 
-uint8_t tmc4671_readwriteByte(uint8_t motor, uint8_t data, uint8_t lastTransfer);
+/**
+ * Read Write a single byte over SPI.
+ * CS is held low until function is called with lastTransfer == 12.
+ */
+PUBLIC uint8_t tmc4671_readwriteByte(uint8_t motor, uint8_t data, uint8_t lastTransfer);
 
-void initMotor();
+/**
+ * Set the Chip Select (CS) pin for a particular slave to state
+ */
+PRIVATE void setCS(uint8_t cs, GPIO_PinState state);
 
-void rotateMotorRight();
+/**
+ * Initialize registers in the TMC4671 and TMC6200. Must be called before motor will function properly.
+ */
+PUBLIC void initMotor();
 
-void rotateMotorLeft();
+/**
+ * Set the target torque of the motor.
+ */
+PUBLIC void setTargetTorque(uint32_t torque);
 
-void stopMotor();
-
-void setCS(uint8_t cs, GPIO_PinState state);
 
 #endif /* USERDRIVERS_SPIMOTORDRIVER_H_ */

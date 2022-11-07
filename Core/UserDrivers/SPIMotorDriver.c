@@ -23,9 +23,8 @@ const uint32_t timeout = 50;
  */
 uint8_t tmc4671_readwriteByte(const uint8_t motor, uint8_t data, uint8_t lastTransfer)
 {
-
-	// Set CS to low
-//	setCS(motor, GPIO_PIN_RESET);
+	// Set CS to low to signal start of data transfer
+	setCS(motor, GPIO_PIN_RESET);
 
 	HAL_StatusTypeDef status;
 
@@ -49,11 +48,31 @@ uint8_t tmc4671_readwriteByte(const uint8_t motor, uint8_t data, uint8_t lastTra
 		}
 	}
 
-	// Raise CS again
-//	setCS(motor, GPIO_PIN_SET);
+	// If end of data transfer, set CS to high
+	if (lastTransfer) {
+		setCS(motor, GPIO_PIN_SET);
+	}
+
 	return *rx_data;
 }
 // <= SPI wrapper
+
+void setCS(uint8_t cs, GPIO_PinState state) {
+	switch (cs) {
+		case TMC4671_CS:
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, state);
+			break;
+		case TMC6200_CS:
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, state);
+			break;
+		case TMC6200_EEPROM_1_CS:
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, state);
+			break;
+		case TMC6200_EEPROM_2_CS:
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, state);
+			break;
+	}
+}
 
 void initMotor() {
 
@@ -100,9 +119,12 @@ void initMotor() {
 	// Switch to torque mode
 	tmc4671_writeInt(TMC4671_CS, TMC4671_MODE_RAMP_MODE_MOTION, 0x00000001);
 
+	// ===== Verify registers were set =====
 
+	// Read number of pole pairs
 	uint32_t nPolePairs = tmc4671_readInt(TMC4671_CS, TMC4671_MOTOR_TYPE_N_POLE_PAIRS);
 
+	// If value is read is correct, than print success.
 	if (nPolePairs == 0x00030004) {
 		DebugPrint("nPolePairs successfully read/write to tmc4671");
 	} else {
@@ -112,35 +134,6 @@ void initMotor() {
 	DebugPrint("Finished motor init");
 }
 
-void rotateMotorRight() {
-	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_TORQUE_FLUX_TARGET, 0x03E80000);
-
-}
-
-void rotateMotorLeft() {
-	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_TORQUE_FLUX_TARGET, 0xFC180000);
-
-}
-
-void stopMotor() {
-	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_TORQUE_FLUX_TARGET, 0x00000000);
-
-}
-
-void setCS(uint8_t cs, GPIO_PinState state) {
-	switch (cs) {
-		case TMC4671_CS:
-			DebugPrint(state == GPIO_PIN_SET ? "Setting TMC4671_CS to High" : "Setting TMC4671_CS to Low");
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);
-			break;
-		case TMC6200_CS:
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);
-			break;
-		case TMC6200_EEPROM_1_CS:
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);
-			break;
-		case TMC6200_EEPROM_2_CS:
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);
-			break;
-	}
+void setTargetTorque(uint32_t torque) {
+	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_TORQUE_FLUX_TARGET, torque);
 }

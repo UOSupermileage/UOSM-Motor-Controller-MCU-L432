@@ -48,30 +48,27 @@ PRIVATE void MotorTask(void *argument)
 	uint8_t c = 0;
 	for(;;)
 	{
-		DebugPrint("Loop");
+		DebugPrint("Motor loop");
 
 		cycleTick += TIMER_MOTOR_TASK;
 		osDelayUntil(cycleTick);
 
-		DebugPrint("Motor loop");
-//		tmc4671_readInt(0, TMC4671_MOTOR_TYPE_N_POLE_PAIRS);
-//		tmc4671_writeInt(0, TMC4671_PID_TORQUE_FLUX_TARGET, 0x03E80000);
-//		HAL_Delay(50);
-//		tmc4671_writeInt(0, TMC4671_MOTOR_TYPE_N_POLE_PAIRS, 0xFFFFFFFF);
-//		tmc4671_readwriteByte(0, TMC4671_MOTOR_TYPE_N_POLE_PAIRS |0x80, 0x00);
-//		tmc4671_writeInt(0, TMC4671_PID_TORQUE_FLUX_TARGET, 0xFFFFFFFF);
-
-//		tmc4671_readInt(0, TMC4671_PID_TORQUE_FLUX_TARGET);
-
-		if (c == 0) {
-
-			DebugPrint("Rotate Left");
-			rotateMotorLeft();
-			c = 1;
-		} else {
+		switch(c) {
+		case 0:
 			DebugPrint("Rotate Right");
-			rotateMotorRight();
+			setTargetTorque(0x03E80000);
+			c = 1;
+			break;
+		case 1:
+			DebugPrint("Rotate Left");
+			setTargetTorque(0xFC180000);
+			c = 2;
+			break;
+		default:
 			c = 0;
+			DebugPrint("Stop");
+			setTargetTorque(0x00000000);
+			break;
 		}
 	}
 }
