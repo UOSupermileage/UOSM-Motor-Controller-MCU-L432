@@ -24,12 +24,12 @@ const uint32_t timeout = 50;
 uint8_t tmc4671_readwriteByte(const uint8_t motor, uint8_t data, uint8_t lastTransfer)
 {
 	// Set CS to low to signal start of data transfer
-	setCS(motor, GPIO_PIN_RESET);
+//	setCS(motor, GPIO_PIN_RESET);
 
 	HAL_StatusTypeDef status;
 
 	// Pointer to receive buffer. (Can be interpreted as an array with a single byte.
-	uint8_t *rx_data;
+	uint8_t rx_data[1];
 
 	// Size == 1 because we will receive a single uint8_t AKA a single byte
 	status = HAL_SPI_TransmitReceive(&hspi1, &data, rx_data, 1, timeout);
@@ -49,9 +49,9 @@ uint8_t tmc4671_readwriteByte(const uint8_t motor, uint8_t data, uint8_t lastTra
 	}
 
 	// If end of data transfer, set CS to high
-	if (lastTransfer) {
-		setCS(motor, GPIO_PIN_SET);
-	}
+//	if (lastTransfer) {
+//		setCS(motor, GPIO_PIN_SET);
+//	}
 
 	return *rx_data;
 }
@@ -63,7 +63,7 @@ void setCS(uint8_t cs, GPIO_PinState state) {
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, state);
 			break;
 		case TMC6200_CS:
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, state);
+			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, state);
 			break;
 		case TMC6200_EEPROM_1_CS:
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, state);
@@ -118,6 +118,14 @@ void initMotor() {
 
 	// Switch to torque mode
 	tmc4671_writeInt(TMC4671_CS, TMC4671_MODE_RAMP_MODE_MOTION, 0x00000001);
+
+	// ===== Set 6200 registers =====
+//	tmc4671_writeInt(TMC6200_CS, 0x00, 0x00000000);
+//	tmc4671_writeInt(TMC6200_CS, 0x01, 0x00000001);
+//	tmc4671_writeInt(TMC6200_CS, 0x06, 0x00000000);
+//	tmc4671_writeInt(TMC6200_CS, 0x08, 0x0000000E);
+//	tmc4671_writeInt(TMC6200_CS, 0x09, 0x13010606);
+//	tmc4671_writeInt(TMC6200_CS, 0x0A, 0x00080004);
 
 	// ===== Verify registers were set =====
 
