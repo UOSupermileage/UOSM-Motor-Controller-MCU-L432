@@ -24,7 +24,7 @@ const uint32_t timeout = 50;
 uint8_t tmc4671_readwriteByte(const uint8_t motor, uint8_t data, uint8_t lastTransfer)
 {
 	// Set CS to low to signal start of data transfer
-//	setCS(motor, GPIO_PIN_RESET);
+	setCS(motor, GPIO_PIN_RESET);
 
 	HAL_StatusTypeDef status;
 
@@ -49,9 +49,9 @@ uint8_t tmc4671_readwriteByte(const uint8_t motor, uint8_t data, uint8_t lastTra
 	}
 
 	// If end of data transfer, set CS to high
-//	if (lastTransfer) {
-//		setCS(motor, GPIO_PIN_SET);
-//	}
+	if (lastTransfer) {
+		setCS(motor, GPIO_PIN_SET);
+	}
 
 	return *rx_data;
 }

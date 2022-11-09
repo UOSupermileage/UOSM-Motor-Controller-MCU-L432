@@ -20,7 +20,7 @@ extern uint8_t tmc4671_readwriteByte(uint8_t motor, uint8_t data, uint8_t lastTr
 // spi access
 int32_t tmc4671_readInt(uint8_t motor, uint8_t address)
 {
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
+//	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
 
 	// clear write bit
 	address &= 0x7F;
@@ -37,7 +37,7 @@ int32_t tmc4671_readInt(uint8_t motor, uint8_t address)
 	value <<= 8;
 	value |= tmc4671_readwriteByte(motor, 0, true);
 
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);
+//	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);
 
 	return value;
 }
