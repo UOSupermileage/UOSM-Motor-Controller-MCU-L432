@@ -10,10 +10,12 @@
 #include "SafetyTask.h"
 #include "InternalCommsTask.h"
 #include "MotorTask.h"
+#include "ButtonTask.h"
 
 void RunTaskManager( void )
 {
 	InitSafetyTask();
 	InitInternalCommsTask();
 	InitMotorTask();
+	InitButtonTask();
 }

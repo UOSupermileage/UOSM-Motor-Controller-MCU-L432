@@ -8,8 +8,6 @@
 #ifndef TASKS_TASKMANAGER_H_
 #define TASKS_TASKMANAGER_H_
 
-#include <stdint.h>
-
 
 void RunTaskManager(void);
 

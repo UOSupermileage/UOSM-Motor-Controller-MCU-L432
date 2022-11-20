@@ -9,7 +9,6 @@
 #define TASKS_MOTORTASK_H_
 
 // STM headers
-#include "cmsis_os.h"
 #include "stm32f4xx_hal.h"
 
 // Our headers

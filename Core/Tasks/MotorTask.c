@@ -8,8 +8,6 @@
 
 #include "MotorTask.h"
 
-#include <stdint.h>
-
 #include "SerialDebugDriver.h"
 
 #include "tmc/ic/TMC4671/TMC4671.h"

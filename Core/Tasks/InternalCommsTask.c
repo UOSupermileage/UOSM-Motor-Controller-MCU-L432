@@ -10,6 +10,7 @@
 #include "SerialDebugDriver.h"
 #include "SPIMotorDriver.h"
 
+// Struct for controlling motor
 extern MotorConfigTypeDef motorConfig;
 
 // Function alias - replace with the driver api
