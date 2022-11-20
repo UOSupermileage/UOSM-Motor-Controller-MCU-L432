@@ -24,6 +24,14 @@
 #define TMC6200_EEPROM_2_CS 3
 
 /**
+  * @brief  Motor config typedef
+  */
+typedef struct MotorConfigTypeDef
+{
+  uint32_t targetTorque; // Target torque for motor
+} MotorConfigTypeDef;
+
+/**
  * Read Write a single byte over SPI.
  * CS is held low until function is called with lastTransfer == 12.
  */

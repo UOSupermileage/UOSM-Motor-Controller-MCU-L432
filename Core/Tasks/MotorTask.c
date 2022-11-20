@@ -14,6 +14,8 @@
 
 #include "tmc/ic/TMC4671/TMC4671.h"
 
+extern MotorConfigTypeDef motorConfig;
+
 // Function alias - replace with the driver api
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
 
@@ -49,6 +51,9 @@ PRIVATE void MotorTask(void *argument)
 	for(;;)
 	{
 		DebugPrint("Motor loop");
+		DebugPrint("Torque: %d", motorConfig.targetTorque);
+
+
 
 		cycleTick += TIMER_MOTOR_TASK;
 		osDelayUntil(cycleTick);
