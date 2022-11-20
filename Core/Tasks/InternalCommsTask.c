@@ -74,9 +74,13 @@ PRIVATE void InternalCommsTask(void *argument)
 			DebugPrint("DLC: %d", rxMsg.dataLength);
 			for(uint8_t i=0; i<rxMsg.dataLength; i++) DebugPrint("Data[%d]: %d", i, rxMsg.data[i]);
 
-			if (rxMsg.standardMessageID == CAN_THROTTLE) {
-				DebugPrint("CAN THROTTLE RECEIVED!");
-				motorConfig.targetTorque = readMsg(&rxMsg);
+			switch (rxMsg.standardMessageID) {
+			case CAN_THROTTLE:;
+				uint32_t torque = readMsg(&rxMsg);
+				DebugPrint("CAN Throttle received: %d", torque);
+				motorConfig.targetTorque = torque;
+			default:
+				DebugPrint("Unknown CAN message [%d] received!", rxMsg.standardMessageID);
 			}
 		}
 	}

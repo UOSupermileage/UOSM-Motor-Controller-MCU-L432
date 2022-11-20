@@ -4,8 +4,8 @@
 extern SPI_HandleTypeDef        hspi2;
 #define SPI_CAN                 &hspi2
 #define SPI_TIMEOUT             10
-#define MCP2515_CS_HIGH()   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET)
-#define MCP2515_CS_LOW()    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET)
+#define MCP2515_CS_HIGH()   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET)
+#define MCP2515_CS_LOW()    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET)
 
 /* Prototypes */
 static void SPI_Tx(uint8_t data);

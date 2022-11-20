@@ -15,13 +15,13 @@
 #include "ApplicationTypes.h"
 #include "SPIMotorDriver.h"
 
-uint32_t buttonDetected = 0x0100;
+//uint32_t buttonDetected = 0x0100;
 
-PRIVATE enum ButtonState {
-	RELEASED,
-	DETECTED,
-	PRESSED
-};
+PRIVATE typedef enum ButtonState {
+	RELEASED = 0,
+	DETECTED = 1,
+	PRESSED = 2
+} ButtonState;
 
 PRIVATE typedef struct Button {
 	ButtonState state;

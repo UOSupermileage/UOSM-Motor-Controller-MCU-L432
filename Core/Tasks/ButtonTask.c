@@ -42,23 +42,24 @@ PRIVATE void ButtonTask(void *argument)
 
 	for(;;)
 	{
-		osSignalWait(buttonDetected, osWaitForever);
-		button.state = PRESSED;
-		button.debounce = true;
-
-		uint8_t c = 5;
-		while(c > 0) {
+//		osSignalWait(buttonDetected, osWaitForever);
+//		button.state = PRESSED;
+//		button.debounce = true;
+//
+//		uint8_t c = 5;
+//		while(c > 0) {
 			osDelay(TIMER_BUTTON_TASK);
-			if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_1) != PIN_SET) {
-				c--;
-			} else {
-				c = 5;
-			}
-		}
+//			if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_1) != GPIO_PIN_SET) {
+//				c--;
+//			} else {
+//				c = 5;
+//			}
+//		}
+//
+//		button.state = RELEASED;
+//		button.debounce = false;
 
-		button.state = RELEASED;
-		button.debounce = false;
-
+//			DebugPrint("Button Task");
 	}
 }
 
