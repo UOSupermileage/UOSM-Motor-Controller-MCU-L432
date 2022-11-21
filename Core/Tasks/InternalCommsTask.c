@@ -78,6 +78,8 @@ PRIVATE void InternalCommsTask(void *argument)
 			case CAN_THROTTLE:;
 				uint32_t torque = readMsg(&rxMsg);
 				DebugPrint("CAN Throttle received: %d", torque);
+
+				// TODO: Switch to FreeRTOS Queue or global getters setter file
 				motorConfig.targetTorque = torque;
 			default:
 				DebugPrint("Unknown CAN message [%d] received!", rxMsg.standardMessageID);

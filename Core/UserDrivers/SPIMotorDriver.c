@@ -34,6 +34,8 @@ uint8_t tmc4671_readwriteByte(const uint8_t motor, uint8_t data, uint8_t lastTra
 	// Size == 1 because we will receive a single uint8_t AKA a single byte
 	status = HAL_SPI_TransmitReceive(&hspi1, &data, rx_data, 1, timeout);
 
+	// TODO: Error handle
+	// Create datastore, store status of various tasks/systems
 	if (status != HAL_OK) {
 		switch (status) {
 		case HAL_ERROR:
@@ -133,7 +135,7 @@ void initMotor() {
 	uint32_t nPolePairs = tmc4671_readInt(TMC4671_CS, TMC4671_MOTOR_TYPE_N_POLE_PAIRS);
 
 	// If value is read is correct, than print success.
-	if (nPolePairs == 0x00030004) {
+	if (nPolePairs & 0x00030004) {
 		DebugPrint("nPolePairs successfully read/write to tmc4671");
 	} else {
 		DebugPrint("Failed to read/write nPolePairs to tmc4671");
