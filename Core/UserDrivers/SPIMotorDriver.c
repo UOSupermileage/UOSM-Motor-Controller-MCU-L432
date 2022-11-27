@@ -7,6 +7,8 @@
 
 #include <SPIMotorDriver.h>
 
+#include "DatastoreModule.h"
+
 #include "SerialDebugDriver.h"
 
 // Function alias - replace with the driver api
@@ -37,6 +39,9 @@ uint8_t tmc4671_readwriteByte(const uint8_t motor, uint8_t data, uint8_t lastTra
 	// TODO: Error handle
 	// Create datastore, store status of various tasks/systems
 	if (status != HAL_OK) {
+
+		datastoreSetSPIError(Set);
+
 		switch (status) {
 		case HAL_ERROR:
 			DebugPrint("SPI Error to " + motor);
@@ -76,7 +81,7 @@ void setCS(uint8_t cs, GPIO_PinState state) {
 	}
 }
 
-void initMotor() {
+bool initMotor() {
 
 	// Set all chip select lines to high
 	setCS(TMC4671_CS, GPIO_PIN_SET);
@@ -86,40 +91,40 @@ void initMotor() {
 
 
 	// Motor type &  PWM configuration
-	tmc4671_writeInt(TMC4671_CS, TMC4671_MOTOR_TYPE_N_POLE_PAIRS, 0x00030004);
-	tmc4671_writeInt(TMC4671_CS, TMC4671_PWM_POLARITIES, 0x00000000);
-	tmc4671_writeInt(TMC4671_CS, TMC4671_PWM_MAXCNT, 0x00000F9F);
-	tmc4671_writeInt(TMC4671_CS, TMC4671_PWM_BBM_H_BBM_L, 0x00001919);
-	tmc4671_writeInt(TMC4671_CS, TMC4671_PWM_SV_CHOP, 0x00000007);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_MOTOR_TYPE_N_POLE_PAIRS, MOTOR_CONFIG_N_POLE_PAIRS);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_PWM_POLARITIES, MOTOR_CONFIG_PWM_POLARITIES);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_PWM_MAXCNT, MOTOR_CONFIG_PWM_MAXCNT);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_PWM_BBM_H_BBM_L, MOTOR_CONFIG_PWM_BBM_H_BBM_L);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_PWM_SV_CHOP, MOTOR_CONFIG_PWM_SV_CHOP);
 
 	// ADC configuration
-	tmc4671_writeInt(TMC4671_CS, TMC4671_ADC_I_SELECT, 0x24000100);
-	tmc4671_writeInt(TMC4671_CS, TMC4671_dsADC_MCFG_B_MCFG_A, 0x00100010);
-	tmc4671_writeInt(TMC4671_CS, TMC4671_dsADC_MCLK_A, 0x20000000);
-	tmc4671_writeInt(TMC4671_CS, TMC4671_dsADC_MCLK_B, 0x00000000);
-	tmc4671_writeInt(TMC4671_CS, TMC4671_dsADC_MDEC_B_MDEC_A, 0x014E014E);
-	tmc4671_writeInt(TMC4671_CS, TMC4671_ADC_I0_SCALE_OFFSET, 0xFF007FE3);
-	tmc4671_writeInt(TMC4671_CS, TMC4671_ADC_I1_SCALE_OFFSET, 0xFF0080E9);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_ADC_I_SELECT, MOTOR_CONFIG_ADC_I_SELECT);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_dsADC_MCFG_B_MCFG_A, MOTOR_CONFIG_dsADC_MCFG_B_MCFG_A);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_dsADC_MCLK_A, MOTOR_CONFIG_dsADC_MCLK_A);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_dsADC_MCLK_B, MOTOR_CONFIG_dsADC_MCLK_B);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_dsADC_MDEC_B_MDEC_A, MOTOR_CONFIG_dsADC_MDEC_B_MDEC_A);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_ADC_I0_SCALE_OFFSET, MOTOR_CONFIG_ADC_I0_SCALE_OFFSET);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_ADC_I1_SCALE_OFFSET, MOTOR_CONFIG_ADC_I1_SCALE_OFFSET);
 
 	// Digital hall settings
-	tmc4671_writeInt(TMC4671_CS, TMC4671_HALL_MODE, 0x00000001);
-	tmc4671_writeInt(TMC4671_CS, TMC4671_HALL_PHI_E_PHI_M_OFFSET, 0x00000000);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_HALL_MODE, MOTOR_CONFIG_HALL_MODE);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_HALL_PHI_E_PHI_M_OFFSET, MOTOR_CONFIG_HALL_PHI_E_PHI_M_OFFSET);
 
 	// Feedback selection
-	tmc4671_writeInt(TMC4671_CS, TMC4671_PHI_E_SELECTION, 0x00000005);
-	tmc4671_writeInt(TMC4671_CS, TMC4671_VELOCITY_SELECTION, 0x0000000C);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_PHI_E_SELECTION, MOTOR_CONFIG_PHI_E_SELECTION);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_VELOCITY_SELECTION, MOTOR_CONFIG_VELOCITY_SELECTION);
 
 	// Limits
-	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_TORQUE_FLUX_LIMITS, 0x000003E8);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_TORQUE_FLUX_LIMITS, MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS);
 
 	// PI settings
-	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_TORQUE_P_TORQUE_I, 0x01000100);
-	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_FLUX_P_FLUX_I, 0x01000100);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_TORQUE_P_TORQUE_I, MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_FLUX_P_FLUX_I, MOTOR_CONFIG_PID_FLUX_P_FLUX_I);
 
 	// ===== Digital hall test drive =====
 
 	// Switch to torque mode
-	tmc4671_writeInt(TMC4671_CS, TMC4671_MODE_RAMP_MODE_MOTION, 0x00000001);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_MODE_RAMP_MODE_MOTION, MOTOR_CONFIG_MODE_RAMP_MODE_MOTION);
 
 	// ===== Set 6200 registers =====
 //	tmc4671_writeInt(TMC6200_CS, 0x00, 0x00000000);
@@ -134,16 +139,21 @@ void initMotor() {
 	// Read number of pole pairs
 	uint32_t nPolePairs = tmc4671_readInt(TMC4671_CS, TMC4671_MOTOR_TYPE_N_POLE_PAIRS);
 
-	// If value is read is correct, than print success.
-	if (nPolePairs & 0x00030004) {
-		DebugPrint("nPolePairs successfully read/write to tmc4671");
+	// If value is read is correct, than motor registers were properly set
+	if (nPolePairs & MOTOR_CONFIG_N_POLE_PAIRS) {
+		DebugPrint("Motor successfuly initialized!");
+		return true;
 	} else {
-		DebugPrint("Failed to read/write nPolePairs to tmc4671");
+		DebugPrint("Failed to initialize motor!");
+		return false;
 	}
-
-	DebugPrint("Finished motor init");
 }
 
-void setTargetTorque(uint32_t torque) {
+void writeTargetTorque(uint32_t torque) {
+	DebugPrint("Writing target torque: %x [%i]", torque, torque);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_TORQUE_FLUX_TARGET, torque);
+}
+
+bool validateSPI() {
+	return tmc4671_readInt(TMC4671_CS, TMC4671_MOTOR_TYPE_N_POLE_PAIRS) & MOTOR_CONFIG_N_POLE_PAIRS;
 }

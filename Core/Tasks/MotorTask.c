@@ -9,10 +9,9 @@
 #include "MotorTask.h"
 
 #include "SerialDebugDriver.h"
+#include "DatastoreModule.h"
 
 #include "tmc/ic/TMC4671/TMC4671.h"
-
-extern MotorConfigTypeDef motorConfig;
 
 // Function alias - replace with the driver api
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
@@ -20,6 +19,7 @@ extern MotorConfigTypeDef motorConfig;
 #define STACK_SIZE 128*4
 #define MOTOR_TASK_PRIORITY (osPriority_t) osPriorityHigh1
 #define TIMER_MOTOR_TASK 2000UL
+#define TIMER_MOTOR_REINIT_DELAY 5000UL
 
 PUBLIC void InitMotorTask(void);
 PRIVATE void MotorTask(void *argument);
@@ -43,35 +43,28 @@ PRIVATE void MotorTask(void *argument)
 	DebugPrint("Initializing MotorTask");
 
 
-	initMotor();
+//	datastoreSetTargetTorque(0x03E80000);
 
-	uint8_t c = 0;
+	bool motorInitialized = initMotor();
+
+	if (!motorInitialized) {
+		datastoreSetSPIError(Set);
+	}
+
 	for(;;)
 	{
-		DebugPrint("Motor loop");
-		DebugPrint("Torque: %d", motorConfig.targetTorque);
-
-
-
 		cycleTick += TIMER_MOTOR_TASK;
 		osDelayUntil(cycleTick);
 
-		switch(c) {
-		case 0:
-			DebugPrint("Rotate Right");
-			setTargetTorque(0x03E80000);
-			c = 1;
-			break;
-		case 1:
-			DebugPrint("Rotate Left");
-			setTargetTorque(0xFC180000);
-			c = 2;
-			break;
-		default:
-			c = 0;
-			DebugPrint("Stop");
-			setTargetTorque(0x00000000);
-			break;
-		}
+		writeTargetTorque(datastoreGetTargetTorque());
+
+//		if (motorInitialized) {
+//			writeTargetTorque(datastoreGetTargetTorque());
+//		}else {
+//			// If motor failed to initialize, wait and then reinit
+//			osDelay(TIMER_MOTOR_REINIT_DELAY);
+//			motorInitialized = initMotor();
+//		}
+
 	}
 }

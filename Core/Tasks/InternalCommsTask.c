@@ -8,10 +8,7 @@
 #include "InternalCommsModule.h"
 #include "InternalCommsTask.h"
 #include "SerialDebugDriver.h"
-#include "SPIMotorDriver.h"
-
-// Struct for controlling motor
-extern MotorConfigTypeDef motorConfig;
+#include "DatastoreModule.h"
 
 // Function alias - replace with the driver api
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
@@ -41,34 +38,32 @@ PRIVATE void InternalCommsTask(void *argument)
 	uint32_t cycleTick = osKernelGetTickCount();
 	DebugPrint("icomms");
 	ICommsInit();
-	uint8_t testTxCounter = 0;
+
+	uint32_t counter = 0;
+
 	for(;;)
 	{
 		cycleTick += TIMER_INTERNAL_COMMS_TASK;
 		osDelayUntil(cycleTick);
-		DebugPrint("icomms loop");
 
-		iCommsMessage_t txMsg, rxMsg;
-		txMsg.standardMessageID = CAN_THROTTLE;
-		txMsg.dataLength = 4;
-		txMsg.data[0] = 0;
-		txMsg.data[1] = 0;
-		txMsg.data[2] = 0;
-		txMsg.data[3] = 4;
-		/*txMsg.data[4] = 5;
-		txMsg.data[5] = 6;
-		txMsg.data[6] = 7;
-		txMsg.data[7] = 8;*/
-		testTxCounter++;
-		if(testTxCounter == 25)
-		{
-			ICommsTransmit(&txMsg);
-			testTxCounter =0;
+		counter++;
+
+		if (counter == 100) {
+			sendThrottlePercentage(1);
+		}else if (counter == 200) {
+//			sendThrottlePercentage(80);
+		} else if (counter == 300) {
+//			sendThrottlePercentage(3);
+		} else if (counter == 400) {
+//			sendThrottlePercentage(0);
+			counter = 0;
 		}
 
 
-		if(ICommsMessageAvailable()>0)
+		if(ICommsMessageAvailable() > 0)
 		{
+			iCommsMessage_t rxMsg;
+
 			ICommsReceive(&rxMsg);
 			DebugPrint("Standard ID: %d", rxMsg.standardMessageID);
 			DebugPrint("DLC: %d", rxMsg.dataLength);
@@ -77,13 +72,31 @@ PRIVATE void InternalCommsTask(void *argument)
 			switch (rxMsg.standardMessageID) {
 			case CAN_THROTTLE:;
 				uint32_t torque = readMsg(&rxMsg);
-				DebugPrint("CAN Throttle received: %d", torque);
+				DebugPrint("CAN Throttle percentage received: %d%", torque);
 
-				// TODO: Switch to FreeRTOS Queue or global getters setter file
-				motorConfig.targetTorque = torque;
+				datastoreSetTargetTorquePercentage(torque);
 			default:
-				DebugPrint("Unknown CAN message [%d] received!", rxMsg.standardMessageID);
+				DebugPrint("Unknown CAN message with id [%d] received!", rxMsg.standardMessageID);
 			}
 		}
 	}
+}
+
+PRIVATE result_t sendThrottlePercentage(const uint8_t percentage) {
+
+	iCommsMessage_t txMsg;
+	txMsg.standardMessageID = CAN_THROTTLE;
+	txMsg.dataLength = 1;
+
+	if (percentage > 100) {
+		txMsg.data[0] = 100;
+	} else if (percentage < -100) {
+		txMsg.data[0] = -100;
+	} else {
+		txMsg.data[0] = percentage;
+	}
+
+	// Temporarily here to bypass CAN
+	datastoreSetTargetTorquePercentage(percentage);
+	return ICommsTransmit(&txMsg);
 }

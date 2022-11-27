@@ -14,6 +14,9 @@
 
 #include "SerialDebugDriver.h"
 
+#include "SPIMotorDriver.h"
+#include "DatastoreModule.h"
+
 // Function alias - replace with the driver api
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
 
@@ -46,7 +49,13 @@ PRIVATE void SafetyTask(void *argument)
 	{
 		cycleTick += TIMER_SAFETY_TASK;
 		osDelayUntil(cycleTick);
-		DebugPrint("safety loop");
+		DebugPrint("Safety Loop. Safety Error [%d],  SPI Error [%d], iComms Error [%d]", datastoreGetSafetyError(), datastoreGetSPIError(), datastoreGetiCommsError());
+
+		if (validateSPI()) {
+			datastoreSetSPIError(Clear);
+		} else {
+			datastoreSetSPIError(Set);
+		}
 
 	}
 }

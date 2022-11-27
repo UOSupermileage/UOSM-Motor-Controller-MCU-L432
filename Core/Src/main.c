@@ -33,9 +33,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-MotorConfigTypeDef motorConfig = {
-		0x0000 // Initial Target Torque
-};
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
