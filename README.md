@@ -4,7 +4,7 @@ Firmware for motor controller. Target STM32F44RET6
 
 <img src="requirements.png"/>
 
-## TMC4671 API
+## TMC API
 
 https://github.com/trinamic/TMC-API
 
