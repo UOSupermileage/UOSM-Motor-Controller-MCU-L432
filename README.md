@@ -1,4 +1,4 @@
-# UOSM-Motor-Controller-MCU-F44RET6
+# UOSM-Motor-Controller-MCU-L432
 
 Firmware for motor controller. Target STM32F44RET6
 
