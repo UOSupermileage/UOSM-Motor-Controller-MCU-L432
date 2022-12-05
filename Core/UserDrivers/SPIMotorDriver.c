@@ -62,6 +62,12 @@ uint8_t tmc4671_readwriteByte(const uint8_t motor, uint8_t data, uint8_t lastTra
 
 	return *rx_data;
 }
+
+uint8_t tmc6200_readwriteByte(uint8_t motor, uint8_t data, uint8_t lastTransfer)
+{
+	return tmc4671_readwriteByte(motor, data, lastTransfer);
+}
+
 // <= SPI wrapper
 
 void setCS(uint8_t cs, GPIO_PinState state) {
@@ -82,6 +88,9 @@ void setCS(uint8_t cs, GPIO_PinState state) {
 }
 
 bool initMotor() {
+
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+
 
 	// Set all chip select lines to high
 	setCS(TMC4671_CS, GPIO_PIN_SET);
@@ -126,27 +135,40 @@ bool initMotor() {
 	// Switch to torque mode
 	tmc4671_writeInt(TMC4671_CS, TMC4671_MODE_RAMP_MODE_MOTION, MOTOR_CONFIG_MODE_RAMP_MODE_MOTION);
 
-	// ===== Set 6200 registers =====
-//	tmc4671_writeInt(TMC6200_CS, 0x00, 0x00000000);
-//	tmc4671_writeInt(TMC6200_CS, 0x01, 0x00000001);
-//	tmc4671_writeInt(TMC6200_CS, 0x06, 0x00000000);
-//	tmc4671_writeInt(TMC6200_CS, 0x08, 0x0000000E);
-//	tmc4671_writeInt(TMC6200_CS, 0x09, 0x13010606);
-//	tmc4671_writeInt(TMC6200_CS, 0x0A, 0x00080004);
+//	 ===== Set 6200 registers =====
+	tmc6200_writeInt(TMC6200_CS, TMC6200_GCONF, MOTOR_CONFIG_DRIVER_GENERAL_CONFIG);
+	tmc6200_writeInt(TMC6200_CS, TMC6200_SHORT_CONF, MOTOR_CONFIG_DRIVER_SHORT_CONFIG);
+	tmc6200_writeInt(TMC6200_CS, TMC6200_DRV_CONF, MOTOR_CONFIG_DRIVER_DRIVE_CONFIG);
 
 	// ===== Verify registers were set =====
 
-	// Read number of pole pairs
+	// Read TMC4671 values for validation
 	uint32_t nPolePairs = tmc4671_readInt(TMC4671_CS, TMC4671_MOTOR_TYPE_N_POLE_PAIRS);
 
-	// If value is read is correct, than motor registers were properly set
-	if (nPolePairs & MOTOR_CONFIG_N_POLE_PAIRS) {
-		DebugPrint("Motor successfuly initialized!");
-		return true;
+	// Read TMC6200 values for validation.
+	uint32_t generalConf = tmc6200_readInt(TMC6200_CS, TMC6200_GCONF);
+	uint32_t shortConf = tmc6200_readInt(TMC6200_CS, TMC6200_SHORT_CONF);
+	uint32_t driveConf = tmc6200_readInt(TMC6200_CS, TMC6200_DRV_CONF);
+
+
+	if ((generalConf == MOTOR_CONFIG_DRIVER_GENERAL_CONFIG) && (shortConf == MOTOR_CONFIG_DRIVER_SHORT_CONFIG) && (driveConf == MOTOR_CONFIG_DRIVER_DRIVE_CONFIG)) {
+		DebugPrint("Motor Driver [" MOTOR_DRIVER_LABEL "] successfuly initialized!");
 	} else {
-		DebugPrint("Failed to initialize motor!");
+		DebugPrint("Failed to initialize Motor Driver [" MOTOR_DRIVER_LABEL "]");
 		return false;
 	}
+
+	// If value is read is correct, than motor registers were properly set
+	if (nPolePairs == MOTOR_CONFIG_N_POLE_PAIRS) {
+		DebugPrint("Motor Controller [" MOTOR_LABEL "] successfuly initialized!");
+	} else {
+		DebugPrint("Failed to initialize Motor Controller [" MOTOR_LABEL "]");
+		return false;
+	}
+
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
+
+	return true;
 }
 
 void writeTargetTorque(uint32_t torque) {
@@ -154,6 +176,9 @@ void writeTargetTorque(uint32_t torque) {
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_TORQUE_FLUX_TARGET, torque);
 }
 
+/**
+ * Basic function for validation connection to the TMC4671
+ */
 bool validateSPI() {
-	return tmc4671_readInt(TMC4671_CS, TMC4671_MOTOR_TYPE_N_POLE_PAIRS) & MOTOR_CONFIG_N_POLE_PAIRS;
+	return tmc4671_readInt(TMC4671_CS, TMC4671_MOTOR_TYPE_N_POLE_PAIRS) == MOTOR_CONFIG_N_POLE_PAIRS && tmc6200_readInt(TMC6200_CS, TMC6200_GCONF) == MOTOR_CONFIG_DRIVER_GENERAL_CONFIG;
 }

@@ -12,6 +12,7 @@
 #include "DatastoreModule.h"
 
 #include "tmc/ic/TMC4671/TMC4671.h"
+#include "tmc/ic/TMC6200/TMC6200.h"
 
 // Function alias - replace with the driver api
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
@@ -42,13 +43,11 @@ PRIVATE void MotorTask(void *argument)
 	uint32_t cycleTick = osKernelGetTickCount();
 	DebugPrint("Initializing MotorTask");
 
-
-//	datastoreSetTargetTorque(0x03E80000);
-
 	bool motorInitialized = initMotor();
 
 	if (!motorInitialized) {
 		datastoreSetSPIError(Set);
+		DebugPrint("Failed to initialize motor!");
 	}
 
 	for(;;)
@@ -58,13 +57,11 @@ PRIVATE void MotorTask(void *argument)
 
 		writeTargetTorque(datastoreGetTargetTorque());
 
-//		if (motorInitialized) {
-//			writeTargetTorque(datastoreGetTargetTorque());
-//		}else {
-//			// If motor failed to initialize, wait and then reinit
-//			osDelay(TIMER_MOTOR_REINIT_DELAY);
-//			motorInitialized = initMotor();
-//		}
+		if (!motorInitialized) {
+			// If motor failed to initialize, wait and then reinit
+			osDelay(TIMER_MOTOR_REINIT_DELAY);
+			motorInitialized = initMotor();
+		}
 
 	}
 }

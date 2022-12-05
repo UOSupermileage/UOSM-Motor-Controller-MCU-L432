@@ -17,6 +17,8 @@
 
 // TMC headers
 #include "tmc/ic/TMC4671/TMC4671.h"
+#include "tmc/ic/TMC6200/TMC6200.h"
+#include "tmc/ic/TMC6200/TMC6200_Register.h"
 
 #define TMC4671_CS 0
 #define TMC6200_CS 1
@@ -28,6 +30,9 @@
 
 // ===== TMC Motor Configuration =====
 #if MOTOR == 0
+
+	#define MOTOR_LABEL "TMC4671"
+	#define MOTOR_DRIVER_LABEL "TMC6200"
 
 	#define MAX_TORQUE (uint32_t) 0x7FFF0000
 	#define MIN_TORQUE (uint32_t) 0x0000FFFF
@@ -67,6 +72,28 @@
 	// ===== Digital hall test drive =====
 	// Set motor controller to torque mode
 	#define MOTOR_CONFIG_MODE_RAMP_MODE_MOTION (uint32_t) 0x00000001
+
+	// ===== TMC6200 Values ===== (See TMC6200 Datasheet for breakdown of each parameter)
+
+	/**
+	 * General Configuration Flags for the TMC6200
+	 * Bit 0: disable (Driver Disable). Cycle low to clear short conditions.
+	 */
+	#define MOTOR_CONFIG_DRIVER_GENERAL_CONFIG (uint32_t) 0x00000000
+
+	/**
+	 * Short detection / Safety parameters
+	 * 0x13010606 is the factory default value
+	 */
+	#define MOTOR_CONFIG_DRIVER_SHORT_CONFIG (uint32_t) 0x13010606
+
+	/**
+	 * Drive parameters
+	 * 0x00080004 is the factory default value
+	 */
+	#define MOTOR_CONFIG_DRIVER_DRIVE_CONFIG (uint32_t) 0x00080004
+
+
 #endif
 
 /**

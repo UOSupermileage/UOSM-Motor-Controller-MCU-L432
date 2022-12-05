@@ -49,13 +49,13 @@ PRIVATE void InternalCommsTask(void *argument)
 		counter++;
 
 		if (counter == 100) {
-			sendThrottlePercentage(1);
+			sendThrottlePercentage(5);
 		}else if (counter == 200) {
-//			sendThrottlePercentage(80);
+			sendThrottlePercentage(80);
 		} else if (counter == 300) {
-//			sendThrottlePercentage(3);
+			sendThrottlePercentage(50);
 		} else if (counter == 400) {
-//			sendThrottlePercentage(0);
+			sendThrottlePercentage(0);
 			counter = 0;
 		}
 

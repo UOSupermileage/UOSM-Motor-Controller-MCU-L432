@@ -5,6 +5,7 @@
  *      Author: ed
  */
 #include "TMC4671.h"
+#include "SPIMotorDriver.h"
 #include "stm32f4xx_hal.h"
 
 
@@ -44,7 +45,6 @@ int32_t tmc4671_readInt(uint8_t motor, uint8_t address)
 
 void tmc4671_writeInt(uint8_t motor, uint8_t address, int32_t value)
 {
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
 
 	// write address
 	// address | 0x80 turns the MSB into a one. Thus saying, write at address
@@ -56,7 +56,6 @@ void tmc4671_writeInt(uint8_t motor, uint8_t address, int32_t value)
 	tmc4671_readwriteByte(motor, 0xFF & (value>>8), false);
 	tmc4671_readwriteByte(motor, 0xFF & (value>>0), true);
 
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);
 }
 
 uint16_t tmc4671_readRegister16BitValue(uint8_t motor, uint8_t address, uint8_t channel)
