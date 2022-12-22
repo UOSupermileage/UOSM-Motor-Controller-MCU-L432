@@ -5,8 +5,7 @@
  *      Author: ed
  */
 #include "TMC4671.h"
-#include "SPIMotorDriver.h"
-#include "stm32f4xx_hal.h"
+#include "stm32l4xx_hal.h"
 
 
 #define STATE_NOTHING_TO_DO    0

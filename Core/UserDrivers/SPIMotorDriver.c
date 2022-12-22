@@ -73,30 +73,22 @@ uint8_t tmc6200_readwriteByte(uint8_t motor, uint8_t data, uint8_t lastTransfer)
 void setCS(uint8_t cs, GPIO_PinState state) {
 	switch (cs) {
 		case TMC4671_CS:
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, state);
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, state);
 			break;
 		case TMC6200_CS:
-			HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, state);
-			break;
-		case TMC6200_EEPROM_1_CS:
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, state);
-			break;
-		case TMC6200_EEPROM_2_CS:
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, state);
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, state);
 			break;
 	}
 }
 
 bool initMotor() {
 
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
 
 
 	// Set all chip select lines to high
 	setCS(TMC4671_CS, GPIO_PIN_SET);
 	setCS(TMC6200_CS, GPIO_PIN_SET);
-	setCS(TMC6200_EEPROM_1_CS, GPIO_PIN_SET);
-	setCS(TMC6200_EEPROM_2_CS, GPIO_PIN_SET);
 
 
 	// Motor type &  PWM configuration
@@ -150,12 +142,15 @@ bool initMotor() {
 	uint32_t shortConf = tmc6200_readInt(TMC6200_CS, TMC6200_SHORT_CONF);
 	uint32_t driveConf = tmc6200_readInt(TMC6200_CS, TMC6200_DRV_CONF);
 
+	DebugPrint("Read [%08x]", nPolePairs);
+	DebugPrint("Read [%08x], [%08x], [%08x]", generalConf, shortConf, driveConf);
+
 
 	if ((generalConf == MOTOR_CONFIG_DRIVER_GENERAL_CONFIG) && (shortConf == MOTOR_CONFIG_DRIVER_SHORT_CONFIG) && (driveConf == MOTOR_CONFIG_DRIVER_DRIVE_CONFIG)) {
 		DebugPrint("Motor Driver [" MOTOR_DRIVER_LABEL "] successfuly initialized!");
 	} else {
 		DebugPrint("Failed to initialize Motor Driver [" MOTOR_DRIVER_LABEL "]");
-		return false;
+//		return false;
 	}
 
 	// If value is read is correct, than motor registers were properly set
@@ -166,7 +161,7 @@ bool initMotor() {
 		return false;
 	}
 
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
 
 	return true;
 }

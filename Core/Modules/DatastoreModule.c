@@ -10,6 +10,7 @@
 #include <DatastoreModule.h>
 
 #include "SPIMotorDriver.h"
+#include "SerialDebugDriver.h"
 
 // ===== Motor Data =====
 
@@ -29,6 +30,7 @@ PUBLIC uint32_t datastoreGetTargetTorque()
 
 PUBLIC void datastoreSetTargetTorque(uint32_t torque)
 {
+	DebugPrint("Setting target torque to: [%08x]", torque);
 	motorConfig.targetTorque = torque;
 }
 

@@ -19,7 +19,7 @@
 
 #define STACK_SIZE 128*4
 #define MOTOR_TASK_PRIORITY (osPriority_t) osPriorityHigh1
-#define TIMER_MOTOR_TASK 2000UL
+#define TIMER_MOTOR_TASK 1000UL
 #define TIMER_MOTOR_REINIT_DELAY 5000UL
 
 PUBLIC void InitMotorTask(void);
@@ -50,8 +50,24 @@ PRIVATE void MotorTask(void *argument)
 		DebugPrint("Failed to initialize motor!");
 	}
 
+	uint32_t counter = 0;
+
 	for(;;)
 	{
+
+		counter++;
+
+		if (counter == 15) {
+			datastoreSetTargetTorquePercentage(5);
+		}else if (counter == 30) {
+			datastoreSetTargetTorquePercentage(80);
+		} else if (counter == 45) {
+			datastoreSetTargetTorquePercentage(50);
+		} else if (counter == 60) {
+			datastoreSetTargetTorquePercentage(0);
+			counter = 0;
+		}
+
 		cycleTick += TIMER_MOTOR_TASK;
 		osDelayUntil(cycleTick);
 

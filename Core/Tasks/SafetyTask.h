@@ -10,11 +10,10 @@
 
 // STM headers
 #include "cmsis_os.h"
-#include "stm32f4xx_hal.h"
+#include "stm32l4xx_hal.h"
 
 // Our headers
 #include "ApplicationTypes.h"
-
 
 PUBLIC void InitSafetyTask(void);
 

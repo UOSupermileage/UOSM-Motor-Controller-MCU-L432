@@ -36,29 +36,13 @@ PUBLIC void InitInternalCommsTask(void)
 PRIVATE void InternalCommsTask(void *argument)
 {
 	uint32_t cycleTick = osKernelGetTickCount();
-	DebugPrint("icomms");
+	DebugPrint("icomms setup");
 	ICommsInit();
-
-	uint32_t counter = 0;
 
 	for(;;)
 	{
 		cycleTick += TIMER_INTERNAL_COMMS_TASK;
 		osDelayUntil(cycleTick);
-
-		counter++;
-
-		if (counter == 100) {
-			sendThrottlePercentage(5);
-		}else if (counter == 200) {
-			sendThrottlePercentage(80);
-		} else if (counter == 300) {
-			sendThrottlePercentage(50);
-		} else if (counter == 400) {
-			sendThrottlePercentage(0);
-			counter = 0;
-		}
-
 
 		if(ICommsMessageAvailable() > 0)
 		{
@@ -96,7 +80,5 @@ PRIVATE result_t sendThrottlePercentage(const uint8_t percentage) {
 		txMsg.data[0] = percentage;
 	}
 
-	// Temporarily here to bypass CAN
-	datastoreSetTargetTorquePercentage(percentage);
 	return ICommsTransmit(&txMsg);
 }
