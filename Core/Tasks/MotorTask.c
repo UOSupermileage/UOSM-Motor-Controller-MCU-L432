@@ -57,13 +57,13 @@ PRIVATE void MotorTask(void *argument)
 
 		counter++;
 
-		if (counter == 15) {
+		if (counter <= 15) {
 			datastoreSetTargetTorquePercentage(5);
-		}else if (counter == 30) {
+		}else if (counter <= 30) {
 			datastoreSetTargetTorquePercentage(80);
-		} else if (counter == 45) {
+		} else if (counter <= 45) {
 			datastoreSetTargetTorquePercentage(50);
-		} else if (counter == 60) {
+		} else if (counter <= 60) {
 			datastoreSetTargetTorquePercentage(0);
 			counter = 0;
 		}
