@@ -9,13 +9,12 @@
 
 #include <DatastoreModule.h>
 
-#include "SPIMotorDriver.h"
 #include "SerialDebugDriver.h"
 
 // ===== Motor Data =====
 
-PRIVATE MotorConfigTypeDef motorConfig = {
-		0x0000 // Initial Target Torque
+PRIVATE MotorDatastoreConfigTypeDef motorDatastoreConfig = {
+		0x0000 // Initial Target Velocity
 };
 
 PRIVATE MotorStatusTypeDef motorStatus = {
@@ -25,17 +24,28 @@ PRIVATE MotorStatusTypeDef motorStatus = {
 // ===== Motor Config Getters and Setters =====
 PUBLIC uint32_t datastoreGetTargetTorque()
 {
-	return motorConfig.targetTorque;
+	DebugPrint("datastoreGetTargetTorque not implemented!");
+	return 0;
 }
 
 PUBLIC void datastoreSetTargetTorque(uint32_t torque)
 {
-	DebugPrint("Setting target torque to: [%08x]", torque);
-	motorConfig.targetTorque = torque;
+	DebugPrint("datastoreSetTargetTorque not implemented!");
+	//DebugPrint("Setting target torque to: [%08x]", torque);
+	//motorConfig.targetTorque = torque;
 }
 
 PUBLIC void datastoreSetTargetTorquePercentage(uint8_t percentage) {
-	motorConfig.targetTorque = (MAX_TORQUE - MIN_TORQUE) / 100 * percentage + MIN_TORQUE;
+	DebugPrint("datastoreGetTargetTorquePercentage not implemented!");
+	// motorConfig.targetTorque = (MAX_TORQUE - MIN_TORQUE) / 100 * percentage + MIN_TORQUE;
+}
+
+
+PUBLIC void datastoreSetTargetVelocity(int32_t velocity) {
+	motorDatastoreConfig.targetVelocity = velocity;
+}
+PUBLIC int32_t datastoreGetTargetVelocity() {
+	return motorDatastoreConfig.targetVelocity;
 }
 
 // ===== Motor Status Getters and Setters =====

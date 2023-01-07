@@ -15,11 +15,9 @@ typedef enum MotorStatusCode {
 	Set = 1
 } MotorStatusCode;
 
-typedef struct MotorConfigTypeDef
-{
-  uint32_t targetTorque; // Target torque for motor
-} MotorConfigTypeDef;
-
+typedef struct {
+		int32_t targetVelocity;
+} MotorDatastoreConfigTypeDef;
 
 typedef union {
 	uint32_t all;
@@ -38,6 +36,9 @@ PUBLIC uint32_t datastoreGetTargetTorque();
 PUBLIC void datastoreSetTargetTorque(uint32_t torque);
 
 PUBLIC void datastoreSetTargetTorquePercentage(uint8_t percentage);
+
+PUBLIC void datastoreSetTargetVelocity(int32_t velocity);
+PUBLIC int32_t datastoreGetTargetVelocity();
 
 // ===== Motor Status Getters and Setters =====
 

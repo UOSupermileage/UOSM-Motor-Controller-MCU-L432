@@ -43,7 +43,7 @@ PRIVATE void MotorTask(void *argument)
 	uint32_t cycleTick = osKernelGetTickCount();
 	DebugPrint("Initializing MotorTask");
 
-	bool motorInitialized = initMotor();
+	uint32_t motorInitialized = initMotor();
 
 	if (!motorInitialized) {
 		datastoreSetSPIError(Set);
@@ -58,22 +58,28 @@ PRIVATE void MotorTask(void *argument)
 		counter++;
 
 		if (counter <= 15) {
-			datastoreSetTargetTorquePercentage(5);
+//			datastoreSetTargetTorquePercentage(5);
+			datastoreSetTargetVelocity(50000000);
 		}else if (counter <= 30) {
-			datastoreSetTargetTorquePercentage(80);
+//			datastoreSetTargetTorquePercentage(80);
+			datastoreSetTargetVelocity(0);
+			counter = 0;
 		} else if (counter <= 45) {
-			datastoreSetTargetTorquePercentage(50);
+//			datastoreSetTargetTorquePercentage(50);
 		} else if (counter <= 60) {
-			datastoreSetTargetTorquePercentage(0);
+//			datastoreSetTargetTorquePercentage(0);
 			counter = 0;
 		}
 
 		cycleTick += TIMER_MOTOR_TASK;
 		osDelayUntil(cycleTick);
 
-		writeTargetTorque(datastoreGetTargetTorque());
-
-		if (!motorInitialized) {
+		if (motorInitialized) {
+			//		writeTargetTorque(datastoreGetTargetTorque());
+			DebugPrint("Target Velocity [%x]", datastoreGetTargetVelocity());
+			rotate(datastoreGetTargetVelocity());
+			periodicJob(cycleTick);
+		} else {
 			// If motor failed to initialize, wait and then reinit
 			osDelay(TIMER_MOTOR_REINIT_DELAY);
 			motorInitialized = initMotor();

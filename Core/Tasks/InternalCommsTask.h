@@ -10,6 +10,7 @@
 
 // STM headers
 #include "stm32l4xx_hal.h"
+#include "cmsis_os.h"
 
 // Our headers
 #include "ApplicationTypes.h"
