@@ -58,7 +58,7 @@ Give each task a different priority level. FreeRTOS can get confused if tasks sh
     <td>Connected to TMC6200's Chip Select</td>
 </tr>
 <tr>
-    <td>PB5</td>
+    <td>PA9</td>
     <td>Connected to TMC6200's enable pin</td>
 </tr>
 </table>
