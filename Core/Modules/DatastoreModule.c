@@ -9,12 +9,14 @@
 
 #include <DatastoreModule.h>
 
+#include "MotorModule.h"
 #include "SerialDebugDriver.h"
 
 // ===== Motor Data =====
 
 PRIVATE MotorDatastoreConfigTypeDef motorDatastoreConfig = {
-		0x0000 // Initial Target Velocity
+		0x0000, // Initial throttle value
+		0x0000  // Initial target velocity
 };
 
 PRIVATE MotorStatusTypeDef motorStatus = {
@@ -22,29 +24,36 @@ PRIVATE MotorStatusTypeDef motorStatus = {
 };
 
 // ===== Motor Config Getters and Setters =====
-PUBLIC uint32_t datastoreGetTargetTorque()
-{
-	DebugPrint("datastoreGetTargetTorque not implemented!");
-	return 0;
+PUBLIC uint32_t datastoreGetThrottlePercentage() {
+	return motorDatastoreConfig.throttle;
 }
 
-PUBLIC void datastoreSetTargetTorque(uint32_t torque)
-{
-	DebugPrint("datastoreSetTargetTorque not implemented!");
-	//DebugPrint("Setting target torque to: [%08x]", torque);
-	//motorConfig.targetTorque = torque;
-}
-
-PUBLIC void datastoreSetTargetTorquePercentage(uint8_t percentage) {
-	DebugPrint("datastoreGetTargetTorquePercentage not implemented!");
-	// motorConfig.targetTorque = (MAX_TORQUE - MIN_TORQUE) / 100 * percentage + MIN_TORQUE;
+PUBLIC void datastoreSetThrottlePercentage(uint32_t percentage) {
+	if (percentage > 1000) {
+		motorDatastoreConfig.throttle = 1000;
+		motorDatastoreConfig.targetVelocity = MAX_VELOCITY;
+	} else {
+		motorDatastoreConfig.throttle = percentage;
+		motorDatastoreConfig.targetVelocity = (MAX_VELOCITY - MIN_VELOCITY) / 1000 * percentage + MIN_VELOCITY;
+	}
 }
 
 
-PUBLIC void datastoreSetTargetVelocity(int32_t velocity) {
-	motorDatastoreConfig.targetVelocity = velocity;
+PRIVATE void datastoreSetTargetVelocity(int32_t velocity) {
+
+	if (velocity < MIN_VELOCITY) {
+		motorDatastoreConfig.targetVelocity = MIN_VELOCITY;
+		motorDatastoreConfig.throttle = 0;
+	} else if (velocity > MAX_VELOCITY) {
+		motorDatastoreConfig.targetVelocity = MAX_VELOCITY;
+		motorDatastoreConfig.throttle = 1000;
+	} else {
+		motorDatastoreConfig.targetVelocity = velocity;
+		motorDatastoreConfig.throttle = (velocity - MIN_VELOCITY) / (MAX_VELOCITY - MIN_VELOCITY) * 1000;
+	}
 }
-PUBLIC int32_t datastoreGetTargetVelocity() {
+
+PRIVATE int32_t datastoreGetTargetVelocity() {
 	return motorDatastoreConfig.targetVelocity;
 }
 

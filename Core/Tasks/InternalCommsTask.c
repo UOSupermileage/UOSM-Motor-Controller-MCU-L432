@@ -5,10 +5,13 @@
  *      Author: mingy
  */
 
-#include "InternalCommsModule.h"
 #include "InternalCommsTask.h"
+
+#include "InternalCommsModule.h"
 #include "SerialDebugDriver.h"
 #include "DatastoreModule.h"
+#include "CANDriver.h"
+
 
 // Function alias - replace with the driver api
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
@@ -37,48 +40,40 @@ PRIVATE void InternalCommsTask(void *argument)
 {
 	uint32_t cycleTick = osKernelGetTickCount();
 	DebugPrint("icomms setup");
-	ICommsInit();
+	IComms_Init();
 
 	for(;;)
 	{
 		cycleTick += TIMER_INTERNAL_COMMS_TASK;
 		osDelayUntil(cycleTick);
 
-		if(ICommsMessageAvailable() > 0)
-		{
+		IComms_Update();
+		while (IComms_HasRxMessage()) {
 			iCommsMessage_t rxMsg;
+			result_t ret = IComms_ReceiveNextMessage(&rxMsg);
 
-			ICommsReceive(&rxMsg);
-			DebugPrint("Standard ID: %d", rxMsg.standardMessageID);
-			DebugPrint("DLC: %d", rxMsg.dataLength);
-			for(uint8_t i=0; i<rxMsg.dataLength; i++) DebugPrint("Data[%d]: %d", i, rxMsg.data[i]);
+			if(ret == RESULT_FAIL)
+			{
+				DebugPrint("#ICT: Error Retrieving next message");
+			} else{
+				DebugPrint("Standard ID: %d", rxMsg.standardMessageID);
+				DebugPrint("DLC: %d", rxMsg.dataLength);
+				for(uint8_t i=0; i<rxMsg.dataLength; i++) {
+					DebugPrint("Data[%d]: %d", i, rxMsg.data[i]);
+				}
 
-			switch (rxMsg.standardMessageID) {
-			case CAN_THROTTLE:;
-				uint32_t torque = readMsg(&rxMsg);
-				DebugPrint("CAN Throttle percentage received: %d%", torque);
-
-				datastoreSetTargetTorquePercentage(torque);
-			default:
-				DebugPrint("Unknown CAN message with id [%d] received!", rxMsg.standardMessageID);
+				switch (rxMsg.standardMessageID) {
+				case CAN_THROTTLE:
+					;
+					uint32_t throttle = readMsg(&rxMsg);
+					DebugPrint("CAN Throttle percentage received: %d%", throttle);
+					datastoreSetThrottlePercentage(throttle);
+					break;
+				default:
+					DebugPrint("Unknown CAN message with id [%d] received!", rxMsg.standardMessageID);
+					break;
+				}
 			}
 		}
 	}
-}
-
-PRIVATE result_t sendThrottlePercentage(const uint8_t percentage) {
-
-	iCommsMessage_t txMsg;
-	txMsg.standardMessageID = CAN_THROTTLE;
-	txMsg.dataLength = 1;
-
-	if (percentage > 100) {
-		txMsg.data[0] = 100;
-	} else if (percentage < -100) {
-		txMsg.data[0] = -100;
-	} else {
-		txMsg.data[0] = percentage;
-	}
-
-	return ICommsTransmit(&txMsg);
 }

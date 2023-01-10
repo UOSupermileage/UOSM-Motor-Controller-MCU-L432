@@ -18,11 +18,4 @@
 PUBLIC void InitInternalCommsTask(void);
 PRIVATE void InternalCommsTask(void *argument);
 
-/**
- * Send percentage of torque.
- * 1% = 1 in decimal
- * 50% = 50 in decimal
- */
-PRIVATE result_t sendThrottlePercentage(uint8_t percentage);
-
 #endif /* TASKS_INTERNALCOMMSTASK_H_ */

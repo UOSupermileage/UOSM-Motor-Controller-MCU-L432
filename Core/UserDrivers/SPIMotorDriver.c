@@ -283,6 +283,8 @@ PUBLIC uint32_t periodicJob(uint32_t actualSystick) {
 
 		lastSystick = actualSystick;
 	}
+
+	return 0;
 }
 
 PUBLIC uint32_t enableDriver(EnableState enabled) {
@@ -291,5 +293,5 @@ PUBLIC uint32_t enableDriver(EnableState enabled) {
 }
 
 PUBLIC uint32_t deInitMotor() {
-	enableDriver(Disabled);
+	return enableDriver(Disabled);
 }

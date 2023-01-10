@@ -17,8 +17,8 @@
 
 typedef enum
 {
-	FAIL,
-	OK
+	RESULT_FAIL,
+	RESULT_OK
 } result_t;
 
 typedef uint16_t length_t;

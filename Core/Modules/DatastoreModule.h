@@ -16,6 +16,7 @@ typedef enum MotorStatusCode {
 } MotorStatusCode;
 
 typedef struct {
+		int32_t throttle; // Percentage value. Ranges from 0 to 1000. 1 = 0.1%. Thus 0% to 100%.
 		int32_t targetVelocity;
 } MotorDatastoreConfigTypeDef;
 
@@ -31,14 +32,11 @@ typedef union {
 
 // ===== Motor Config Getters and Setters =====
 
-PUBLIC uint32_t datastoreGetTargetTorque();
+PUBLIC uint32_t datastoreGetThrottlePercentage();
+PUBLIC void datastoreSetThrottlePercentage(uint32_t throttle);
 
-PUBLIC void datastoreSetTargetTorque(uint32_t torque);
-
-PUBLIC void datastoreSetTargetTorquePercentage(uint8_t percentage);
-
-PUBLIC void datastoreSetTargetVelocity(int32_t velocity);
 PUBLIC int32_t datastoreGetTargetVelocity();
+PRIVATE void datastoreSetTargetVelocity(int32_t velocity);
 
 // ===== Motor Status Getters and Setters =====
 

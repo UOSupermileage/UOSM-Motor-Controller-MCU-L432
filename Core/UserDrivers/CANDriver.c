@@ -2,7 +2,8 @@
  * CANDriver.c
  *
  *  Created on: Aug 6, 2022
- *      Author: mingy
+ *      Forked from https://github.com/eziya/STM32_SPI_MCP2515
+ *      Modified by: Mingye Chen
  */
 #include "CANDriver.h"
 #include "ApplicationTypes.h"
@@ -20,7 +21,7 @@ id_reg_t idReg;
 
 /** CAN SPI APIs */
 
-/* Sleep 모드 진입 */
+/* Sleep */
 void CANSPI_Sleep(void)
 {
   /* Clear CAN bus wakeup interrupt */
@@ -32,7 +33,7 @@ void CANSPI_Sleep(void)
   MCP2515_SetSleepMode();
 }
 
-/* CAN 통신 초기화  */
+/* CAN */
 bool CANSPI_Initialize(void)
 {
   RXF0 RXF0reg;
