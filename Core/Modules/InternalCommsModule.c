@@ -127,6 +127,8 @@ PUBLIC uint8_t IComms_HasRxMessage()
 // Alternatively this can be put into an interrupt
 PUBLIC void IComms_Update()
 {
+	DebugPrint("Checking for CAN messages...");
+
 	while (ICOMMS_DRIVER_MESSAGE_AVAILABLE() != 0)
 	{
 		iCommsMessage_t rxMsg;

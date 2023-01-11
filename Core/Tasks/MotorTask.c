@@ -50,26 +50,28 @@ PRIVATE void MotorTask(void *argument)
 		DebugPrint("Failed to initialize motor!");
 	}
 
-	uint32_t counter = 0;
+//	uint32_t counter = 0;
 
 	for(;;)
 	{
 
-		counter++;
+//		counter++;
+//
+//		if (counter <= 15) {
+////			datastoreSetTargetTorquePercentage(5);
+//			datastoreSetTargetVelocity(50000000);
+//		}else if (counter <= 30) {
+////			datastoreSetTargetTorquePercentage(80);
+//			datastoreSetTargetVelocity(0);
+//			counter = 0;
+//		} else if (counter <= 45) {
+////			datastoreSetTargetTorquePercentage(50);
+//		} else if (counter <= 60) {
+////			datastoreSetTargetTorquePercentage(0);
+//			counter = 0;
+//		}
 
-		if (counter <= 15) {
-//			datastoreSetTargetTorquePercentage(5);
-			datastoreSetTargetVelocity(50000000);
-		}else if (counter <= 30) {
-//			datastoreSetTargetTorquePercentage(80);
-			datastoreSetTargetVelocity(0);
-			counter = 0;
-		} else if (counter <= 45) {
-//			datastoreSetTargetTorquePercentage(50);
-		} else if (counter <= 60) {
-//			datastoreSetTargetTorquePercentage(0);
-			counter = 0;
-		}
+//		 datastoreSetThrottlePercentage(500);
 
 		cycleTick += TIMER_MOTOR_TASK;
 		osDelayUntil(cycleTick);
@@ -77,7 +79,7 @@ PRIVATE void MotorTask(void *argument)
 		if (motorInitialized) {
 			//		writeTargetTorque(datastoreGetTargetTorque());
 			DebugPrint("Target Velocity [%x]", datastoreGetTargetVelocity());
-			rotate(datastoreGetTargetVelocity());
+			 rotate(datastoreGetTargetVelocity());
 			periodicJob(cycleTick);
 		} else {
 			// If motor failed to initialize, wait and then reinit

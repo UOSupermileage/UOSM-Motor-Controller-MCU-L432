@@ -69,7 +69,7 @@ typedef enum Enable {
 	#define MOTOR_CONFIG_VELOCITY_SELECTION (uint32_t)0x0000000C
 
 	// Limits
-	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t)0x000003E8
+	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t)0x0BB8
 
 	// PI settings
 	#define MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I (uint32_t)0x01000100

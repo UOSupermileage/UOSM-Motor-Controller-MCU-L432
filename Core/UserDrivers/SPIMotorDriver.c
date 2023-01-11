@@ -162,6 +162,9 @@ PUBLIC uint32_t initMotor() {
 	// Switch to torque mode
 //	tmc4671_writeInt(TMC4671_CS, TMC4671_MODE_RAMP_MODE_MOTION, MOTOR_CONFIG_MODE_RAMP_MODE_MOTION);
 
+	// Stop motor
+	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_TARGET, 0x0000);
+
 	// ===== Init Ramp Generator =====
 	tmc_linearRamp_init(&rampGenerator);
 	actualMotionMode = TMC4671_MOTION_MODE_STOPPED;

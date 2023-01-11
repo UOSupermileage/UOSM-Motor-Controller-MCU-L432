@@ -9,6 +9,13 @@
 #include "ApplicationTypes.h"
 #include "MCP2515.h"
 #include "SerialDebugDriver.h"
+
+
+#include "SerialDebugDriver.h"
+
+// Function alias - replace with the driver api
+#define DebugPrint(...) SerialPrintln(__VA_ARGS__)
+
 /** Local Function Prototypes */
 static uint32_t convertReg2ExtendedCANid(uint8_t tempRXBn_EIDH, uint8_t tempRXBn_EIDL, uint8_t tempRXBn_SIDH, uint8_t tempRXBn_SIDL);
 static uint32_t convertReg2StandardCANid(uint8_t tempRXBn_SIDH, uint8_t tempRXBn_SIDL) ;
@@ -260,6 +267,8 @@ uint8_t CANSPI_Receive(iCommsMessage_t * rxMsg)
 /* 수신 버퍼에 메시지가 있는지 체크 */
 uint8_t CANSPI_messagesInBuffer(void)
 {
+	DebugPrint("Check for CAN");
+
   uint8_t messageCount = 0;
 
   ctrlStatus.ctrl_status = MCP2515_ReadStatus();
@@ -403,4 +412,17 @@ PUBLIC uint32_t readMsg(iCommsMessage_t *msg) {
 	}
 
 	return value;
+}
+
+PUBLIC iCommsMessage_t createMsg(uint16_t msgId, uint32_t data) {
+	iCommsMessage_t msg;
+	msg.standardMessageID = msgId;
+	msg.dataLength = 4;
+
+	msg.data[0] = (data >> 24) & 0xFF;
+	msg.data[1] = (data >> 16) & 0xFF;
+	msg.data[2] = (data >> 8) & 0xFF;
+	msg.data[3] = (data >> 0) & 0xFF;
+
+	return msg;
 }

@@ -12,6 +12,8 @@
 #include "MotorModule.h"
 #include "SerialDebugDriver.h"
 
+#define DebugPrint(...) SerialPrintln(__VA_ARGS__)
+
 // ===== Motor Data =====
 
 PRIVATE MotorDatastoreConfigTypeDef motorDatastoreConfig = {
@@ -36,6 +38,8 @@ PUBLIC void datastoreSetThrottlePercentage(uint32_t percentage) {
 		motorDatastoreConfig.throttle = percentage;
 		motorDatastoreConfig.targetVelocity = (MAX_VELOCITY - MIN_VELOCITY) / 1000 * percentage + MIN_VELOCITY;
 	}
+
+	DebugPrint("Value: [%d]", motorDatastoreConfig.targetVelocity);
 }
 
 

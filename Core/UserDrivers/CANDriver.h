@@ -41,5 +41,6 @@ PUBLIC uint8_t CANSPI_isBussOff(void);
 PUBLIC uint8_t CANSPI_isRxErrorPassive(void);
 PUBLIC uint8_t CANSPI_isTxErrorPassive(void);
 PUBLIC uint32_t readMsg(iCommsMessage_t *msg);
+PUBLIC iCommsMessage_t createMsg(uint16_t msgId, uint32_t data);
 
 #endif /* USERDRIVERS_CANDRIVER_H_ */

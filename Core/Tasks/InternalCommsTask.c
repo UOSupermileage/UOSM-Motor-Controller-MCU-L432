@@ -10,7 +10,6 @@
 #include "InternalCommsModule.h"
 #include "SerialDebugDriver.h"
 #include "DatastoreModule.h"
-#include "CANDriver.h"
 
 
 // Function alias - replace with the driver api
@@ -42,10 +41,38 @@ PRIVATE void InternalCommsTask(void *argument)
 	DebugPrint("icomms setup");
 	IComms_Init();
 
+	uint32_t counter = 0;
+
 	for(;;)
 	{
 		cycleTick += TIMER_INTERNAL_COMMS_TASK;
 		osDelayUntil(cycleTick);
+
+//		counter++;
+//
+//		if (counter <= 100) {
+//			DebugPrint("Send throttle!");
+//			// Set throttle 20%
+//			iCommsMessage_t txMsg = createMsg(CAN_THROTTLE, 200);
+//			result_t r = IComms_Transmit(&txMsg);
+//
+//			if (r == RESULT_OK) {
+//				DebugPrint("OK");
+//			} else {
+//				DebugPrint("Failed to send");
+//			}
+//		} else if (counter <= 200) {
+//			// Set throttle to 80%
+//			iCommsMessage_t txMsg = createMsg(CAN_THROTTLE, 800);
+//			IComms_Transmit(&txMsg);
+//		} else {
+//			counter = 0;
+//
+//			// Set throttle to 0%
+//			iCommsMessage_t txMsg = createMsg(CAN_THROTTLE, 0);
+//			IComms_Transmit(&txMsg);
+//		}
+
 
 		IComms_Update();
 		while (IComms_HasRxMessage()) {
