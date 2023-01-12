@@ -71,7 +71,7 @@ PRIVATE void MotorTask(void *argument)
 //			counter = 0;
 //		}
 
-//		 datastoreSetThrottlePercentage(500);
+		datastoreSetThrottlePercentage(500);
 
 		cycleTick += TIMER_MOTOR_TASK;
 		osDelayUntil(cycleTick);
@@ -79,7 +79,7 @@ PRIVATE void MotorTask(void *argument)
 		if (motorInitialized) {
 			//		writeTargetTorque(datastoreGetTargetTorque());
 			DebugPrint("Target Velocity [%x]", datastoreGetTargetVelocity());
-			 rotate(datastoreGetTargetVelocity());
+			rotate(datastoreGetTargetVelocity());
 			periodicJob(cycleTick);
 		} else {
 			// If motor failed to initialize, wait and then reinit

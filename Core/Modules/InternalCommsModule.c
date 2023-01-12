@@ -127,8 +127,6 @@ PUBLIC uint8_t IComms_HasRxMessage()
 // Alternatively this can be put into an interrupt
 PUBLIC void IComms_Update()
 {
-	DebugPrint("Checking for CAN messages...");
-
 	while (ICOMMS_DRIVER_MESSAGE_AVAILABLE() != 0)
 	{
 		iCommsMessage_t rxMsg;
@@ -158,6 +156,7 @@ PUBLIC void IComms_Update()
 
 PRIVATE void ICommsQueue_init( ICommsQueue_t * q )
 {
+	DebugPrint("Init Queue");
 	q->head = 0;
 	q->count = 0;
 	q->tail = 0;
@@ -165,6 +164,8 @@ PRIVATE void ICommsQueue_init( ICommsQueue_t * q )
 
 PRIVATE void ICommsQueue_enqueue( ICommsQueue_t * q, iCommsMessage_t value )
 {
+	DebugPrint("Enqueue new message");
+
 	if(q->count < QUEUE_MAX)
 	{
 		// copy message struct into the queue

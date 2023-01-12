@@ -267,8 +267,6 @@ uint8_t CANSPI_Receive(iCommsMessage_t * rxMsg)
 /* 수신 버퍼에 메시지가 있는지 체크 */
 uint8_t CANSPI_messagesInBuffer(void)
 {
-	DebugPrint("Check for CAN");
-
   uint8_t messageCount = 0;
 
   ctrlStatus.ctrl_status = MCP2515_ReadStatus();
