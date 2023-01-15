@@ -65,6 +65,10 @@ Give each task a different priority level. FreeRTOS can get confused if tasks sh
     <td>PA10 (D0)</td>
     <td>Connected to motor board software fault light LED</td>
 </tr>
+    <tr>
+    <td>PA12 (D2)</td>
+    <td>Connected to hall sensor signal pin (interrupt)</td>
+</tr>
 </table>
 
 ```mermaid
