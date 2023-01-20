@@ -73,6 +73,10 @@ Give each task a different priority level. FreeRTOS can get confused if tasks sh
     <td>PA11 (D10)</td>
     <td>Connected to CAN transceiver silent mode pin (drive high to disable CAN)</td>
 </tr>
+    <tr>
+    <td>PA8 (D9)</td>
+    <td>Connected to TMC4671 PWM_I pin </td>
+</tr>
 </table>
 
 ```mermaid
