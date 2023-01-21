@@ -43,6 +43,8 @@ void CANSPI_Sleep(void)
 /* CAN */
 bool CANSPI_Initialize(void)
 {
+	DebugPrint("CanSPI Initialize");
+
   RXF0 RXF0reg;
   RXF1 RXF1reg;
   RXF2 RXF2reg;
@@ -402,11 +404,11 @@ static void convertCANid2Reg(uint32_t tempPassedInID, uint8_t canIdType, id_reg_
 }
 
 PUBLIC uint32_t readMsg(iCommsMessage_t *msg) {
-	int32_t value = msg->data[0];
+	int32_t value = msg->data[msg->dataLength - 1];
 
-	for (int i = 1; i < msg->dataLength; i++) {
+	for (int i = msg->dataLength - 1; i > 0; i--) {
 		value <<= 8;
-		value |= msg->data[i];
+		value |= msg->data[i -1];
 	}
 
 	return value;

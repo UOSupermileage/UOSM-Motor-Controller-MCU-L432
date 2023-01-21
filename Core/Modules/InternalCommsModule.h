@@ -8,7 +8,7 @@
 #ifndef MODULES_INTERNALCOMMSMODULE_H_
 #define MODULES_INTERNALCOMMSMODULE_H_
 
-#include "CANDriver.h"
+
 #include "ApplicationTypes.h"
 
 PUBLIC result_t IComms_Init();

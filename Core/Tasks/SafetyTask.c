@@ -22,7 +22,7 @@
 
 #define STACK_SIZE 128*4
 #define SAFETY_TASK_PRIORITY (osPriority_t) osPriorityHigh
-#define TIMER_SAFETY_TASK 1000UL
+#define TIMER_SAFETY_TASK 10000UL
 
 PUBLIC void InitSafetyTask(void);
 PRIVATE void SafetyTask(void *argument);

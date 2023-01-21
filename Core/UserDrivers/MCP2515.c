@@ -1,5 +1,10 @@
 #include "MCP2515.h"
 
+#include "SerialDebugDriver.h"
+
+// Function alias - replace with the driver api
+#define DebugPrint(...) SerialPrintln(__VA_ARGS__)
+
 /* Pin 설정에 맞게 수정필요. Modify below items for your SPI configurations */
 extern SPI_HandleTypeDef        hspi1;
 #define SPI_CAN                 &hspi1
@@ -17,6 +22,8 @@ static void SPI_RxBuffer(uint8_t *buffer, uint8_t length);
 bool MCP2515_Initialize(void)
 {
   MCP2515_CS_HIGH();
+
+  DebugPrint("Initialized MCP2515");
 
   uint8_t loop = 10;
 

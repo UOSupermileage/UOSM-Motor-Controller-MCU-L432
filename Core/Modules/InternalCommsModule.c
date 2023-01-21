@@ -7,9 +7,10 @@
  *  This is the module for processing information from the cars intercommunication system
  *  Can only import interface files
  */
-
+#include "CANDriver.h"
 #include "InternalCommsModule.h"
 #include "SerialDebugDriver.h"
+#include <string.h>
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
 
 
@@ -78,27 +79,32 @@
  ************************************************************/
 #define ICOMMS_DRIVER_RECEIVE_MESSAGE(...) CANSPI_Receive(__VA_ARGS__)
 
-// Circular Queue
-#define QUEUE_MAX 32
-typedef struct ICommsQueue_t
+typedef struct HeapNode
 {
-	uint32_t head;
-	uint32_t tail;
-	uint32_t count;
-	iCommsMessage_t data[QUEUE_MAX];
-}ICommsQueue_t;
+    uint16_t key;
+    iCommsMessage_t value;
+} HeapNode_t;
 
-ICommsQueue_t ICommsRxQueue;
+#define MAX_HEAP_SIZE 32
+typedef struct heap
+{
+    uint8_t heapsize;
+    HeapNode_t heapArray[MAX_HEAP_SIZE];
+} Heap_t;
 
-PRIVATE void ICommsQueue_init( ICommsQueue_t * q );
-PRIVATE void ICommsQueue_enqueue( ICommsQueue_t * q, iCommsMessage_t value );
-PRIVATE iCommsMessage_t ICommsQueue_dequeue( ICommsQueue_t * q);
+PUBLIC void Heap_InitHeap(Heap_t * h);
+PUBLIC void Heap_Add(Heap_t * h, HeapNode_t n);
+PUBLIC HeapNode_t Heap_RemoveMin(Heap_t* h);
+PRIVATE void HeapifyMin(Heap_t* h, uint8_t parent);
+PRIVATE void Swap(HeapNode_t* a, HeapNode_t* b);
+uint8_t Heap_GetHeapSize(Heap_t * h);
 
+Heap_t canRxHeap;
 
 PUBLIC result_t IComms_Init()
 {
 	result_t ret = ICOMMS_DRIVER_INITIALIZE();
-	ICommsQueue_init(&ICommsRxQueue);
+	Heap_InitHeap(&canRxHeap);
 	return ret;
 }
 
@@ -110,16 +116,17 @@ PUBLIC result_t IComms_Transmit(iCommsMessage_t * txMsg)
 PUBLIC result_t IComms_ReceiveNextMessage(iCommsMessage_t * rxMsg)
 {
 	// if nothing to dequeue return fail
-	if(ICommsRxQueue.count == 0) return RESULT_FAIL;
+	if(Heap_GetHeapSize(&canRxHeap) == 0) return RESULT_FAIL;
 	// dequeue return ok
-	*rxMsg = ICommsQueue_dequeue(&ICommsRxQueue);
+	HeapNode_t n = Heap_RemoveMin(&canRxHeap);
+	memcpy(rxMsg, &n.value, sizeof(iCommsMessage_t));
 	return RESULT_OK;
 }
 
 
 PUBLIC uint8_t IComms_HasRxMessage()
 {
-	if(ICommsRxQueue.count != 0) return 1;
+	if(Heap_GetHeapSize(&canRxHeap) != 0) return 1;
 	return 0;
 }
 
@@ -138,7 +145,8 @@ PUBLIC void IComms_Update()
 		else{
 			DebugPrint("#ICM: MESSAGE RECIEVED, ADDING TO QUEUE");
 			// enqueue
-			ICommsQueue_enqueue(&ICommsRxQueue, rxMsg);
+			HeapNode_t n = (HeapNode_t){rxMsg.standardMessageID, rxMsg};
+			Heap_Add(&canRxHeap, n);
 			DebugPrint("#ICM: Standard ID: %d", rxMsg.standardMessageID);
 			DebugPrint("#ICM: DLC: %d", rxMsg.dataLength);
 			for(uint8_t i=0; i<rxMsg.dataLength; i++) DebugPrint("#ICM: Data[%d]: %d", i, rxMsg.data[i]);
@@ -148,54 +156,80 @@ PUBLIC void IComms_Update()
 	}
 }
 
+
+
 /*********************************************************************************
  *
- * 		Circular queue for icomms input
+ * 		Heap for Priority Queue
  *
  **********************************************************************************/
-
-PRIVATE void ICommsQueue_init( ICommsQueue_t * q )
+void Heap_InitHeap(Heap_t* h)
 {
-	DebugPrint("Init Queue");
-	q->head = 0;
-	q->count = 0;
-	q->tail = 0;
+    h->heapsize = 0;
 }
 
-PRIVATE void ICommsQueue_enqueue( ICommsQueue_t * q, iCommsMessage_t value )
+void Swap(HeapNode_t * a, HeapNode_t * b)
 {
-	DebugPrint("Enqueue new message");
+    HeapNode_t temp;
+    memcpy(&temp, b, sizeof(HeapNode_t));
+    memcpy(b, a, sizeof(HeapNode_t));
+    memcpy(a, &temp, sizeof(HeapNode_t));
 
-	if(q->count < QUEUE_MAX)
-	{
-		// copy message struct into the queue
-		q->data[q->tail].standardMessageID = value.standardMessageID;
-		q->data[q->tail].dataLength = value.dataLength;
-
-		for(uint8_t i; i < value.dataLength; i++)
-			q->data[q->tail].data[i] = value.data[i];
-
-		// increment count
-		q->count ++;
-		q->tail = (q->tail + 1) % QUEUE_MAX; // circular
-	}
 }
 
-PRIVATE iCommsMessage_t ICommsQueue_dequeue( ICommsQueue_t * q)
+void HeapifyMin(Heap_t* h, uint8_t parent)
 {
-	if(q->count > 0)
-	{
-		iCommsMessage_t value;
+    if (h->heapsize == 1) return;
+    else
+    {
+        int smallest = parent;
+        int l = 2 * parent + 1;
+        int r = 2 * parent + 2;
+        if (l < h->heapsize && h->heapArray[l].key < h->heapArray[smallest].key)
+            smallest = l;
+        if (r < h->heapsize && h->heapArray[r].key < h->heapArray[smallest].key)
+            smallest = r;
+        if (smallest != parent)
+        {
+            Swap(&(h->heapArray[parent]), &(h->heapArray[smallest]));
+            HeapifyMin(h, smallest);
+        }
+    }
+}
+void Heap_Add(Heap_t* h, HeapNode_t n)
+{
+    if (h->heapsize == MAX_HEAP_SIZE) return;
+    if (h->heapsize == 0)
+    {
+        memcpy(&(h->heapArray[0]), &n, sizeof(HeapNode_t));
+        h->heapsize += 1;
+    }
+    else
+    {
+        memcpy(&(h->heapArray[h->heapsize]), &n, sizeof(HeapNode_t));
+        h->heapsize += 1;
+        for (int i = h->heapsize / 2 - 1; i >= 0; i--)
+        {
+            HeapifyMin(h, i);
+        }
+    }
+}
+HeapNode_t Heap_RemoveMin(Heap_t* h)
+{
+    if (h->heapsize == 0) return (HeapNode_t) { 0xFFFF, (iCommsMessage_t){0xFFFF,0xFF,NULL}};
+    HeapNode_t min;
+    memcpy(&min, &(h->heapArray[0]), sizeof(HeapNode_t));
 
-		value = q->data[q->head];
-
-
-		q->count --;
-		q->head = (q->head + 1) % QUEUE_MAX;
-		return value;
-	}
-	DebugPrint("ICM: Error dequeuing");
-	return (iCommsMessage_t){0xFFFF,0,0};// garbage value, should never be returned
+    Swap(&(h->heapArray[0]), &(h->heapArray[h->heapsize - 1]));
+    h->heapsize -= 1;
+    for (int i = h->heapsize / 2 - 1; i >= 0; i--)
+    {
+        HeapifyMin(h, i);
+    }
+    return min;
 }
 
-
+uint8_t Heap_GetHeapSize(Heap_t * h)
+{
+	return h->heapsize;
+}

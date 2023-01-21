@@ -18,7 +18,7 @@
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
 
 #define STACK_SIZE 128*4
-#define MOTOR_TASK_PRIORITY (osPriority_t) osPriorityHigh1
+#define MOTOR_TASK_PRIORITY (osPriority_t) osPriorityRealtime1
 #define TIMER_MOTOR_TASK 1000UL
 #define TIMER_MOTOR_REINIT_DELAY 5000UL
 
@@ -71,18 +71,25 @@ PRIVATE void MotorTask(void *argument)
 //			counter = 0;
 //		}
 
-		datastoreSetThrottlePercentage(500);
-
 		cycleTick += TIMER_MOTOR_TASK;
 		osDelayUntil(cycleTick);
 
 		if (motorInitialized) {
-			//		writeTargetTorque(datastoreGetTargetTorque());
+//					writeTargetTorque(datastoreGetTargetTorque());
+			DebugPrint("Tick MotorTask");
+
+//			datastoreSetThrottlePercentage(500);
+
+
 			DebugPrint("Target Velocity [%x]", datastoreGetTargetVelocity());
 			rotate(datastoreGetTargetVelocity());
 			periodicJob(cycleTick);
 		} else {
+			datastoreSetSPIError(Set);
+			DebugPrint("Failed to initialize motor!");
+
 			// If motor failed to initialize, wait and then reinit
+			DebugPrint("#MOT Sleep and Reinit motor.");
 			osDelay(TIMER_MOTOR_REINIT_DELAY);
 			motorInitialized = initMotor();
 		}
