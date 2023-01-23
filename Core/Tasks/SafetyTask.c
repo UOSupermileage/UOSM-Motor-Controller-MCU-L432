@@ -8,10 +8,10 @@
  *  Can only import interface files
  */
 
-#include <DataAggregationModule.h>
+#include "DataAggregationModule.h"
 #include "SafetyTask.h"
 
-#include <stdint.h>
+#include "stdint.h"
 
 #include "SerialDebugDriver.h"
 
@@ -53,7 +53,7 @@ PRIVATE void SafetyTask(void *argument)
 		osDelayUntil(cycleTick);
 		DebugPrint("%s Safety Error [%d],  SPI Error [%d], iComms Error [%d]", SFT_TAG, SystemGetSafetyError(), SystemGetSPIError(), SystemGetiCommsError());
 
-		if (validateSPI()) {
+		if (MotorValidateSPI()) {
 			SystemSetSPIError(Clear);
 		} else {
 			SystemSetSPIError(Set);

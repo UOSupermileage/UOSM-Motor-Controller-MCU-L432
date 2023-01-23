@@ -35,4 +35,6 @@ typedef struct
 
 extern const ICommsMessageInfo CANMessageLookUpTable[NUMBER_CAN_MESSAGE_IDS];
 
+PUBLIC const ICommsMessageInfo* CANMessageLookUpGetInfo(ICommsMessageLookUpIndex id);
+
 #endif /* MODULES_CANMESSAGELOOKUPMODULE_H_ */

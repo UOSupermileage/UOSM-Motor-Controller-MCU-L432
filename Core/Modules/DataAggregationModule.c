@@ -34,7 +34,7 @@ PUBLIC void SystemSetThrottlePercentage(percentage_t percentage) {
 		motorConfig.targetVelocity = (MAX_VELOCITY - MIN_VELOCITY) / MAX_PERCENTAGE * percentage + MIN_VELOCITY;
 	}
 
-	DebugPrint("Value: [%d]", motorConfig.targetVelocity);
+	// DebugPrint("Value: [%d]", motorConfig.targetVelocity);
 }
 
 

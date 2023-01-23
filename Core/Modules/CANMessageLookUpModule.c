@@ -33,7 +33,7 @@ const ICommsMessageInfo CANMessageLookUpTable[NUMBER_CAN_MESSAGE_IDS] =
 void ThrottleDataCallback(iCommsMessage_t msg)
 {
 	DebugPrint("ThrottleDataCallback! %d", msg.standardMessageID);
-	DebugPrint("Throttle Raw: [%x][%x] length: [%d]", msg.data[1], msg.data[0], msg.dataLength);
+	// DebugPrint("Throttle Raw: [%x][%x] length: [%d]", msg.data[1], msg.data[0], msg.dataLength);
 	uint32_t throttle = readMsg(&msg);
 	DebugPrint("CAN Throttle percentage received: %d", throttle);
 	SystemSetThrottlePercentage(throttle);
@@ -45,4 +45,8 @@ void SpeedDataCallback(iCommsMessage_t msg)
 void MotorTemperatureCallback(iCommsMessage_t msg)
 {
 	DebugPrint("MotorTemperatureCallback! %d", msg.standardMessageID);
+}
+
+PUBLIC const ICommsMessageInfo* CANMessageLookUpGetInfo(ICommsMessageLookUpIndex id) {
+	return &CANMessageLookUpTable[id];
 }

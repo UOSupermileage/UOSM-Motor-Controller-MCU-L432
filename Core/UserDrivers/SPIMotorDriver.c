@@ -10,6 +10,12 @@
 
 #include "SerialDebugDriver.h"
 
+// TMC headers
+#include "tmc/ic/TMC4671/TMC4671.h"
+#include "tmc/ic/TMC6200/TMC6200.h"
+#include "tmc/ic/TMC6200/TMC6200_Register.h"
+#include "tmc/ramp/LinearRamp.h"
+
 // Function alias - replace with the driver api
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
 
@@ -33,7 +39,7 @@ uint8_t actualMotionMode;
 uint8_t tmc4671_readwriteByte(const uint8_t motor, uint8_t data, uint8_t lastTransfer)
 {
 	// Set CS to low to signal start of data transfer
-	setCS(motor, GPIO_PIN_RESET);
+	MotorSetCS(motor, GPIO_PIN_RESET);
 
 	HAL_StatusTypeDef status;
 
@@ -64,7 +70,7 @@ uint8_t tmc4671_readwriteByte(const uint8_t motor, uint8_t data, uint8_t lastTra
 
 	// If end of data transfer, set CS to high
 	if (lastTransfer) {
-		setCS(motor, GPIO_PIN_SET);
+		MotorSetCS(motor, GPIO_PIN_SET);
 	}
 
 	return *rx_data;
@@ -77,7 +83,7 @@ uint8_t tmc6200_readwriteByte(uint8_t motor, uint8_t data, uint8_t lastTransfer)
 
 // <= SPI wrapper
 
-void setCS(uint8_t cs, GPIO_PinState state) {
+void MotorSetCS(uint8_t cs, GPIO_PinState state) {
 	switch (cs) {
 		case TMC4671_CS:
 			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, state);
@@ -88,7 +94,7 @@ void setCS(uint8_t cs, GPIO_PinState state) {
 	}
 }
 
-PUBLIC uint32_t initMotor() {
+PUBLIC uint32_t MotorInit() {
 
 	motorDriverConfig.initWaitTime = 1000;
 	motorDriverConfig.startVoltage             	= 6000;
@@ -113,8 +119,8 @@ PUBLIC uint32_t initMotor() {
 
 
 	// Set all chip select lines to high
-	setCS(TMC4671_CS, GPIO_PIN_SET);
-	setCS(TMC6200_CS, GPIO_PIN_SET);
+	MotorSetCS(TMC4671_CS, GPIO_PIN_SET);
+	MotorSetCS(TMC6200_CS, GPIO_PIN_SET);
 
 
 	// Motor type &  PWM configuration
@@ -211,29 +217,24 @@ PUBLIC uint32_t initMotor() {
 	return true;
 }
 
-void writeTargetTorque(uint32_t torque) {
-	DebugPrint("Writing target torque: %x [%i]", torque, torque);
-	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_TORQUE_FLUX_TARGET, torque);
-}
-
 /**
  * Basic function for validation connection to the TMC4671
  */
-bool validateSPI() {
+PUBLIC uint32_t MotorValidateSPI() {
 	return tmc4671_readInt(TMC4671_CS, TMC4671_MOTOR_TYPE_N_POLE_PAIRS) == MOTOR_CONFIG_N_POLE_PAIRS && tmc6200_readInt(TMC6200_CS, TMC6200_GCONF) == MOTOR_CONFIG_DRIVER_GENERAL_CONFIG;
 }
 
 // ===== Motor interaction =====
 
 
-PUBLIC uint32_t rotate(int32_t velocity) {
+PUBLIC uint32_t MotorRotate(int32_t velocity) {
 	tmc4671_switchToMotionMode(TMC4671_CS, TMC4671_MOTION_MODE_VELOCITY);
 	actualMotionMode = TMC4671_MOTION_MODE_VELOCITY;
 	rampGenerator.targetVelocity = velocity;
 	return 0;
 }
 
-PUBLIC uint32_t periodicJob(uint32_t actualSystick) {
+PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick) {
 	// Do encoder init
 	tmc4671_periodicJob(TMC4671_CS, actualSystick, motorDriverConfig.initMode, &motorDriverConfig.initState, &motorDriverConfig.initWaitTime, &motorDriverConfig.actualInitWaitTime, &motorDriverConfig.startVoltage, &motorDriverConfig.hall_phi_e_old, &motorDriverConfig.hall_phi_e_new, &motorDriverConfig.hall_actual_coarse_offset, &motorDriverConfig.last_Phi_E_Selection, &motorDriverConfig.last_UQ_UD_EXT, &motorDriverConfig.last_PHI_E_EXT);
 
@@ -287,11 +288,15 @@ PUBLIC uint32_t periodicJob(uint32_t actualSystick) {
 	return 0;
 }
 
-PUBLIC uint32_t enableDriver(Enable_t enabled) {
+PUBLIC velocity_t MotorGetActualVelocity() {
+	return tmc4671_getActualVelocity(TMC4671_CS);
+}
+
+PUBLIC uint32_t MotorEnableDriver(Enable_t enabled) {
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, enabled == ENABLED ? GPIO_PIN_SET : GPIO_PIN_RESET);
 	return 0;
 }
 
-PUBLIC uint32_t deInitMotor() {
-	return enableDriver(DISABLED);
+PUBLIC uint32_t MotorDeInit() {
+	return MotorEnableDriver(DISABLED);
 }

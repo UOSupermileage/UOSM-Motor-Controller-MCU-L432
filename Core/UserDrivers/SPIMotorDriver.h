@@ -9,17 +9,10 @@
 #define USERDRIVERS_SPIMOTORDRIVER_H_
 
 // STM headers
-#include "cmsis_os.h"
 #include "stm32l4xx_hal.h"
 
 // Our headers
 #include "ApplicationTypes.h"
-
-// TMC headers
-#include "tmc/ic/TMC4671/TMC4671.h"
-#include "tmc/ic/TMC6200/TMC6200.h"
-#include "tmc/ic/TMC6200/TMC6200_Register.h"
-#include "tmc/ramp/LinearRamp.h"
 
 #define TMC4671_CS 0
 #define TMC6200_CS 1
@@ -139,31 +132,27 @@ PUBLIC uint8_t tmc4671_readwriteByte(uint8_t motor, uint8_t data, uint8_t lastTr
 /**
  * Set the Chip Select (CS) pin for a particular slave to state
  */
-PRIVATE void setCS(uint8_t cs, GPIO_PinState state);
+PRIVATE void MotorSetCS(uint8_t cs, GPIO_PinState state);
 
-/**
- * Set the target torque of the motor.
- */
-PUBLIC void writeTargetTorque(uint32_t torque);
-
-PUBLIC bool validateSPI();
+PUBLIC uint32_t MotorValidateSPI();
 
 // ===== Functions for interacting with motor =====
 /**
  * Rotate the motor
  */
-PUBLIC uint32_t rotate(int32_t velocity);
+PUBLIC uint32_t MotorRotate(int32_t velocity);
 
-PUBLIC uint32_t periodicJob(uint32_t actualSystick);
+PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick);
 
-PUBLIC uint32_t enableDriver(Enable_t enabled);
+PUBLIC uint32_t MotorEnableDriver(Enable_t enabled);
 
+PUBLIC velocity_t MotorGetActualVelocity();
 /**
  * Initialize registers in the TMC4671 and TMC6200. Must be called before motor
  * will function properly. Returns true if motor init was successful.
  */
-PUBLIC uint32_t initMotor();
-PUBLIC uint32_t deInitMotor();
+PUBLIC uint32_t MotorInit();
+PUBLIC uint32_t MotorDeInit();
 
 
 #endif /* USERDRIVERS_SPIMOTORDRIVER_H_ */

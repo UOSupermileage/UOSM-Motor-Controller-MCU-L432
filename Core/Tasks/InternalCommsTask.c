@@ -19,6 +19,8 @@
 #define INTERNAL_COMMS_TASK_PRIORITY (osPriority_t) osPriorityRealtime
 #define TIMER_INTERNAL_COMMS_TASK 100UL
 
+#define SPEED_RATE 16
+
 PUBLIC void InitInternalCommsTask(void);
 PRIVATE void InternalCommsTask(void *argument);
 
@@ -42,11 +44,24 @@ PRIVATE void InternalCommsTask(void *argument)
 	uint32_t cycleTick = osKernelGetTickCount();
 	DebugPrint("%s icomms", ICT_TAG);
 
+	const ICommsMessageInfo* speedInfo = CANMessageLookUpGetInfo(SPEED_DATA_ID);
+	uint8_t speedTxCounter = 0;
+
 	IComms_Init();
 	for(;;)
 	{
 		cycleTick += TIMER_INTERNAL_COMMS_TASK;
 		osDelayUntil(cycleTick);
+
+		speedTxCounter++;
+		if (speedTxCounter == SPEED_RATE) {
+			velocity_t v = MotorGetActualVelocity();
+
+			DebugPrint("%s Sending Speed! RPM: [%d]", ICT_TAG, v);
+			iCommsMessage_t speedTxMsg = IComms_CreatePercentageMessage(speedInfo->messageID, v);
+			IComms_Transmit(&speedTxMsg);
+			speedTxCounter = 0;
+		}
 
 		IComms_Update();
 		while(IComms_HasRxMessage())
@@ -60,7 +75,8 @@ PRIVATE void InternalCommsTask(void *argument)
 			else{
 				DebugPrint("%s Standard ID: %d", ICT_TAG, rxMsg.standardMessageID);
 				DebugPrint("%s DLC: %d", ICT_TAG, rxMsg.dataLength);
-				for(uint8_t i=0; i<rxMsg.dataLength; i++) DebugPrint("%s Data[%d]: %d", ICT_TAG, i, rxMsg.data[i]);
+
+				// for(uint8_t i=0; i<rxMsg.dataLength; i++) DebugPrint("%s Data[%d]: %d", ICT_TAG, i, rxMsg.data[i]);
 
 				uint16_t lookupTableIndex = 0;
 
@@ -69,14 +85,14 @@ PRIVATE void InternalCommsTask(void *argument)
 				// Exit if message found or if end of table reached
 				while(rxMsg.standardMessageID != CANMessageLookUpTable[lookupTableIndex].messageID && lookupTableIndex < NUMBER_CAN_MESSAGE_IDS)
 				{
-					DebugPrint("%s msgId[%x] != [%x]", ICT_TAG, rxMsg.standardMessageID, CANMessageLookUpTable[lookupTableIndex].messageID);
+					// DebugPrint("%s msgId[%x] != [%x]", ICT_TAG, rxMsg.standardMessageID, CANMessageLookUpTable[lookupTableIndex].messageID);
 					lookupTableIndex++;
 				}
 
 				// handle the case where the message is no recognized by the look up table
 				if(lookupTableIndex < NUMBER_CAN_MESSAGE_IDS)
 				{
-					DebugPrint("%s Executing callback", ICT_TAG);
+					// DebugPrint("%s Executing callback", ICT_TAG);
 					CANMessageLookUpTable[lookupTableIndex].canMessageCallback(rxMsg);
 				} else {
 					DebugPrint("%s Unknown message id [%x], index [%d]", ICT_TAG, rxMsg.standardMessageID, lookupTableIndex);

@@ -42,7 +42,7 @@ PRIVATE void MotorTask(void *argument)
 	uint32_t cycleTick = osKernelGetTickCount();
 	DebugPrint("%s Initializing MotorTask", MOT_TAG);
 
-	uint32_t motorInitialized = initMotor();
+	uint32_t motorInitialized = MotorInit();
 
 	if (!motorInitialized) {
 		SystemSetSPIError(Set);
@@ -56,15 +56,15 @@ PRIVATE void MotorTask(void *argument)
 
 		if (motorInitialized) {
 			DebugPrint("%s Target Velocity [%x]", MOT_TAG,  SystemGetTargetVelocity());
-			rotate(SystemGetTargetVelocity());
-			periodicJob(cycleTick);
+			MotorRotate(SystemGetTargetVelocity());
+			MotorPeriodicJob(cycleTick);
 		} else {
 			SystemSetSPIError(Set);
 			DebugPrint("%s Failed to initialize motor!", MOT_TAG);
 
 			// If motor failed to initialize, wait and then reinit
 			osDelay(TIMER_MOTOR_REINIT_DELAY);
-			motorInitialized = initMotor();
+			motorInitialized = MotorInit();
 		}
 
 	}
