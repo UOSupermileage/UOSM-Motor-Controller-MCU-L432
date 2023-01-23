@@ -55,7 +55,7 @@ PRIVATE void MotorTask(void *argument)
 		osDelayUntil(cycleTick);
 
 		if (motorInitialized) {
-			DebugPrint("%s Target Velocity [%x]", SystemGetTargetVelocity(), MOT_TAG);
+			DebugPrint("%s Target Velocity [%x]", MOT_TAG,  SystemGetTargetVelocity());
 			rotate(SystemGetTargetVelocity());
 			periodicJob(cycleTick);
 		} else {
