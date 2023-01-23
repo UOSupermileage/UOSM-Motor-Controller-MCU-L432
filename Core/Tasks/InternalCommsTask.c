@@ -17,10 +17,12 @@
 
 #define STACK_SIZE 128*8
 #define INTERNAL_COMMS_TASK_PRIORITY (osPriority_t) osPriorityRealtime
-#define TIMER_INTERNAL_COMMS_TASK 50UL
+#define TIMER_INTERNAL_COMMS_TASK 100UL
 
 PUBLIC void InitInternalCommsTask(void);
 PRIVATE void InternalCommsTask(void *argument);
+
+const char ICT_TAG[] = "#ICT:";
 
 osThreadId_t InternalCommsTaskHandle;
 const osThreadAttr_t InternalCommsTask_attributes = {
@@ -38,27 +40,13 @@ PUBLIC void InitInternalCommsTask(void)
 PRIVATE void InternalCommsTask(void *argument)
 {
 	uint32_t cycleTick = osKernelGetTickCount();
-	DebugPrint("icomms");
-	//ICommsInit();
-//	uint8_t testTxCounter = 0;
+	DebugPrint("%s icomms", ICT_TAG);
+
 	IComms_Init();
 	for(;;)
 	{
 		cycleTick += TIMER_INTERNAL_COMMS_TASK;
 		osDelayUntil(cycleTick);
-		//DebugPrint("icomms loop");
-//		iCommsMessage_t txMsg;
-//		txMsg.standardMessageID = 0x0001;
-//		txMsg.dataLength = 2;
-//		txMsg.data[0] = 2;
-//		txMsg.data[1] = 2;
-//		testTxCounter++;
-//		if(testTxCounter == 25)
-//		{
-//			DebugPrint("#ICT: Sending!");
-//			IComms_Transmit(&txMsg);
-//			testTxCounter =0;
-//		}
 
 		IComms_Update();
 		while(IComms_HasRxMessage())
@@ -67,12 +55,12 @@ PRIVATE void InternalCommsTask(void *argument)
 			result_t ret = IComms_ReceiveNextMessage(&rxMsg);
 			if(ret == RESULT_FAIL)
 			{
-				DebugPrint("#ICT: Error Retrieving next message");
+				DebugPrint("%s Error Retrieving next message", ICT_TAG);
 			}
 			else{
-				DebugPrint("#ICT: Standard ID: %d", rxMsg.standardMessageID);
-				DebugPrint("#ICT: DLC: %d", rxMsg.dataLength);
-				for(uint8_t i=0; i<rxMsg.dataLength; i++) DebugPrint("#ICT: Data[%d]: %d", i, rxMsg.data[i]);
+				DebugPrint("%s Standard ID: %d", ICT_TAG, rxMsg.standardMessageID);
+				DebugPrint("%s DLC: %d", ICT_TAG, rxMsg.dataLength);
+				for(uint8_t i=0; i<rxMsg.dataLength; i++) DebugPrint("%s Data[%d]: %d", ICT_TAG, i, rxMsg.data[i]);
 
 				uint16_t lookupTableIndex = 0;
 
@@ -81,17 +69,17 @@ PRIVATE void InternalCommsTask(void *argument)
 				// Exit if message found or if end of table reached
 				while(rxMsg.standardMessageID != CANMessageLookUpTable[lookupTableIndex].messageID && lookupTableIndex < NUMBER_CAN_MESSAGE_IDS)
 				{
-					DebugPrint("#ICT: msgId[%x] != [%x]", rxMsg.standardMessageID, CANMessageLookUpTable[lookupTableIndex].messageID);
+					DebugPrint("%s msgId[%x] != [%x]", ICT_TAG, rxMsg.standardMessageID, CANMessageLookUpTable[lookupTableIndex].messageID);
 					lookupTableIndex++;
-
 				}
+
 				// handle the case where the message is no recognized by the look up table
 				if(lookupTableIndex < NUMBER_CAN_MESSAGE_IDS)
 				{
-					DebugPrint("#ICT: Executing callback");
+					DebugPrint("%s Executing callback", ICT_TAG);
 					CANMessageLookUpTable[lookupTableIndex].canMessageCallback(rxMsg);
 				} else {
-					DebugPrint("#ICT: Unknown message id [%x], index [%d]", rxMsg.standardMessageID, lookupTableIndex);
+					DebugPrint("%s Unknown message id [%x], index [%d]", ICT_TAG, rxMsg.standardMessageID, lookupTableIndex);
 				}
 
 

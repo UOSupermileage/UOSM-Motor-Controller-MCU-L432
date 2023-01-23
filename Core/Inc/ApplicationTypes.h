@@ -15,13 +15,24 @@
 #define PUBLIC
 #define PRIVATE
 
+#define MAX_PERCENTAGE 1000
+#define MIN_PERCENTAGE 0
+
 typedef enum
 {
 	RESULT_FAIL,
 	RESULT_OK
 } result_t;
 
+typedef enum {
+	ENABLED,
+	DISABLED
+} Enable_t;
+
+
 typedef uint16_t length_t;
+typedef uint16_t percentage_t;
+typedef uint32_t velocity_t;
 
 
 typedef struct

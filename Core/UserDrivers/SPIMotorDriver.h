@@ -27,13 +27,12 @@
 // Motor 0 = Small Motor
 #define MOTOR 0
 
-typedef enum Enable {
-	Enabled,
-	Disabled
-} EnableState;
-
 // ===== TMC Motor Configuration =====
 #if MOTOR == 0
+
+	#define MAX_VELOCITY 4000
+	#define MIN_VELOCITY 0
+
 	#define TORQUE_FLUX_MAX 	(int32_t)10000
 	#define POSITION_SCALE_MAX  (int32_t)65536
 
@@ -75,6 +74,9 @@ typedef enum Enable {
 	#define MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I (uint32_t)0x01000100
 	#define MOTOR_CONFIG_PID_FLUX_P_FLUX_I (uint32_t)0x01000100
 
+	// NEW
+	#define MOTOR_CONFIG_TORQUE_MESUREMENT_FACTOR (uint32_t) 256
+
 	// ===== Digital hall test drive =====
 	// Set motor controller to velocity mode
 	#define MOTOR_CONFIG_MODE_RAMP_MODE_MOTION (uint32_t)0x00000002
@@ -102,8 +104,7 @@ typedef enum Enable {
 
 #endif
 
-typedef struct MotorConfigTypeDef
-{
+PRIVATE typedef struct {
 	uint16_t  startVoltage;
 	uint16_t  initWaitTime;
 	uint16_t  actualInitWaitTime;
@@ -127,14 +128,13 @@ typedef struct MotorConfigTypeDef
 	uint32_t  last_UQ_UD_EXT;
 	int16_t   last_PHI_E_EXT;
 	uint8_t	  enableVelocityFeedForward;
-} MotorConfigTypeDef;
+} MotorDriverConfig_t;
 
 /**
  * Read Write a single byte over SPI.
  * CS is held low until function is called with lastTransfer == 12.
  */
-PUBLIC uint8_t tmc4671_readwriteByte(uint8_t motor, uint8_t data,
-                                     uint8_t lastTransfer);
+PUBLIC uint8_t tmc4671_readwriteByte(uint8_t motor, uint8_t data, uint8_t lastTransfer);
 
 /**
  * Set the Chip Select (CS) pin for a particular slave to state
@@ -156,7 +156,7 @@ PUBLIC uint32_t rotate(int32_t velocity);
 
 PUBLIC uint32_t periodicJob(uint32_t actualSystick);
 
-PUBLIC uint32_t enableDriver(EnableState enabled);
+PUBLIC uint32_t enableDriver(Enable_t enabled);
 
 /**
  * Initialize registers in the TMC4671 and TMC6200. Must be called before motor

@@ -6,21 +6,20 @@
  */
 
 
+#include "DataAggregationModule.h"
 #include "MotorTask.h"
 
 #include "SerialDebugDriver.h"
-#include "DatastoreModule.h"
-
-#include "tmc/ic/TMC4671/TMC4671.h"
-#include "tmc/ic/TMC6200/TMC6200.h"
 
 // Function alias - replace with the driver api
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
 
 #define STACK_SIZE 128*4
 #define MOTOR_TASK_PRIORITY (osPriority_t) osPriorityRealtime1
-#define TIMER_MOTOR_TASK 1000UL
+#define TIMER_MOTOR_TASK 500UL
 #define TIMER_MOTOR_REINIT_DELAY 5000UL
+
+const char MOT_TAG[] = "#MOT:";
 
 PUBLIC void InitMotorTask(void);
 PRIVATE void MotorTask(void *argument);
@@ -41,55 +40,29 @@ PUBLIC void InitMotorTask(void)
 PRIVATE void MotorTask(void *argument)
 {
 	uint32_t cycleTick = osKernelGetTickCount();
-	DebugPrint("Initializing MotorTask");
+	DebugPrint("%s Initializing MotorTask", MOT_TAG);
 
 	uint32_t motorInitialized = initMotor();
 
 	if (!motorInitialized) {
-		datastoreSetSPIError(Set);
-		DebugPrint("Failed to initialize motor!");
+		SystemSetSPIError(Set);
+		DebugPrint("%s Failed to initialize motor!", MOT_TAG);
 	}
-
-//	uint32_t counter = 0;
 
 	for(;;)
 	{
-
-//		counter++;
-//
-//		if (counter <= 15) {
-////			datastoreSetTargetTorquePercentage(5);
-//			datastoreSetTargetVelocity(50000000);
-//		}else if (counter <= 30) {
-////			datastoreSetTargetTorquePercentage(80);
-//			datastoreSetTargetVelocity(0);
-//			counter = 0;
-//		} else if (counter <= 45) {
-////			datastoreSetTargetTorquePercentage(50);
-//		} else if (counter <= 60) {
-////			datastoreSetTargetTorquePercentage(0);
-//			counter = 0;
-//		}
-
 		cycleTick += TIMER_MOTOR_TASK;
 		osDelayUntil(cycleTick);
 
 		if (motorInitialized) {
-//					writeTargetTorque(datastoreGetTargetTorque());
-			DebugPrint("Tick MotorTask");
-
-//			datastoreSetThrottlePercentage(500);
-
-
-			DebugPrint("Target Velocity [%x]", datastoreGetTargetVelocity());
-			rotate(datastoreGetTargetVelocity());
+			DebugPrint("%s Target Velocity [%x]", SystemGetTargetVelocity(), MOT_TAG);
+			rotate(SystemGetTargetVelocity());
 			periodicJob(cycleTick);
 		} else {
-			datastoreSetSPIError(Set);
-			DebugPrint("Failed to initialize motor!");
+			SystemSetSPIError(Set);
+			DebugPrint("%s Failed to initialize motor!", MOT_TAG);
 
 			// If motor failed to initialize, wait and then reinit
-			DebugPrint("#MOT Sleep and Reinit motor.");
 			osDelay(TIMER_MOTOR_REINIT_DELAY);
 			motorInitialized = initMotor();
 		}

@@ -5,9 +5,8 @@
  *      Author: jeremycote
  */
 
+#include <DataAggregationModule.h>
 #include <SPIMotorDriver.h>
-
-#include "DatastoreModule.h"
 
 #include "SerialDebugDriver.h"
 
@@ -18,7 +17,7 @@ extern SPI_HandleTypeDef hspi1;
 
 const uint32_t timeout = 50;
 
-MotorConfigTypeDef motorConfig;
+MotorDriverConfig_t motorDriverConfig;
 
 // variables for ramp generator support
 TMC_LinearRamp rampGenerator;
@@ -48,7 +47,7 @@ uint8_t tmc4671_readwriteByte(const uint8_t motor, uint8_t data, uint8_t lastTra
 	// Create datastore, store status of various tasks/systems
 	if (status != HAL_OK) {
 
-		datastoreSetSPIError(Set);
+		SystemSetSPIError(Set);
 
 		switch (status) {
 		case HAL_ERROR:
@@ -91,26 +90,24 @@ void setCS(uint8_t cs, GPIO_PinState state) {
 
 PUBLIC uint32_t initMotor() {
 
-	// Init motor configuration
-	motorConfig.initWaitTime             	= 1000;
-	motorConfig.startVoltage             	= 6000;
-	motorConfig.initMode                 	= 0;
-	motorConfig.hall_phi_e_old				= 0;
-	motorConfig.hall_phi_e_new				= 0;
-	motorConfig.hall_actual_coarse_offset	= 0;
-	motorConfig.last_Phi_E_Selection		= 0;
-	motorConfig.last_UQ_UD_EXT				= 0;
-	motorConfig.last_PHI_E_EXT				= 0;
-	motorConfig.torqueMeasurementFactor  	= 256;
-	motorConfig.maximumCurrent				= MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS;
-	motorConfig.actualVelocityPT1			= 0;
-	motorConfig.akkuActualVelocity       	= 0;
-	motorConfig.actualTorquePT1				= 0;
-	motorConfig.akkuActualTorque         	= 0;
-	motorConfig.positionScaler				= POSITION_SCALE_MAX;
-	motorConfig.enableVelocityFeedForward 	= true;
-	motorConfig.linearScaler             	= 30000; // µm / rotation
-
+	motorDriverConfig.initWaitTime = 1000;
+	motorDriverConfig.startVoltage             	= 6000;
+	motorDriverConfig.initMode                 	= 0;
+	motorDriverConfig.hall_phi_e_old				= 0;
+	motorDriverConfig.hall_phi_e_new				= 0;
+	motorDriverConfig.hall_actual_coarse_offset	= 0;
+	motorDriverConfig.last_Phi_E_Selection		= 0;
+	motorDriverConfig.last_UQ_UD_EXT				= 0;
+	motorDriverConfig.last_PHI_E_EXT				= 0;
+	motorDriverConfig.torqueMeasurementFactor  	= MOTOR_CONFIG_TORQUE_MESUREMENT_FACTOR;
+	motorDriverConfig.maximumCurrent				= MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS;
+	motorDriverConfig.actualVelocityPT1			= 0;
+	motorDriverConfig.akkuActualVelocity       	= 0;
+	motorDriverConfig.actualTorquePT1				= 0;
+	motorDriverConfig.akkuActualTorque         	= 0;
+	motorDriverConfig.positionScaler				= POSITION_SCALE_MAX;
+	motorDriverConfig.enableVelocityFeedForward 	= true;
+	motorDriverConfig.linearScaler             	= 30000; // µm / rotation
 
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
 
@@ -150,7 +147,7 @@ PUBLIC uint32_t initMotor() {
 	tmc4671_writeInt(TMC4671_CS, TMC4671_ADC_I_SELECT, 0x24000100);
 
 	// Limits
-	tmc4671_setTorqueFluxLimit_mA(TMC4671_CS, motorConfig.torqueMeasurementFactor, motorConfig.maximumCurrent);
+	tmc4671_setTorqueFluxLimit_mA(TMC4671_CS, motorDriverConfig.torqueMeasurementFactor, MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS);
 
 	// PI settings
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_TORQUE_P_TORQUE_I, 0x021B07FB);
@@ -238,27 +235,27 @@ PUBLIC uint32_t rotate(int32_t velocity) {
 
 PUBLIC uint32_t periodicJob(uint32_t actualSystick) {
 	// Do encoder init
-	tmc4671_periodicJob(TMC4671_CS, actualSystick, motorConfig.initMode, &motorConfig.initState, &motorConfig.initWaitTime, &motorConfig.actualInitWaitTime, &motorConfig.startVoltage, &motorConfig.hall_phi_e_old, &motorConfig.hall_phi_e_new, &motorConfig.hall_actual_coarse_offset, &motorConfig.last_Phi_E_Selection, &motorConfig.last_UQ_UD_EXT, &motorConfig.last_PHI_E_EXT);
+	tmc4671_periodicJob(TMC4671_CS, actualSystick, motorDriverConfig.initMode, &motorDriverConfig.initState, &motorDriverConfig.initWaitTime, &motorDriverConfig.actualInitWaitTime, &motorDriverConfig.startVoltage, &motorDriverConfig.hall_phi_e_old, &motorDriverConfig.hall_phi_e_new, &motorDriverConfig.hall_actual_coarse_offset, &motorDriverConfig.last_Phi_E_Selection, &motorDriverConfig.last_UQ_UD_EXT, &motorDriverConfig.last_PHI_E_EXT);
 
 	// 1ms velocity ramp handling
 	static uint32_t lastSystick;
 
 	if (lastSystick != actualSystick) {
 		// filter actual velocity
-		motorConfig.actualVelocityPT1 = tmc_filterPT1(&motorConfig.akkuActualVelocity, tmc4671_getActualVelocity(TMC4671_CS), motorConfig.actualVelocityPT1, 3, 8);
+		motorDriverConfig.actualVelocityPT1 = tmc_filterPT1(&motorDriverConfig.akkuActualVelocity, tmc4671_getActualVelocity(TMC4671_CS), motorDriverConfig.actualVelocityPT1, 3, 8);
 
 		// filter actual current
 		int16_t actualCurrentRaw = TMC4671_FIELD_READ(TMC4671_CS, TMC4671_PID_TORQUE_FLUX_ACTUAL, TMC4671_PID_TORQUE_ACTUAL_MASK, TMC4671_PID_TORQUE_ACTUAL_SHIFT);
 		if ((actualCurrentRaw > -32000) && (actualCurrentRaw < 32000)) {
-			int32_t actualCurrent = ((int32_t)actualCurrentRaw * (int32_t)motorConfig.torqueMeasurementFactor) / 256;
-			motorConfig.actualTorquePT1 = tmc_filterPT1(&motorConfig.akkuActualTorque , actualCurrent, motorConfig.actualTorquePT1, 4, 8);
+			int32_t actualCurrent = ((int32_t)actualCurrentRaw * (int32_t)motorDriverConfig.torqueMeasurementFactor) / 256;
+			motorDriverConfig.actualTorquePT1 = tmc_filterPT1(&motorDriverConfig.akkuActualTorque , actualCurrent, motorDriverConfig.actualTorquePT1, 4, 8);
 		}
 
 		// filter actual flux
 		int16_t actualFluxRaw = TMC4671_FIELD_READ(TMC4671_CS, TMC4671_PID_TORQUE_FLUX_ACTUAL, TMC4671_PID_FLUX_ACTUAL_MASK, TMC4671_PID_FLUX_ACTUAL_SHIFT);
 		if ((actualFluxRaw > -32000) && (actualFluxRaw < 32000)) {
-			int32_t actualFlux = ((int32_t)actualFluxRaw * (int32_t)motorConfig.torqueMeasurementFactor) / 256;
-			motorConfig.actualFluxPT1 = tmc_filterPT1(&motorConfig.akkuActualFlux , actualFlux, motorConfig.actualFluxPT1, 2, 8);
+			int32_t actualFlux = ((int32_t)actualFluxRaw * (int32_t)motorDriverConfig.torqueMeasurementFactor) / 256;
+			motorDriverConfig.actualFluxPT1 = tmc_filterPT1(&motorDriverConfig.akkuActualFlux , actualFlux, motorDriverConfig.actualFluxPT1, 2, 8);
 		}
 
 		if (actualMotionMode == TMC4671_MOTION_MODE_VELOCITY) {
@@ -290,11 +287,11 @@ PUBLIC uint32_t periodicJob(uint32_t actualSystick) {
 	return 0;
 }
 
-PUBLIC uint32_t enableDriver(EnableState enabled) {
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, enabled == Enabled ? GPIO_PIN_SET : GPIO_PIN_RESET);
+PUBLIC uint32_t enableDriver(Enable_t enabled) {
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, enabled == ENABLED ? GPIO_PIN_SET : GPIO_PIN_RESET);
 	return 0;
 }
 
 PUBLIC uint32_t deInitMotor() {
-	return enableDriver(Disabled);
+	return enableDriver(DISABLED);
 }

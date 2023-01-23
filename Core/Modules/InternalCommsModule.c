@@ -156,6 +156,23 @@ PUBLIC void IComms_Update()
 	}
 }
 
+PUBLIC iCommsMessage_t IComms_CreateMessage(uint16_t standardMessageID, uint8_t dataLength, uint8_t data[8]) {
+	iCommsMessage_t msg;
+	msg.standardMessageID = standardMessageID;
+	msg.dataLength = dataLength;
+
+	memcpy(msg.data, data, 8);
+
+	return msg;
+}
+
+PUBLIC iCommsMessage_t IComms_CreatePercentageMessage(uint16_t standardMessageID, percentage_t percentage) {
+	uint8_t data[8];
+	data[0] = percentage;
+	data[1] = percentage >> 8;
+
+	return IComms_CreateMessage(standardMessageID, 2, data);
+}
 
 
 /*********************************************************************************
