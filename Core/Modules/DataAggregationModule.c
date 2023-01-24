@@ -85,3 +85,10 @@ PUBLIC void SystemSetSafetyError(flag_status_t status) {
 	motorStatus.safetyError = status;
 }
 
+PUBLIC flag_status_t SystemGetThrottleError() {
+	return motorStatus.throttleError;
+}
+
+PUBLIC void SystemSetThrottleError(flag_status_t status) {
+	motorStatus.safetyError = status;
+}

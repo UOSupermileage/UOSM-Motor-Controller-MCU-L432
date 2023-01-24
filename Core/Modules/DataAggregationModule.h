@@ -55,5 +55,8 @@ PUBLIC flag_status_t SystemGetSafetyError();
 
 PUBLIC void SystemSetSafetyError(flag_status_t status);
 
+PUBLIC flag_status_t SystemGetThrottleError();
+
+PUBLIC void SystemSetThrottleError(flag_status_t status);
 
 #endif /* MODULES_DATAAGGREGATIONMODULE_H_ */
