@@ -44,24 +44,11 @@ PRIVATE void InternalCommsTask(void *argument)
 	uint32_t cycleTick = osKernelGetTickCount();
 	DebugPrint("%s icomms", ICT_TAG);
 
-	const ICommsMessageInfo* speedInfo = CANMessageLookUpGetInfo(SPEED_DATA_ID);
-	uint8_t speedTxCounter = 0;
-
 	IComms_Init();
 	for(;;)
 	{
 		cycleTick += TIMER_INTERNAL_COMMS_TASK;
 		osDelayUntil(cycleTick);
-
-		speedTxCounter++;
-		if (speedTxCounter == SPEED_RATE) {
-			velocity_t v = MotorGetActualVelocity();
-
-			DebugPrint("%s Sending Speed! RPM: [%d]", ICT_TAG, v);
-			iCommsMessage_t speedTxMsg = IComms_CreatePercentageMessage(speedInfo->messageID, v);
-			IComms_Transmit(&speedTxMsg);
-			speedTxCounter = 0;
-		}
 
 		IComms_Update();
 		while(IComms_HasRxMessage())

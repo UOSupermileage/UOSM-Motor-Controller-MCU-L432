@@ -24,6 +24,7 @@ typedef union {
 		uint32_t iCommsError:1;
 		uint32_t spiError:1;
 		uint32_t safetyError:1;
+		uint32_t throttleError:1; // High if
 		uint32_t reserved;
 	};
 } motor_status_t;
