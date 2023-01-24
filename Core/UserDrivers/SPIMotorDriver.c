@@ -5,8 +5,8 @@
  *      Author: jeremycote
  */
 
-#include <DataAggregationModule.h>
-#include <SPIMotorDriver.h>
+#include "DataAggregationModule.h"
+#include "SPIMotorDriver.h"
 
 #include "SerialDebugDriver.h"
 

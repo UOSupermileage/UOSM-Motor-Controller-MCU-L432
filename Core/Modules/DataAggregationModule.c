@@ -15,10 +15,10 @@
 
 // ===== Motor Data =====
 
-PRIVATE MotorConfig_t motorConfig;
+PRIVATE motor_config_t motorConfig;
 
 
-PRIVATE MotorStatus_t motorStatus;
+PRIVATE motor_status_t motorStatus;
 
 // ===== Motor Config Getters and Setters =====
 PUBLIC percentage_t SystemGetThrottlePercentage() {
@@ -57,6 +57,10 @@ PRIVATE velocity_t SystemGetTargetVelocity() {
 }
 
 // ===== Motor Status Getters and Setters =====
+PUBLIC const uint32_t SystemGetStatusCode() {
+	return motorStatus.all;
+}
+
 PUBLIC flag_status_t SystemGetiCommsError() {
 	return motorStatus.iCommsError;
 }

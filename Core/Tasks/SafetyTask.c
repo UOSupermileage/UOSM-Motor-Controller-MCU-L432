@@ -17,12 +17,14 @@
 
 #include "SPIMotorDriver.h"
 
+#include "LEDStatusDriver.h"
+
 // Function alias - replace with the driver api
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
 
 #define STACK_SIZE 128*4
 #define SAFETY_TASK_PRIORITY (osPriority_t) osPriorityHigh
-#define TIMER_SAFETY_TASK 1000UL
+#define TIMER_SAFETY_TASK 5000UL
 
 const char SFT_TAG[] = "#SFT:";
 
@@ -59,5 +61,6 @@ PRIVATE void SafetyTask(void *argument)
 			SystemSetSPIError(Set);
 		}
 
+		STATUS_PeriodicDisplayStatusCode(SystemGetStatusCode());
 	}
 }

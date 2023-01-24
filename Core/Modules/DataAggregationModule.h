@@ -10,13 +10,13 @@
 
 #include <ApplicationTypes.h>
 
-typedef enum { Set, Clear } flag_status_t;
+typedef enum { Clear, Set } flag_status_t;
 
 typedef struct
 {
 	velocity_t throttle; // Percentage value. Ranges from 0 to 1000. 1 = 0.1%. Thus 0% to 100%.
 	velocity_t targetVelocity;
-} MotorConfig_t;
+} motor_config_t;
 
 typedef union {
 	uint32_t all;
@@ -26,7 +26,7 @@ typedef union {
 		uint32_t safetyError:1;
 		uint32_t reserved;
 	};
-} MotorStatus_t;
+} motor_status_t;
 
 void InitDataAggregator();
 
@@ -39,6 +39,8 @@ PUBLIC velocity_t SystemGetTargetVelocity();
 PRIVATE void SystemSetTargetVelocity(velocity_t velocity);
 
 // ===== Motor Status Getters and Setters =====
+
+PUBLIC const uint32_t SystemGetStatusCode();
 
 PUBLIC flag_status_t SystemGetiCommsError();
 
