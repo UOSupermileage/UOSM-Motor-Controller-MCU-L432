@@ -67,7 +67,7 @@ Give each task a different priority level. FreeRTOS can get confused if tasks sh
 </tr>
     <tr>
     <td>PA12 (D2)</td>
-    <td>Connected to hall sensor signal pin (interrupt)</td>
+    <td>Connected to TMC4671 reset pin (can reset driver without turning motor off)</td>
 </tr>
     <tr>
     <td>PA11 (D10)</td>
