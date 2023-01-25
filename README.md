@@ -2,4 +2,6 @@
 
 Firmware for motor controller.
 
-[View Documentation](https://uosupermileage.github.io/UOSM-Motor-Controller-MCU-L432/#/)
+<a href="https://uosupermileage.github.io/UOSM-Motor-Controller-MCU-L432/#/" target="_blank" rel="noopener noreferrer">
+    View Documentation
+</a>
