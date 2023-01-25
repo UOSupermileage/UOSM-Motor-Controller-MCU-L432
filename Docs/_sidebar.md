@@ -1,0 +1,2 @@
+- [Home](/)
+- [Hardware Setup](HardwareSetup.md)
