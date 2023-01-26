@@ -1,2 +1,3 @@
 - [Home](/)
 - [Hardware Setup](HardwareSetup.md)
+- [Debugging](Debugging.md)

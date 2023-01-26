@@ -171,6 +171,9 @@
 	 */
 	#define MOTOR_CONFIG_DRIVER_DRIVE_CONFIG (uint32_t)0x00080004
 
+	/**
+	 * Defining ABN will add extra lines of code to init to enable ABN encoder
+	 */
 	#define ABN
 
 	#define MOTOR_CONFIG_ABN_DECODER_MODE (uint32_t)0x00000000 //0x25: Polarity of A pulse.
