@@ -61,6 +61,6 @@ PRIVATE void SafetyTask(void *argument)
 			SystemSetSPIError(Set);
 		}
 
-		STATUS_PeriodicDisplayStatusCode(SystemGetStatusCode());
+		STATUS_PeriodicDisplayStatusCode();
 	}
 }

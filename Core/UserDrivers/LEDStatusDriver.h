@@ -26,6 +26,6 @@
 // STM headers
 #include "stm32l4xx_hal.h"
 
-PUBLIC void STATUS_PeriodicDisplayStatusCode(const uint32_t code);
+PUBLIC void STATUS_PeriodicDisplayStatusCode();
 
 #endif /* USERDRIVERS_LEDSTATUSDRIVER_H_ */
