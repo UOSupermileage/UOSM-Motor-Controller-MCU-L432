@@ -35,6 +35,8 @@
 	#define MAX_TORQUE (uint32_t)0x7FFF0000
 	#define MIN_TORQUE (uint32_t)0x0000FFFF
 
+	#define MOTOR_INIT_MODE 0
+
 	// Motor type &  PWM configuration
 	#define MOTOR_CONFIG_N_POLE_PAIRS (uint32_t)0x00030004
 	#define MOTOR_CONFIG_PWM_POLARITIES (uint32_t)0x00000000
@@ -110,6 +112,8 @@
 
 	#define MAX_TORQUE (uint32_t)0x7FFF0000
 	#define MIN_TORQUE (uint32_t)0x0000FFFF
+
+	#define MOTOR_INIT_MODE 2 // 2 = use hall sensor signals to init
 
 	// Motor type &  PWM configuration
 	#define MOTOR_CONFIG_N_POLE_PAIRS (uint32_t)0x00030004

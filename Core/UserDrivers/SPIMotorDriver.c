@@ -98,7 +98,7 @@ PUBLIC uint32_t MotorInit() {
 
 	motorDriverConfig.initWaitTime = 1000;
 	motorDriverConfig.startVoltage             	= 6000;
-	motorDriverConfig.initMode                 	= 2; // 2 = use hall sensor signals to init
+	motorDriverConfig.initMode                 	=  MOTOR_INIT_MODE;
 	motorDriverConfig.hall_phi_e_old				= 0;
 	motorDriverConfig.hall_phi_e_new				= 0;
 	motorDriverConfig.hall_actual_coarse_offset	= 0;
