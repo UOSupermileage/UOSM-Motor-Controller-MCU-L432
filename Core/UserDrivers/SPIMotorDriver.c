@@ -98,7 +98,7 @@ PUBLIC uint32_t MotorInit() {
 
 	motorDriverConfig.initWaitTime = 1000;
 	motorDriverConfig.startVoltage             	= 6000;
-	motorDriverConfig.initMode                 	= 0;
+	motorDriverConfig.initMode                 	= 2; // 2 = use hall sensor signals to init
 	motorDriverConfig.hall_phi_e_old				= 0;
 	motorDriverConfig.hall_phi_e_new				= 0;
 	motorDriverConfig.hall_actual_coarse_offset	= 0;
@@ -245,6 +245,7 @@ PUBLIC uint32_t MotorRotate(int32_t velocity) {
 }
 
 PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick) {
+
 	// Do encoder init
 	tmc4671_periodicJob(TMC4671_CS, actualSystick, motorDriverConfig.initMode, &motorDriverConfig.initState, &motorDriverConfig.initWaitTime, &motorDriverConfig.actualInitWaitTime, &motorDriverConfig.startVoltage, &motorDriverConfig.hall_phi_e_old, &motorDriverConfig.hall_phi_e_new, &motorDriverConfig.hall_actual_coarse_offset, &motorDriverConfig.last_Phi_E_Selection, &motorDriverConfig.last_UQ_UD_EXT, &motorDriverConfig.last_PHI_E_EXT);
 

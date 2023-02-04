@@ -18,7 +18,7 @@
 #define TMC6200_CS 1
 
 // Motor 0 = Small Motor
-#define MOTOR 1
+#define MOTOR 0
 
 // ===== TMC Motor Configuration =====
 #if MOTOR == 0
