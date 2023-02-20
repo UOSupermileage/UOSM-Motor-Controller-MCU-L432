@@ -75,6 +75,10 @@ Greyed out rows are not yet implemented in software.
         <td>PB6 (D5)</td>
         <td>Connected to CAN controller interrupt pin </td>
     </tr>
+    <tr style="background-color: grey">
+        <td>PA3(A2)</td>
+        <td>Connected to backup throttle input </td>
+    </tr>
 </table>
 
 ## Important Extras
