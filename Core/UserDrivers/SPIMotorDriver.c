@@ -16,6 +16,8 @@
 #include "tmc/ic/TMC6200/TMC6200_Register.h"
 #include "tmc/ramp/LinearRamp.h"
 
+#include "MotorParameters.h"
+
 // Function alias - replace with the driver api
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
 

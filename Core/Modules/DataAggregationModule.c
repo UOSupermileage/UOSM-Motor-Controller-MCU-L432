@@ -9,7 +9,7 @@
 
 #include "DataAggregationModule.h"
 #include "SerialDebugDriver.h"
-#include "SPIMotorDriver.h"
+#include "MotorParameters.h"
 
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
 
