@@ -63,10 +63,6 @@ Greyed out rows are not yet implemented in software.
         <td>Connected to TMC4671 reset pin (can reset driver without turning motor off)</td>
     </tr>
     <tr style="background-color: grey">
-        <td>PA11 (D10)</td>
-        <td>Connected to CAN transceiver silent mode pin (drive high to disable CAN)</td>
-    </tr>
-    <tr style="background-color: grey">
         <td>PA8 (D9)</td>
         <td>Connected to TMC4671 PWM_I pin </td>
     </tr>
@@ -74,6 +70,10 @@ Greyed out rows are not yet implemented in software.
     <tr style="background-color: grey">
         <td>PB6 (D5)</td>
         <td>Connected to CAN controller interrupt pin </td>
+    </tr>
+    <tr style="background-color: grey">
+        <td>PA3(A2)</td>
+        <td>Connected to backup throttle input </td>
     </tr>
 </table>
 
