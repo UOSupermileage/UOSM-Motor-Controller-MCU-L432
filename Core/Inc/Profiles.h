@@ -8,6 +8,10 @@
 #ifndef INC_PROFILES_H_
 #define INC_PROFILES_H_
 
+/**
+ * The define will enable this task in the system.
+ */
+
 // #define PROFILE_ICOMMS
 // #define PROFILE_SAFETY
 #define PROFILE_MOTOR
