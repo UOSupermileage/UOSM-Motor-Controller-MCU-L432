@@ -8,16 +8,8 @@
 #ifndef INC_PROFILES_H_
 #define INC_PROFILES_H_
 
-
-/**
- * Current Profile for project behavior
- *
- * 0 == Normal Execution
- * 1 == Idle, enables the motor and does nothing else
- * 2 == Periodic Health Checks == Periodically check health of TMC 4671 and TMC6200
- */
-# define Profile 0
-
-
+// #define PROFILE_ICOMMS
+// #define PROFILE_SAFETY
+#define PROFILE_MOTOR
 
 #endif /* INC_PROFILES_H_ */

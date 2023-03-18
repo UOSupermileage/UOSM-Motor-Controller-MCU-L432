@@ -117,7 +117,7 @@ PUBLIC uint32_t MotorInit() {
 	motorDriverConfig.enableVelocityFeedForward 	= true;
 	motorDriverConfig.linearScaler             	= 30000; // µm / rotation
 
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+	MotorEnableDriver(DISABLED);
 
 
 	// Set all chip select lines to high
@@ -224,7 +224,7 @@ PUBLIC uint32_t MotorInit() {
 		return false;
 	}
 
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
+	MotorEnableDriver(ENABLED);
 
 	return true;
 }

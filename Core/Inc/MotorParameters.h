@@ -12,6 +12,10 @@
 #ifndef INC_MOTORPARAMETERS_H_
 #define INC_MOTORPARAMETERS_H_
 
+
+#define MOTOR_IDLE
+
+
 /**
  * Select Target Motor
  * 0 == QBL4208-81-04-019 (Tiny Motor)

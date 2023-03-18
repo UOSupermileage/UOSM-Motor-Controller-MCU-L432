@@ -8,8 +8,7 @@
 
 #include "DataAggregationModule.h"
 #include "MotorTask.h"
-#include "Profiles.h"
-
+#include "MotorParameters.h"
 #include "SerialDebugDriver.h"
 
 // Function alias - replace with the driver api
@@ -43,6 +42,10 @@ PRIVATE void MotorTask(void *argument)
 	uint32_t cycleTick = osKernelGetTickCount();
 	DebugPrint("%s Initializing MotorTask", MOT_TAG);
 
+#ifdef MOTOR_IDLE
+	// If motor is set to idle, just enable and do nothing else.
+	MotorEnableDriver(ENABLED);
+#else
 	uint32_t motorInitialized = MotorInit();
 
 	if (!motorInitialized) {
@@ -50,13 +53,17 @@ PRIVATE void MotorTask(void *argument)
 		DebugPrint("%s Failed to initialize motor!", MOT_TAG);
 	}
 
+#endif
+
 	for(;;)
 	{
 		cycleTick += TIMER_MOTOR_TASK;
 		osDelayUntil(cycleTick);
 
-#ifdef Profile == 0
-
+#ifdef MOTOR_IDLE
+		// If motor is set to idle, remind user.
+		DebugPrint("Motor Parameters Set To Idle... Change in MotorParamters.h");
+#else
 		if (motorInitialized) {
 			DebugPrint("%s Target Velocity [%x]", MOT_TAG,  SystemGetTargetVelocity());
 			MotorRotate(SystemGetTargetVelocity());
@@ -68,11 +75,7 @@ PRIVATE void MotorTask(void *argument)
 			// If motor failed to initialize, wait and then reinit
 			osDelay(TIMER_MOTOR_REINIT_DELAY);
 			motorInitialized = MotorInit();
-		}
-#elif Profile == 2
-		MotorHealth();
-#else
-		DebugPrint("Idle...")
+				}
 #endif
 	}
 }
