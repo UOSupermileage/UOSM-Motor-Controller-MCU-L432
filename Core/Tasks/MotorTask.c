@@ -8,6 +8,7 @@
 
 #include "DataAggregationModule.h"
 #include "MotorTask.h"
+#include "Profiles.h"
 
 #include "SerialDebugDriver.h"
 
@@ -54,6 +55,8 @@ PRIVATE void MotorTask(void *argument)
 		cycleTick += TIMER_MOTOR_TASK;
 		osDelayUntil(cycleTick);
 
+#ifdef Profile == 0
+
 		if (motorInitialized) {
 			DebugPrint("%s Target Velocity [%x]", MOT_TAG,  SystemGetTargetVelocity());
 			MotorRotate(SystemGetTargetVelocity());
@@ -66,6 +69,10 @@ PRIVATE void MotorTask(void *argument)
 			osDelay(TIMER_MOTOR_REINIT_DELAY);
 			motorInitialized = MotorInit();
 		}
-
+#elif Profile == 2
+		MotorHealth();
+#else
+		DebugPrint("Idle...")
+#endif
 	}
 }

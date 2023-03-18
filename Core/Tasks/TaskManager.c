@@ -10,10 +10,13 @@
 #include "SafetyTask.h"
 #include "InternalCommsTask.h"
 #include "MotorTask.h"
+#include "Profiles.h"
 
 void RunTaskManager( void )
 {
+#if Profiles == 0
 	InitInternalCommsTask();
-	InitMotorTask();
 	InitSafetyTask();
+#endif
+	InitMotorTask();
 }

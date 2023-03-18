@@ -313,3 +313,7 @@ PUBLIC uint32_t MotorEnableDriver(Enable_t enabled) {
 PUBLIC uint32_t MotorDeInit() {
 	return MotorEnableDriver(DISABLED);
 }
+
+PUBLIC void MotorHealth() {
+	DebugPrint("MotorHealth: NOT IMPLEMENTED");
+}

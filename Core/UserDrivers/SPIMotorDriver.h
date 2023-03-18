@@ -74,5 +74,7 @@ PUBLIC velocity_t MotorGetActualVelocity();
 PUBLIC uint32_t MotorInit();
 PUBLIC uint32_t MotorDeInit();
 
+PUBLIC void MotorHealth();
+
 
 #endif /* USERDRIVERS_SPIMOTORDRIVER_H_ */
