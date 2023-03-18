@@ -21,8 +21,8 @@
 
 /**
  * Select Target Motor
- * 0 == QBL4208-81-04-019 (Tiny Motor)
- * 1 == BLK322D-48V-3000 (48V Motor that runs at 3000 RPM)
+ * 0 == QBL4208-81-04-019 (Tiny Motor) (Eval board)
+ * 1 == BLK322D-48V-3000 (48V Motor that runs at 3000 RPM) (Eval board)
  */
 #define MOTOR 1
 
