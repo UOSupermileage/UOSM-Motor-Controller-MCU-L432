@@ -14,6 +14,6 @@
 
 // #define PROFILE_ICOMMS
 // #define PROFILE_SAFETY
-#define PROFILE_MOTOR
+//#define PROFILE_MOTOR
 
 #endif /* INC_PROFILES_H_ */

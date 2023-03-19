@@ -53,6 +53,8 @@ PRIVATE void SafetyTask(void *argument)
 	{
 		cycleTick += TIMER_SAFETY_TASK;
 		osDelayUntil(cycleTick);
+
+#ifdef PROFILE_SAFETY
 		DebugPrint("%s Safety Error [%d],  SPI Error [%d], iComms Error [%d]", SFT_TAG, SystemGetSafetyError(), SystemGetSPIError(), SystemGetiCommsError());
 
 		if (MotorValidateSPI()) {
@@ -62,5 +64,8 @@ PRIVATE void SafetyTask(void *argument)
 		}
 
 		STATUS_PeriodicDisplayStatusCode();
+#else
+		DebugPrint("%s Safety Task disabled in Profiles.h", SFT_TAG);
+#endif
 	}
 }

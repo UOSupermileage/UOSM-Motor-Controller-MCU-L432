@@ -39,20 +39,21 @@ PUBLIC void InitMotorTask(void)
 }
 PRIVATE void MotorTask(void *argument)
 {
+	uint32_t motorInitialized = 0;
+
 	uint32_t cycleTick = osKernelGetTickCount();
 	DebugPrint("%s Initializing MotorTask", MOT_TAG);
 
-#ifdef MOTOR_IDLE
-	// If motor is set to idle, just enable and do nothing else.
-	MotorEnableDriver(ENABLED);
-#else
+#ifdef MOTOR_PROFILE
 	uint32_t motorInitialized = MotorInit();
 
 	if (!motorInitialized) {
 		SystemSetSPIError(Set);
 		DebugPrint("%s Failed to initialize motor!", MOT_TAG);
 	}
-
+#else
+	// If motor is set to idle, just enable and do nothing else.
+	MotorEnableDriver(ENABLED);
 #endif
 
 	for(;;)
@@ -60,10 +61,7 @@ PRIVATE void MotorTask(void *argument)
 		cycleTick += TIMER_MOTOR_TASK;
 		osDelayUntil(cycleTick);
 
-#ifdef MOTOR_IDLE
-		// If motor is set to idle, remind user.
-		DebugPrint("Motor Parameters Set To Idle... Change in MotorParamters.h");
-#else
+#ifdef MOTOR_PROFILE
 		if (motorInitialized) {
 			DebugPrint("%s Target Velocity [%x]", MOT_TAG,  SystemGetTargetVelocity());
 			MotorRotate(SystemGetTargetVelocity());
@@ -75,7 +73,10 @@ PRIVATE void MotorTask(void *argument)
 			// If motor failed to initialize, wait and then reinit
 			osDelay(TIMER_MOTOR_REINIT_DELAY);
 			motorInitialized = MotorInit();
-				}
+		}
+#else
+		// If motor is set to idle, remind user.
+		DebugPrint("Motor Parameters Set To Idle... Change in MotorParamters.h");
 #endif
 	}
 }

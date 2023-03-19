@@ -50,6 +50,7 @@ PRIVATE void InternalCommsTask(void *argument)
 		cycleTick += TIMER_INTERNAL_COMMS_TASK;
 		osDelayUntil(cycleTick);
 
+#ifdef PROFILE_ICOMMS
 		IComms_Update();
 		while(IComms_HasRxMessage())
 		{
@@ -89,5 +90,8 @@ PRIVATE void InternalCommsTask(void *argument)
 			}
 
 		}
+#else
+		DebugPrint("%s iComms Disabled in Profiles.h", ICT_TAG);
+#endif
 	}
 }

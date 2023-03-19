@@ -12,12 +12,6 @@
 #ifndef INC_MOTORPARAMETERS_H_
 #define INC_MOTORPARAMETERS_H_
 
-/**
- * Enable drivers without doing anythinge else.
- * This is useful for using RTMI, Weasel, PI Tunning.
- */
-#define MOTOR_IDLE
-
 
 /**
  * Select Target Motor
