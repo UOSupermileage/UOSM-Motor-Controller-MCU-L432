@@ -53,6 +53,8 @@ PRIVATE void MotorTask(void *argument)
 	}
 #else
 	// If motor is set to idle, just enable and do nothing else.
+	MotorSetCS(TMC4671_CS, GPIO_PIN_SET);
+	MotorSetCS(TMC6200_CS, GPIO_PIN_SET);
 	MotorEnableDriver(ENABLED);
 #endif
 
