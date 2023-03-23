@@ -10,6 +10,7 @@
 #include "MotorTask.h"
 #include "MotorParameters.h"
 #include "SerialDebugDriver.h"
+#include "Profiles.h"
 
 // Function alias - replace with the driver api
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
