@@ -291,5 +291,7 @@
 	 * 0x00080004 is the factory default value
 	 */
 	#define MOTOR_CONFIG_DRIVER_DRIVE_CONFIG (uint32_t)0x00080004
+
+	#define MOTOR_CLEAR_CHARGE_PUMP_FAULT
 #endif
 /* INC_MOTORPARAMETERS_H_ */
