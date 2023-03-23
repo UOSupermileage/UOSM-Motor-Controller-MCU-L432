@@ -66,9 +66,14 @@ PRIVATE void MotorTask(void *argument)
 
 #ifdef MOTOR_PROFILE
 		if (motorInitialized) {
+
+#ifdef MOTOR_FIXED_THROTTLE
+			DebugPrint("%s Target Velocity [%x]", MOT_TAG,  MOTOR_FIXED_THROTTLE);
+			MotorRotate(MOTOR_FIXED_THROTTLE);
+#else
 			DebugPrint("%s Target Velocity [%x]", MOT_TAG,  SystemGetTargetVelocity());
-//			MotorRotate(SystemGetTargetVelocity());
-			MotorRotate(1000);
+			MotorRotate(SystemGetTargetVelocity());
+#endif
 			MotorPeriodicJob(cycleTick);
 		} else {
 			SystemSetSPIError(Set);
