@@ -146,8 +146,8 @@
 	#define MOTOR_CONFIG_VELOCITY_SELECTION (uint32_t)0x00000003
 	#define MOTOR_INIT_MODE 2 // 2 = use hall sensor signals to init
 #elif MOTOR == 2
-	#define MOTOR_CONFIG_PHI_E_SELECTION (uint32_t)0x00000002
-	#define MOTOR_CONFIG_VELOCITY_SELECTION (uint32_t)0x00000000
+	#define MOTOR_CONFIG_PHI_E_SELECTION (uint32_t)0x00000003
+	#define MOTOR_CONFIG_VELOCITY_SELECTION (uint32_t)0x00000009
 	#define MOTOR_INIT_MODE 2 // 2 = use hall sensor signals to init
 #endif
 
@@ -166,7 +166,7 @@
 	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 1000 // in mA
 	#define MAX_VELOCITY 3000
 #elif MOTOR == 2
-	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 1500 // in mA
+	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 5000 // in mA
 	#define MAX_VELOCITY 2500
 #endif
 /*********************************************************************************

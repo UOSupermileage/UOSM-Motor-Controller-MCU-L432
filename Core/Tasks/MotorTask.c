@@ -11,6 +11,9 @@
 #include "MotorParameters.h"
 #include "SerialDebugDriver.h"
 #include "Profiles.h"
+#include "tmc/ic/TMC4671/TMC4671.h"
+#include "tmc/ic/TMC6200/TMC6200.h"
+#include "tmc/ic/TMC6200/TMC6200_Register.h"
 
 // Function alias - replace with the driver api
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
@@ -66,16 +69,16 @@ PRIVATE void MotorTask(void *argument)
 		cycleTick += TIMER_MOTOR_TASK;
 		osDelayUntil(cycleTick);
 
+#ifdef MOTOR_FIXED_THROTTLE
+//		SystemSetThrottlePercentage(MOTOR_FIXED_THROTTLE);
+		SystemSetTargetVelocity(1000);
+#endif
+
 #ifdef MOTOR_PROFILE
 		if (motorInitialized) {
 
-#ifdef MOTOR_FIXED_THROTTLE
 			DebugPrint("%s Target Velocity [%x]", MOT_TAG,  MOTOR_FIXED_THROTTLE);
-			MotorRotate(MOTOR_FIXED_THROTTLE);
-#else
-			DebugPrint("%s Target Velocity [%x]", MOT_TAG,  SystemGetTargetVelocity());
 			MotorRotate(SystemGetTargetVelocity());
-#endif
 			MotorPeriodicJob(cycleTick);
 		} else {
 			SystemSetSPIError(Set);
