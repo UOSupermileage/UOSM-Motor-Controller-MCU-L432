@@ -46,7 +46,7 @@ PRIVATE void MotorTask(void *argument)
 	DebugPrint("%s Initializing MotorTask", MOT_TAG);
 
 #ifdef MOTOR_PROFILE
-	uint32_t motorInitialized = MotorInit();
+	motorInitialized = MotorInit();
 
 	if (!motorInitialized) {
 		SystemSetSPIError(Set);

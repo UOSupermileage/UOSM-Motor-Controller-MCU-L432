@@ -17,7 +17,7 @@
  * Select Target Motor
  * 0 == QBL4208-81-04-019 (Tiny Motor) (Eval board)
  * 1 == BLK322D-48V-3000 (48V Motor that runs at 3000 RPM) (Eval board)
- * 2 == Custom Board
+ * 2 == Custom Board (Max Current 5Amps, 200 acceleration, 2500RPM)
  */
 #define MOTOR 2
 
@@ -28,7 +28,7 @@
  *
  **********************************************************************************/
 
-#define MOTOR_FIXED_THROTTLE 500
+#define MOTOR_FIXED_THROTTLE 200
 
 
 /*********************************************************************************
@@ -109,8 +109,8 @@
 	#define MOTOR_CONFIG_dsADC_MCLK_A (uint32_t)0x20000000
 	#define MOTOR_CONFIG_dsADC_MCLK_B (uint32_t)0x00000000
 	#define MOTOR_CONFIG_dsADC_MDEC_B_MDEC_A (uint32_t)0x014E014E
-	#define MOTOR_CONFIG_ADC_I0_SCALE_OFFSET (uint32_t)0x010081BA
-	#define MOTOR_CONFIG_ADC_I1_SCALE_OFFSET (uint32_t)0x010081E1
+	#define MOTOR_CONFIG_ADC_I0_SCALE_OFFSET (uint32_t)0x010081C9
+	#define MOTOR_CONFIG_ADC_I1_SCALE_OFFSET (uint32_t)0x010081AE
 #endif
 
 /*********************************************************************************
@@ -146,8 +146,8 @@
 	#define MOTOR_CONFIG_VELOCITY_SELECTION (uint32_t)0x00000003
 	#define MOTOR_INIT_MODE 2 // 2 = use hall sensor signals to init
 #elif MOTOR == 2
-	#define MOTOR_CONFIG_PHI_E_SELECTION (uint32_t)0x00000005
-	#define MOTOR_CONFIG_VELOCITY_SELECTION (uint32_t)0x0000000C
+	#define MOTOR_CONFIG_PHI_E_SELECTION (uint32_t)0x00000002
+	#define MOTOR_CONFIG_VELOCITY_SELECTION (uint32_t)0x00000000
 	#define MOTOR_INIT_MODE 2 // 2 = use hall sensor signals to init
 #endif
 
@@ -167,7 +167,7 @@
 	#define MAX_VELOCITY 3000
 #elif MOTOR == 2
 	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 1500 // in mA
-	#define MAX_VELOCITY 3000
+	#define MAX_VELOCITY 2500
 #endif
 /*********************************************************************************
  *
@@ -184,9 +184,9 @@
 	#define MOTOR_CONFIG_PID_FLUX_P_FLUX_I (uint32_t)0x01000100
 	#define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x00000000
 #elif MOTOR == 2
-	#define MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I (uint32_t)0x05402A06
-	#define MOTOR_CONFIG_PID_FLUX_P_FLUX_I (uint32_t)0x05402A06
-	#define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x02E10031
+	#define MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I (uint32_t)0x02671A8B
+	#define MOTOR_CONFIG_PID_FLUX_P_FLUX_I (uint32_t)0x02671A8B
+	#define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x0104002E
 #endif
 /*********************************************************************************
  *
@@ -208,8 +208,15 @@
 	#define MOTOR_CONFIG_ABN_DECODER_COUNT (uint32_t) 0x00000A26 //0x27: Raw decoder count; the digital decoder engine counts modulo (decoder_ppr).
 	#define MOTOR_CONFIG_ABN_DECODER_COUNT_N (uint32_t) 0x0000096C //0x28: Decoder count latched on N pulse, when N pulse clears decoder_count also decoder_count_n is 0.
 	#define MOTOR_CONFIG_ABN_DECODER_PHI_E_PHI_M_OFFSET 0x00000000 //0x29: ABN_DECODER_PHI_M_OFFSET to shift (rotate) angle DECODER_PHI_M.
-	#define MOTOR_CONFIG_ABN_DECODER_PHI_E_PHI_M 0x5FA417E9 //0x2A: ABN_DECODER_PHI_M = ABN_DECODER_COUNT * 2^16 / ABN_DECODER_PPR + ABN_DECODER_PHI_M_OFFSET;
 #elif MOTOR == 2
+
+	#define ABN
+
+	#define MOTOR_CONFIG_ABN_DECODER_MODE (uint32_t)0x00000000 //0x25: Polarity of A pulse.
+	#define MOTOR_CONFIG_ABN_DECODER_PPR (uint32_t) 0x00000B40 //0x26: Decoder pulses per mechanical revolution.
+	#define MOTOR_CONFIG_ABN_DECODER_COUNT (uint32_t) 0x00000A26 //0x27: Raw decoder count; the digital decoder engine counts modulo (decoder_ppr).
+	#define MOTOR_CONFIG_ABN_DECODER_COUNT_N (uint32_t) 0x00000494 //0x28: Decoder count latched on N pulse, when N pulse clears decoder_count also decoder_count_n is 0.
+	#define MOTOR_CONFIG_ABN_DECODER_PHI_E_PHI_M_OFFSET 0x3EF90000 //0x29: ABN_DECODER_PHI_M_OFFSET to shift (rotate) angle DECODER_PHI_M.
 #endif
 
 
@@ -219,8 +226,11 @@
  *
  **********************************************************************************/
 
-#define MOTOR_CONFIG_MODE_RAMP_MODE_MOTION (uint32_t)0x00000002 // Velocity
-
+#if MOTOR == 2
+	#define MOTOR_CONFIG_MODE_RAMP_MODE_MOTION (uint32_t)0x00000008 // Velocity
+#else
+	#define MOTOR_CONFIG_MODE_RAMP_MODE_MOTION (uint32_t)0x00000002 // Velocity
+#endif
 /*********************************************************************************
  *
  * 		Miscelanious Parameters. Unused, but may be useful later

@@ -151,8 +151,7 @@ PUBLIC uint32_t MotorInit() {
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PHI_E_SELECTION, MOTOR_CONFIG_PHI_E_SELECTION);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_VELOCITY_SELECTION, MOTOR_CONFIG_VELOCITY_SELECTION);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_POSITION_SELECTION, 0x0000);
-	tmc4671_writeInt(TMC4671_CS, TMC4671_MODE_RAMP_MODE_MOTION, 0x0002);
-	tmc4671_writeInt(TMC4671_CS, TMC4671_ADC_I_SELECT, 0x24000100);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_MODE_RAMP_MODE_MOTION, MOTOR_CONFIG_MODE_RAMP_MODE_MOTION);
 
 	// Limits
 	tmc4671_setTorqueFluxLimit_mA(TMC4671_CS, motorDriverConfig.torqueMeasurementFactor, MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS);
@@ -185,7 +184,6 @@ PUBLIC uint32_t MotorInit() {
 		tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT, MOTOR_CONFIG_ABN_DECODER_COUNT);
 		tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT_N, MOTOR_CONFIG_ABN_DECODER_COUNT_N);
 		tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_PHI_E_PHI_M_OFFSET, MOTOR_CONFIG_ABN_DECODER_PHI_E_PHI_M_OFFSET);
-		tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_PHI_E_PHI_M, MOTOR_CONFIG_ABN_DECODER_PHI_E_PHI_M);
 
 	#endif
 
@@ -209,12 +207,12 @@ PUBLIC uint32_t MotorInit() {
 	DebugPrint("Read [%08x], [%08x], [%08x]", generalConf, shortConf, driveConf);
 
 
-	if ((generalConf == MOTOR_CONFIG_DRIVER_GENERAL_CONFIG) && (shortConf == MOTOR_CONFIG_DRIVER_SHORT_CONFIG) && (driveConf == MOTOR_CONFIG_DRIVER_DRIVE_CONFIG)) {
-		DebugPrint("Motor Driver [" MOTOR_DRIVER_LABEL "] successfuly initialized!");
-	} else {
-		DebugPrint("Failed to initialize Motor Driver [" MOTOR_DRIVER_LABEL "]");
-		return false;
-	}
+//	if ((generalConf == MOTOR_CONFIG_DRIVER_GENERAL_CONFIG) && (shortConf == MOTOR_CONFIG_DRIVER_SHORT_CONFIG) && (driveConf == MOTOR_CONFIG_DRIVER_DRIVE_CONFIG)) {
+//		DebugPrint("Motor Driver [" MOTOR_DRIVER_LABEL "] successfuly initialized!");
+//	} else {
+//		DebugPrint("Failed to initialize Motor Driver [" MOTOR_DRIVER_LABEL "]");
+//		return false;
+//	}
 
 	// If value is read is correct, than motor registers were properly set
 	if (nPolePairs == MOTOR_CONFIG_N_POLE_PAIRS) {
@@ -344,7 +342,6 @@ PUBLIC void MotorClearChargePump() {
  */
 PUBLIC void MotorPrintFaults() {
 	uint32_t stats = tmc6200_readInt(TMC6200_CS, TMC6200_GSTAT);
-	stats >>= 8;
 
 	if (stats & (1 << 1)) {
 		DebugPrint("Fault: drv_otpw");
