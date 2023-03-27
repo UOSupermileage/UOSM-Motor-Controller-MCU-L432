@@ -145,8 +145,7 @@
 	#define MOTOR_CONFIG_PHI_E_SELECTION (uint32_t)0x00000003
 	#define MOTOR_CONFIG_VELOCITY_SELECTION (uint32_t)0x00000003
 	#define MOTOR_INIT_MODE 2 // 2 = use hall sensor signals to init
-#endif
-#elif MOTOR == 1
+#elif MOTOR == 2
 	#define MOTOR_CONFIG_PHI_E_SELECTION (uint32_t)0x00000005
 	#define MOTOR_CONFIG_VELOCITY_SELECTION (uint32_t)0x0000000C
 	#define MOTOR_INIT_MODE 2 // 2 = use hall sensor signals to init
@@ -294,4 +293,6 @@
 
 	#define MOTOR_CLEAR_CHARGE_PUMP_FAULT
 #endif
+#endif
+
 /* INC_MOTORPARAMETERS_H_ */

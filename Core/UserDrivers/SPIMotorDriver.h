@@ -76,5 +76,9 @@ PUBLIC uint32_t MotorDeInit();
 
 PUBLIC void MotorHealth();
 
+PUBLIC void MotorClearChargePump();
+
+PUBLIC void MotorPrintFaults();
+
 
 #endif /* USERDRIVERS_SPIMOTORDRIVER_H_ */

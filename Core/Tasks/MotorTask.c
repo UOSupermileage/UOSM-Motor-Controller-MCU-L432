@@ -57,6 +57,8 @@ PRIVATE void MotorTask(void *argument)
 	MotorSetCS(TMC4671_CS, GPIO_PIN_SET);
 	MotorSetCS(TMC6200_CS, GPIO_PIN_SET);
 	MotorEnableDriver(ENABLED);
+	HAL_Delay(500);
+	MotorClearChargePump();
 #endif
 
 	for(;;)
@@ -84,8 +86,10 @@ PRIVATE void MotorTask(void *argument)
 			motorInitialized = MotorInit();
 		}
 #else
+		MotorPrintFaults();
 		// If motor is set to idle, remind user.
-		DebugPrint("Motor Parameters Set To Idle... Change in MotorParamters.h");
+//		DebugPrint("Motor Parameters Set To Idle... Change in MotorParamters.h");
+
 #endif
 	}
 }

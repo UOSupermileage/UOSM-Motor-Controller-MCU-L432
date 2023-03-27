@@ -65,7 +65,7 @@ PRIVATE void SafetyTask(void *argument)
 
 		STATUS_PeriodicDisplayStatusCode();
 #else
-		DebugPrint("%s Safety Task disabled in Profiles.h", SFT_TAG);
+//		DebugPrint("%s Safety Task disabled in Profiles.h", SFT_TAG);
 #endif
 	}
 }

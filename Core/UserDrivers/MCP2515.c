@@ -29,12 +29,14 @@ bool MCP2515_Initialize(void)
 
   do {
     /* SPI Ready 확인 */
-    if(HAL_SPI_GetState(SPI_CAN) == HAL_SPI_STATE_READY)
-      return true;
-
+    if(HAL_SPI_GetState(SPI_CAN) == HAL_SPI_STATE_READY) {
+    	  DebugPrint("Succeeded to init MCP");
+    	return true;
+    }
     loop--;
   } while(loop > 0);
 
+  DebugPrint("Failed to init MCP");
   return false;
 }
 

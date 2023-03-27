@@ -11,6 +11,7 @@
 #include "InternalCommsModule.h"
 #include "CANMessageLookUpModule.h"
 #include "SerialDebugDriver.h"
+#include "Profiles.h"
 
 // Function alias - replace with the driver api
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
@@ -91,7 +92,7 @@ PRIVATE void InternalCommsTask(void *argument)
 
 		}
 #else
-		DebugPrint("%s iComms Disabled in Profiles.h", ICT_TAG);
+//		DebugPrint("%s iComms Disabled in Profiles.h", ICT_TAG);
 #endif
 	}
 }
