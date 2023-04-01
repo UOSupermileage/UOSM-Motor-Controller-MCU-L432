@@ -2,8 +2,12 @@
 
 Firmware for motor controller.
 
-<img src="Images/requirements.png"/>
+## Resources
 
-## TMC API
-
-https://github.com/trinamic/TMC-API
+<table>
+<tr><th>Name</th><th>Description</th></tr>
+<tr>
+    <td><a href="https://github.com/trinamic/TMC-API">TMC API</a></td>
+    <td>A collection of read/write functions for communicating with the TMC4671 and TMC6200 using SPI</td>
+</tr>
+</table>
