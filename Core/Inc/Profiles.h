@@ -12,8 +12,8 @@
  * The define will enable this task in the system.
  */
 
-// #define PROFILE_ICOMMS
-// #define PROFILE_SAFETY
-// #define MOTOR_PROFILE
+ #define PROFILE_ICOMMS
+ #define PROFILE_SAFETY
+ #define MOTOR_PROFILE
 
 #endif /* INC_PROFILES_H_ */

@@ -12,7 +12,6 @@
 #ifndef INC_MOTORPARAMETERS_H_
 #define INC_MOTORPARAMETERS_H_
 
-
 /**
  * Select Target Motor
  * 0 == QBL4208-81-04-019 (Tiny Motor) (Eval board)
@@ -21,6 +20,14 @@
  */
 #define MOTOR 2
 
+/**
+ * Select Motor Mode
+ * 0 == Normal operation, set registers in TMC chips, make motor spin
+ * 1 == Idle operation, set registers in TMC chips, do not make motor spin
+ * 2 == RTMI operation, do nothing except enable driver and clear charge pump if configured
+ */
+
+#define MOTOR_MODE 0
 
 /*********************************************************************************
  *

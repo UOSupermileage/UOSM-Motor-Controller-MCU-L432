@@ -269,6 +269,7 @@ PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick) {
 	// Do encoder init
 	tmc4671_periodicJob(TMC4671_CS, actualSystick, motorDriverConfig.initMode, &motorDriverConfig.initState, &motorDriverConfig.initWaitTime, &motorDriverConfig.actualInitWaitTime, &motorDriverConfig.startVoltage, &motorDriverConfig.hall_phi_e_old, &motorDriverConfig.hall_phi_e_new, &motorDriverConfig.hall_actual_coarse_offset, &motorDriverConfig.last_Phi_E_Selection, &motorDriverConfig.last_UQ_UD_EXT, &motorDriverConfig.last_PHI_E_EXT);
 
+#ifdef MOTOR_MODE == 0
 	// 1ms velocity ramp handling
 	static uint32_t lastSystick;
 
@@ -305,7 +306,7 @@ PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick) {
 				tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_TARGET, rampGenerator.rampVelocity);
 				lastRampTargetVelocity = rampGenerator.rampVelocity;
 
-				// turn of velocity feed forward
+				// turn off velocity feed forward
 				tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_OFFSET, 0);
 			} else {
 				DebugPrint("Ramp Velocity Unchanged! [%d]", lastRampTargetVelocity);
@@ -315,12 +316,15 @@ PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick) {
 			tmc4671_writeInt(TMC4671_CS, TMC4671_PID_POSITION_TARGET, tmc4671_readInt(TMC4671_CS, TMC4671_PID_POSITION_ACTUAL));
 			rampGenerator.rampPosition = tmc4671_readInt(TMC4671_CS, TMC4671_PID_POSITION_ACTUAL);
 			rampGenerator.lastdXRest = 0;
+		} else if (actualMotionMode == TMC4671_MOTION_MODE_TORQUE) {
+
 		} else {
 			DebugPrint("Error. MotionMode [%d] is not implemented!", actualMotionMode);
 		}
 
 		lastSystick = actualSystick;
 	}
+#endif
 
 	return 0;
 }

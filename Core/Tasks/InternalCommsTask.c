@@ -86,13 +86,9 @@ PRIVATE void InternalCommsTask(void *argument)
 				} else {
 					DebugPrint("%s Unknown message id [%x], index [%d]", ICT_TAG, rxMsg.standardMessageID, lookupTableIndex);
 				}
-
-
 			}
 
 		}
-#else
-//		DebugPrint("%s iComms Disabled in Profiles.h", ICT_TAG);
 #endif
 	}
 }

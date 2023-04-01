@@ -37,9 +37,9 @@ const osThreadAttr_t MotorTask_attributes = {
 
 PUBLIC void InitMotorTask(void)
 {
-
+#ifdef MOTOR_PROFILE
 	MotorTaskHandle = osThreadNew(MotorTask, NULL, &MotorTask_attributes);
-
+#endif
 }
 PRIVATE void MotorTask(void *argument)
 {
@@ -48,24 +48,19 @@ PRIVATE void MotorTask(void *argument)
 	uint32_t cycleTick = osKernelGetTickCount();
 	DebugPrint("%s Initializing MotorTask", MOT_TAG);
 
+#if MOTOR_MODE == 0 || MOTOR_MODE == 1
 	motorInitialized = MotorInit();
+#elif MOTOR_MODE == 2
+	MotorSetCS(TMC4671_CS, GPIO_PIN_SET);
+	MotorSetCS(TMC6200_CS, GPIO_PIN_SET);
+	MotorEnableDriver(ENABLED);
+	HAL_Delay(500);
 
-
-#ifdef MOTOR_PROFILE
-	motorInitialized = MotorInit();
-
-	if (!motorInitialized) {
-		SystemSetSPIError(Set);
-		DebugPrint("%s Failed to initialize motor!", MOT_TAG);
-	}
-#else
-	// If motor is set to idle, just enable and do nothing else.
-//	MotorSetCS(TMC4671_CS, GPIO_PIN_SET);
-//	MotorSetCS(TMC6200_CS, GPIO_PIN_SET);
-//	MotorEnableDriver(ENABLED);
-//	HAL_Delay(500);
-//	MotorClearChargePump();
+	#ifdef MOTOR_CLEAR_CHARGE_PUMP_FAULT
+		MotorClearChargePump();
+	#endif
 #endif
+
 
 	for(;;)
 	{
@@ -73,16 +68,18 @@ PRIVATE void MotorTask(void *argument)
 		osDelayUntil(cycleTick);
 
 #ifdef MOTOR_FIXED_THROTTLE
-//		SystemSetThrottlePercentage(MOTOR_FIXED_THROTTLE);
-		SystemSetTargetVelocity(1000);
+		SystemSetThrottlePercentage(MOTOR_FIXED_THROTTLE);
 #endif
 
-#ifdef MOTOR_PROFILE
 		if (motorInitialized) {
-
 			DebugPrint("%s Target Velocity [%x]", MOT_TAG,  MOTOR_FIXED_THROTTLE);
+#if MOTOR_MODE == 0
 			MotorRotate(SystemGetTargetVelocity());
+#endif
+
+#if MOTOR_MODE == 0 || MOTOR_MODE == 1
 			MotorPeriodicJob(cycleTick);
+#endif
 		} else {
 			SystemSetSPIError(Set);
 			DebugPrint("%s Failed to initialize motor!", MOT_TAG);
@@ -91,11 +88,9 @@ PRIVATE void MotorTask(void *argument)
 			osDelay(TIMER_MOTOR_REINIT_DELAY);
 			motorInitialized = MotorInit();
 		}
-#else
-		MotorPrintFaults();
-		// If motor is set to idle, remind user.
-//		DebugPrint("Motor Parameters Set To Idle... Change in MotorParamters.h");
 
+#ifdef VERBOSE
+		MotorPrintFaults();
 #endif
 	}
 }

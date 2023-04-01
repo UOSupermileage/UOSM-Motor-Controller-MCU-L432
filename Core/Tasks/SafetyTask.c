@@ -18,6 +18,7 @@
 #include "SPIMotorDriver.h"
 
 #include "LEDStatusDriver.h"
+#include "Profiles.h"
 
 // Function alias - replace with the driver api
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
@@ -64,8 +65,6 @@ PRIVATE void SafetyTask(void *argument)
 		}
 
 		STATUS_PeriodicDisplayStatusCode();
-#else
-//		DebugPrint("%s Safety Task disabled in Profiles.h", SFT_TAG);
 #endif
 	}
 }
