@@ -48,6 +48,9 @@ PRIVATE void MotorTask(void *argument)
 	uint32_t cycleTick = osKernelGetTickCount();
 	DebugPrint("%s Initializing MotorTask", MOT_TAG);
 
+	motorInitialized = MotorInit();
+
+
 #ifdef MOTOR_PROFILE
 	motorInitialized = MotorInit();
 
@@ -57,11 +60,11 @@ PRIVATE void MotorTask(void *argument)
 	}
 #else
 	// If motor is set to idle, just enable and do nothing else.
-	MotorSetCS(TMC4671_CS, GPIO_PIN_SET);
-	MotorSetCS(TMC6200_CS, GPIO_PIN_SET);
-	MotorEnableDriver(ENABLED);
-	HAL_Delay(500);
-	MotorClearChargePump();
+//	MotorSetCS(TMC4671_CS, GPIO_PIN_SET);
+//	MotorSetCS(TMC6200_CS, GPIO_PIN_SET);
+//	MotorEnableDriver(ENABLED);
+//	HAL_Delay(500);
+//	MotorClearChargePump();
 #endif
 
 	for(;;)
