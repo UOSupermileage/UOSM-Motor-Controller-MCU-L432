@@ -1,4 +1,7 @@
+# Debugging
+
 # Powering from 5V pin
+
 Hwee Choo Liaw
 4 years, 6 months ago.
 I would like to connect a NUCLEO-L432KC to an external source through pin +5V. The idea is to disable ST-LINK to minimize the power consumption. ...
@@ -7,12 +10,7 @@ My solution: The SB9 must be removed as the T_NRST line will ground the STM32L43
 
 https://os.mbed.com/questions/77388/Powering-a-NUCLEO-L432KC-with-an-externa/
 
-# FreeRTOS
+# FreeRTOS Tips:
 
-## FreeRTOS Heap
-
-If only a subset of the tasks are being executed. Increase the heap size.
-
-## FreeRTOS priorities
-
-Give each task a different priority level. FreeRTOS can get confused if tasks share a priority level.
+- Give each task a different priority level. FreeRTOS can get confused if tasks share a priority level.
+- If not all tasks are executing, review your intervals and priorities. Do you have a task that is blocking execution of other tasks by firing too frequently?

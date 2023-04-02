@@ -31,6 +31,11 @@
 
 ## Internal Communications
 
+Responsabilties:
+
+- Poll CAN bus for new messages
+- Execute callback functions to handle received messages
+
 ## Safety
 
 Monitor system health and alert users via software fault light and CAN messages.
@@ -43,3 +48,8 @@ Responsabilities:
 - Monitoring healthy temperature of both the TMC4671 and TMC6200
 
 ## Motor
+
+Responsabilties:
+
+- Communicate with the TMC4671 and TMC6200.
+- Transfers throttle data to the TMC4671.

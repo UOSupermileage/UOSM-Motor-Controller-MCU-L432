@@ -2,6 +2,29 @@
 
 Firmware for motor controller.
 
+```mermaid
+---
+title: Motor Controller Code Architecture
+---
+flowchart BT
+    MotorTask["Motor Task"] --> DataAggregateModule["Data Aggregate Module"]
+    iCommsTask["iComms task"] --> DataAggregateModule
+    SafetyTask["Safety Task"] --> DataAggregateModule
+
+    iCommsTask --> CANMessageLookupModule["CAN Message Lookup Module"]
+    iCommsTask --> iCommsModule["iComms Module"]
+
+    iCommsModule --> SafetyModule["Safety Module"]
+
+    CANDriver["CAN Driver"] --> iCommsModule
+    MCPDriver["MSP2515 Driver"] --> CANDriver
+
+    SPIMotorDriver --> MotorTask
+    SPIMotorDriver --> SafetyTask
+
+    LEDStatusDriver["LED Status Driver"] --> SafetyTask
+```
+
 ## Resources
 
 <table>
