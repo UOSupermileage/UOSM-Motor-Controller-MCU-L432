@@ -1,4 +1,5 @@
 - [Home](/)
 - [Hardware Setup](HardwareSetup.md)
+- [Motor Parameters](MotorParameters.md)
 - [Tasks](Tasks.md)
 - [Debugging](Debugging.md)

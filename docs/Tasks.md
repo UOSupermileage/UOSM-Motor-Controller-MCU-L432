@@ -49,11 +49,19 @@ Responsabilities:
 
 ## Motor
 
-We communicate with the TMC4671 and TMC6200 using SPI. To see the execution loop, see
-
 Responsabilties:
 
 - Communicate with the TMC4671 and TMC6200.
-- Transfers throttle data to the TMC4671.
+- Transfer throttle data to the TMC4671.
 
-[MotorTask](https://raw.githubusercontent.com/UOSupermileage/UOSM-Motor-Controller-MCU-L432/main/Core/Tasks/MotorTask.c ":include :type=code :fragment=task")
+Behaviour is configured in the [MotorParamters.h Configuration File](/MotorParameters.md)
+
+Functions prefixed by System are defined in the [Data Aggregation Module](https://github.com/UOSupermileage/UOSM-Motor-Controller-MCU-L432/blob/main/Core/Modules/DataAggregationModule.h)
+
+Functions prefixed by Motor are defined in the [SPI Motor Driver](https://github.com/UOSupermileage/UOSM-Motor-Controller-MCU-L432/blob/main/Core/UserDrivers/SPIMotorDriver.h)
+
+<div style="display: flex">
+    <a style="margin-inline: auto; font-size: 1.5em" href="https://github.com/UOSupermileage/UOSM-Motor-Controller-MCU-L432/blob/main/Core/Tasks/MotorTask.c">MotorTask.c</a>
+</div>
+
+[MotorTask](/Core/Tasks/MotorTask.c ":include :type=code :fragment=task")

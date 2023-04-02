@@ -100,13 +100,9 @@ void MotorSetCS(uint8_t cs, GPIO_PinState state) {
 
 PUBLIC uint32_t MotorInit() {
 
-	MotorEnableDriver(ENABLED);
+	MotorEnableDriver(DISABLED);
 
-#ifdef MOTOR_CLEAR_CHARGE_PUMP_FAULT
-	HAL_Delay(1000);
-	MotorClearChargePump();
-	HAL_Delay(1000);
-#endif
+#if MOTOR_MODE == 0 || MOTOR_MODE == 1
 
 	motorDriverConfig.initWaitTime = 1000;
 	motorDriverConfig.startVoltage             	= 6000;
@@ -126,9 +122,6 @@ PUBLIC uint32_t MotorInit() {
 	motorDriverConfig.positionScaler				= POSITION_SCALE_MAX;
 	motorDriverConfig.enableVelocityFeedForward 	= true;
 	motorDriverConfig.linearScaler             	= 30000; // µm / rotation
-
-//	MotorEnableDriver(DISABLED);
-
 
 	// Set all chip select lines to high
 	MotorSetCS(TMC4671_CS, GPIO_PIN_SET);
@@ -169,11 +162,6 @@ PUBLIC uint32_t MotorInit() {
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_TORQUE_P_TORQUE_I, MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_FLUX_P_FLUX_I, MOTOR_CONFIG_PID_FLUX_P_FLUX_I);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_P_VELOCITY_I, MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I);
-
-	// ===== Digital hall test drive =====
-
-	// Switch to torque mode
-//	tmc4671_writeInt(TMC4671_CS, TMC4671_MODE_RAMP_MODE_MOTION, MOTOR_CONFIG_MODE_RAMP_MODE_MOTION);
 
 	// Stop motor
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_TARGET, 0x0000);
@@ -216,12 +204,12 @@ PUBLIC uint32_t MotorInit() {
 	DebugPrint("Read [%08x], [%08x], [%08x]", generalConf, shortConf, driveConf);
 
 
-//	if ((generalConf == MOTOR_CONFIG_DRIVER_GENERAL_CONFIG) && (shortConf == MOTOR_CONFIG_DRIVER_SHORT_CONFIG) && (driveConf == MOTOR_CONFIG_DRIVER_DRIVE_CONFIG)) {
-//		DebugPrint("Motor Driver [" MOTOR_DRIVER_LABEL "] successfuly initialized!");
-//	} else {
-//		DebugPrint("Failed to initialize Motor Driver [" MOTOR_DRIVER_LABEL "]");
-//		return false;
-//	}
+	if ((generalConf == MOTOR_CONFIG_DRIVER_GENERAL_CONFIG) && (shortConf == MOTOR_CONFIG_DRIVER_SHORT_CONFIG) && (driveConf == MOTOR_CONFIG_DRIVER_DRIVE_CONFIG)) {
+		DebugPrint("Motor Driver [" MOTOR_DRIVER_LABEL "] successfuly initialized!");
+	} else {
+		DebugPrint("Failed to initialize Motor Driver [" MOTOR_DRIVER_LABEL "]");
+		return false;
+	}
 
 	// If value is read is correct, than motor registers were properly set
 	if (nPolePairs == MOTOR_CONFIG_N_POLE_PAIRS) {
@@ -231,19 +219,31 @@ PUBLIC uint32_t MotorInit() {
 		return false;
 	}
 
-//	MotorEnableDriver(ENABLED);
+	MotorEnableDriver(ENABLED);
 
 #ifdef MOTOR_CLEAR_CHARGE_PUMP_FAULT
 	HAL_Delay(1000);
 	MotorClearChargePump();
 #endif
 
-//	uint32_t stats1 = tmc6200_readInt(TMC6200_CS, TMC6200_GSTAT);
-//	if (stats1 != 0 && stats1 != 1) {
-//		DebugPrint("Motor Driver [" MOTOR_DRIVER_LABEL "] Fault Detected: [%x]", stats1);
-//		return false;
-//		MotorEnableDriver(DISABLED);
-//	}
+	uint32_t stats1 = tmc6200_readInt(TMC6200_CS, TMC6200_GSTAT);
+	if (stats1 != 0 && stats1 != 1) {
+		DebugPrint("Motor Driver [" MOTOR_DRIVER_LABEL "] Fault Detected: [%x]", stats1);
+		MotorPrintFaults();
+		MotorEnableDriver(DISABLED);
+		return false;
+	}
+
+#elif MOTOR_MODE == 2
+    MotorSetCS(TMC4671_CS, GPIO_PIN_SET);
+    MotorSetCS(TMC6200_CS, GPIO_PIN_SET);
+    MotorEnableDriver(ENABLED);
+    HAL_Delay(1000);
+
+	#ifdef MOTOR_CLEAR_CHARGE_PUMP_FAULT
+		MotorClearChargePump();
+	#endif
+#endif
 
 	return true;
 }
@@ -287,10 +287,12 @@ PUBLIC uint32_t MotorRotateTorque(int32_t torque) {
 
 PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick) {
 
+#if MOTOR_MODE == 0 || MOTOR_MODE == 1
 	// Do encoder init
 	tmc4671_periodicJob(TMC4671_CS, actualSystick, motorDriverConfig.initMode, &motorDriverConfig.initState, &motorDriverConfig.initWaitTime, &motorDriverConfig.actualInitWaitTime, &motorDriverConfig.startVoltage, &motorDriverConfig.hall_phi_e_old, &motorDriverConfig.hall_phi_e_new, &motorDriverConfig.hall_actual_coarse_offset, &motorDriverConfig.last_Phi_E_Selection, &motorDriverConfig.last_UQ_UD_EXT, &motorDriverConfig.last_PHI_E_EXT);
+#endif
 
-#ifdef MOTOR_MODE == 0
+#if MOTOR_MODE == 0
 	// 1ms velocity ramp handling
 	static uint32_t lastSystick;
 

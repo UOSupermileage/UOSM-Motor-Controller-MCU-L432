@@ -40,63 +40,56 @@ PUBLIC void InitMotorTask(void) {
 #endif
 }
 /// [task]
+/**
+ * Execution Loop for Motor Task.
+ */
 PRIVATE void MotorTask(void *argument) {
-    uint32_t motorInitialized = 0;
+    // Keep track of current tick count
+	uint32_t cycleTick = osKernelGetTickCount();
 
-    uint32_t cycleTick = osKernelGetTickCount();
+	// Initialize the system as configured in MotorParameters.h
     DebugPrint("%s Initializing MotorTask", MOT_TAG);
-
-#if MOTOR_MODE == 0 || MOTOR_MODE == 1
-    motorInitialized = MotorInit();
-#elif MOTOR_MODE == 2
-    MotorSetCS(TMC4671_CS, GPIO_PIN_SET);
-    MotorSetCS(TMC6200_CS, GPIO_PIN_SET);
-    MotorEnableDriver(ENABLED);
-    HAL_Delay(500);
-
-#ifdef MOTOR_CLEAR_CHARGE_PUMP_FAULT
-    MotorClearChargePump();
-#endif
-#endif
+    uint32_t motorInitialized = MotorInit();
 
     for (;;) {
+    	// Increment cycleTick and wait until the delay has passed
         cycleTick += TIMER_MOTOR_TASK;
         osDelayUntil(cycleTick);
 
-#ifdef MOTOR_FIXED_THROTTLE
-        SystemSetThrottlePercentage(MOTOR_FIXED_THROTTLE);
-#endif
+		#if MOTOR_MODE == 0 || MOTOR_MODE == 1
 
-        if (motorInitialized) {
-#if MOTOR_MODE == 0
-#if MOTOR_CONFIG_MODE_RAMP_MODE_MOTION == 1
-            DebugPrint("%s Target Torque [%x]", MOT_TAG,
-                       SystemGetThrottlePercentage() *
-                           MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS / 1000);
-            MotorRotateTorque(SystemGetThrottlePercentage() *
-                              MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS / 1000);
-#elif MOTOR_CONFIG_MODE_RAMP_MODE_MOTION == 2
-            DebugPrint("%s Target Velocity [%x]", MOT_TAG,
-                       MOTOR_FIXED_THROTTLE);
-            MotorRotate(SystemGetTargetVelocity());
-#endif
-#endif
+			#ifdef MOTOR_FIXED_THROTTLE
+        			// Set throttle on each execution of loop to ensure throttle is not changed
+					SystemSetThrottlePercentage(MOTOR_FIXED_THROTTLE);
+			#endif
 
-#if MOTOR_MODE == 0 || MOTOR_MODE == 1
-            MotorPeriodicJob(cycleTick);
-#endif
-        } else {
-            SystemSetSPIError(Set);
-            DebugPrint("%s Failed to initialize motor!", MOT_TAG);
+			if (motorInitialized) {
+				#if MOTOR_MODE == 0
+					#if MOTOR_CONFIG_MODE_RAMP_MODE_MOTION == 1
+						DebugPrint("%s Target Torque [%x]", MOT_TAG, SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS / 1000);
+						MotorRotateTorque(SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS / 1000);
+					#elif MOTOR_CONFIG_MODE_RAMP_MODE_MOTION == 2
+						DebugPrint("%s Target Velocity [%x]", MOT_TAG, MOTOR_FIXED_THROTTLE);
+						MotorRotate(SystemGetTargetVelocity());
+					#endif
 
-            // If motor failed to initialize, wait and then reinit
-            osDelay(TIMER_MOTOR_REINIT_DELAY);
-            motorInitialized = MotorInit();
-        }
+					MotorPeriodicJob(cycleTick);
+				#endif
+			} else {
+				// Motor was not initialized. This indicates that communication with the TMC4671 or TMC6200 failed.
+				SystemSetSPIError(Set);
+				DebugPrint("%s Failed to initialize motor!", MOT_TAG);
 
-#ifdef VERBOSE
-        MotorPrintFaults();
-#endif
+				// Motor failed to initialize, wait and then reinit
+				osDelay(TIMER_MOTOR_REINIT_DELAY);
+				motorInitialized = MotorInit();
+			}
+		#endif
+
+	#ifdef VERBOSE
+			// Read registers in TMC6200 and check for faults
+			MotorPrintFaults();
+	#endif
     }
 /// [task]
 }
