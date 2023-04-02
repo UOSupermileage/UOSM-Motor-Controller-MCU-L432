@@ -52,7 +52,28 @@
         // complete configuration parameters
         search: {
           maxAge: 86400000, // Expiration time, the default one day
-          paths: ["/#/"], // or 'auto'
+          paths: [
+            "/",
+            "/#/",
+            "/#/Tasks",
+            "/Tasks",
+            "/HardwareSetup",
+            "/#/HardwareSetup",
+            "/MotorParameters",
+            "/#/MotorParameters",
+            "/Debugging",
+            "/#/Debugging",
+            "/UOSM-Motor-Controller-MCU-L432/",
+            "/UOSM-Motor-Controller-MCU-L432/#/",
+            "/UOSM-Motor-Controller-MCU-L432/#/Tasks",
+            "/UOSM-Motor-Controller-MCU-L432/Tasks",
+            "/UOSM-Motor-Controller-MCU-L432/HardwareSetup",
+            "/UOSM-Motor-Controller-MCU-L432/#/HardwareSetup",
+            "/UOSM-Motor-Controller-MCU-L432/MotorParameters",
+            "/UOSM-Motor-Controller-MCU-L432/#/MotorParameters",
+            "/UOSM-Motor-Controller-MCU-L432/Debugging",
+            "/UOSM-Motor-Controller-MCU-L432/#/Debugging",
+          ], // or 'auto'
           placeholder: "Type to search",
           noData: "No Results!",
           depth: 6, // Headline depth, 1 - 6
