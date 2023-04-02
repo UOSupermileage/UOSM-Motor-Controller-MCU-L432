@@ -14,9 +14,11 @@
 
 /**
  * Select Target Motor
- * 0 == QBL4208-81-04-019 (Tiny Motor) (Eval board)
- * 1 == BLK322D-48V-3000 (48V Motor that runs at 3000 RPM) (Eval board)
- * 2 == Custom Board (Max Current 5Amps, 200 acceleration, 2500RPM)
+ * 0 == QBL4208-81-04-019	(Tiny Motor) (Eval board)
+ * 1 == BLK322D-48V-3000 	(Eval board)
+ * 2 == BLK322D-48V-3000 	(Custom Board)
+ *
+ * Note: BLK322D-48V-3000 -> Motor in the car, 48V with a 3000 RPM max
  */
 #define MOTOR 2
 
@@ -31,7 +33,21 @@
 
 /*********************************************************************************
  *
+ * 		Motion Mode Parameters
+ * 		1 == Torque
+ * 		2 == Velocity
+ *
+ **********************************************************************************/
+
+#define MOTOR_CONFIG_MODE_RAMP_MODE_MOTION 1
+/*********************************************************************************
+ *
  * 		Fixed Throttle Value in RPM (Use for testing only)
+ * 		When defined, override throttle input with this value.
+ * 		Percentage of max RPM / max Torque depending on motion mode.
+ *
+ * 		Increments of 0.1%.
+ * 		Ex: 200 -> 20%, 650 -> 65%
  *
  **********************************************************************************/
 
@@ -40,6 +56,10 @@
 /*********************************************************************************
  *
  * 		Motor Torque Acceleration Step Size
+ * 		Defines the largest jump in torque allowed.
+ * 		Larger jumps will be split into steps of this size.
+ *
+ * 		Only applied when using torque motion mode.
  *
  **********************************************************************************/
 
@@ -60,6 +80,8 @@
 /*********************************************************************************
  *
  * 		Motor Type
+ *
+ * 		0x0030004 -> BLDC motor with 4 pole pairs
  *
  **********************************************************************************/
 
@@ -133,8 +155,6 @@
  *
  * 		Digital hall Parameters
  *
- * 		HALL_MODE = Mode for digital hall sensors uses as position decoder.
- *
  **********************************************************************************/
 
 #if MOTOR == 0
@@ -151,6 +171,9 @@
  *
  * 		Selectors
  *
+ *		MOTOR_INIT_MODE 0 -> Use open loop to initialize the encoder effset.
+ *		MOTOR_INIT_MODE 2 -> Use hall sensors to initialize the encoder offset.
+ *
  **********************************************************************************/
 
 #if MOTOR == 0
@@ -160,34 +183,39 @@
 #elif MOTOR == 1
 	#define MOTOR_CONFIG_PHI_E_SELECTION (uint32_t)0x00000003
 	#define MOTOR_CONFIG_VELOCITY_SELECTION (uint32_t)0x00000003
-	#define MOTOR_INIT_MODE 2 // 2 = use hall sensor signals to init
+	#define MOTOR_INIT_MODE 2
 #elif MOTOR == 2
 	#define MOTOR_CONFIG_PHI_E_SELECTION (uint32_t)0x00000003
 	#define MOTOR_CONFIG_VELOCITY_SELECTION (uint32_t)0x00000009
-	#define MOTOR_INIT_MODE 2 // 2 = use hall sensor signals to init
+	#define MOTOR_INIT_MODE 2
 #endif
 
 /*********************************************************************************
  *
  * 		Limit Parameters
  *
+ *		MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS is the maximum mA that the motor can draw
+ *		MIN_VELOCITY and MAX_VELOCITY are absolute values.
+ *
  **********************************************************************************/
 
 #define MIN_VELOCITY 0
 
 #if MOTOR == 0
-	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 1000 // in mA
+	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 1000
 	#define MAX_VELOCITY 4000
 #elif MOTOR == 1
-	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 1000 // in mA
+	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 1000
 	#define MAX_VELOCITY 3000
 #elif MOTOR == 2
-	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 5000 // in mA
+	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 5000
 	#define MAX_VELOCITY 2500
 #endif
 /*********************************************************************************
  *
  * 		PI Parameters
+ *
+ * 		Set PI values. Very important for proper behaviour.
  *
  **********************************************************************************/
 
@@ -207,6 +235,8 @@
 /*********************************************************************************
  *
  * 		ABN Decoder Parameters
+ *
+ * 		#define ABN -> Enable ABN in code. Preserve parameters and disable ABN by removing this define.
  *
  **********************************************************************************/
 
@@ -234,20 +264,9 @@
 	#define MOTOR_CONFIG_ABN_DECODER_COUNT_N (uint32_t) 0x00000494 //0x28: Decoder count latched on N pulse, when N pulse clears decoder_count also decoder_count_n is 0.
 	#define MOTOR_CONFIG_ABN_DECODER_PHI_E_PHI_M_OFFSET 0xC1800000 //0x29: ABN_DECODER_PHI_M_OFFSET to shift (rotate) angle DECODER_PHI_M.
 #endif
-
-
 /*********************************************************************************
  *
- * 		Motion Mode Parameters
- * 		1 == Torque
- * 		2 == Velocity
- *
- **********************************************************************************/
-
-#define MOTOR_CONFIG_MODE_RAMP_MODE_MOTION 1
-/*********************************************************************************
- *
- * 		Miscelanious Parameters. Unused, but may be useful later
+ * 		Miscelanious Parameters.
  *
  **********************************************************************************/
 
