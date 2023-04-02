@@ -4,8 +4,8 @@ Firmware for motor controller.
 
 ## Core Features
 
-- <a class="button-53"  href="/#/Tasks?id=motor">Motor Control</a>
-- <a class="button-53"  href="/#/Tasks?id=internal-communications">CAN Bus</a>
+- [Motor Control](/Tasks.md#motor)
+- [CAN Bus](/Tasks.md#internal-communications)
 
 ## Resources
 
