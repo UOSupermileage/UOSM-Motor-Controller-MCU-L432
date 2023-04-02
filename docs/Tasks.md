@@ -49,7 +49,15 @@ Responsabilities:
 
 ## Motor
 
+We communicate with the TMC4671 and TMC6200 using SPI. To see the execution loop, see
+
 Responsabilties:
 
 - Communicate with the TMC4671 and TMC6200.
 - Transfers throttle data to the TMC4671.
+
+```c
+uint32_t a = 1;
+```
+
+[MotorTask](https://raw.githubusercontent.com/UOSupermileage/UOSM-Motor-Controller-MCU-L432/main/Core/Tasks/MotorTask.c ":include :type=code")
