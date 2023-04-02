@@ -39,7 +39,7 @@ PUBLIC void InitMotorTask(void) {
     MotorTaskHandle = osThreadNew(MotorTask, NULL, &MotorTask_attributes);
 #endif
 }
-/// task
+/// [task]
 PRIVATE void MotorTask(void *argument) {
     uint32_t motorInitialized = 0;
 
@@ -98,5 +98,5 @@ PRIVATE void MotorTask(void *argument) {
         MotorPrintFaults();
 #endif
     }
-/// task
+/// [task]
 }
