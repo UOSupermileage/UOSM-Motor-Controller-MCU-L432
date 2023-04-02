@@ -37,6 +37,15 @@
 
 #define MOTOR_FIXED_THROTTLE 200
 
+/*********************************************************************************
+ *
+ * 		Motor Torque Acceleration Step Size
+ *
+ **********************************************************************************/
+
+
+#define MOTOR_TORQUE_ACCELERATION 1000
+
 
 /*********************************************************************************
  *
@@ -230,14 +239,12 @@
 /*********************************************************************************
  *
  * 		Motion Mode Parameters
+ * 		1 == Torque
+ * 		2 == Velocity
  *
  **********************************************************************************/
 
-#if MOTOR == 2
-	#define MOTOR_CONFIG_MODE_RAMP_MODE_MOTION (uint32_t)0x00000008 // Velocity
-#else
-	#define MOTOR_CONFIG_MODE_RAMP_MODE_MOTION (uint32_t)0x00000002 // Velocity
-#endif
+#define MOTOR_CONFIG_MODE_RAMP_MODE_MOTION 1
 /*********************************************************************************
  *
  * 		Miscelanious Parameters. Unused, but may be useful later

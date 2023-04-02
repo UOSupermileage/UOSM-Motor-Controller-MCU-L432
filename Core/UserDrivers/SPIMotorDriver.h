@@ -62,6 +62,8 @@ PUBLIC uint32_t MotorValidateSPI();
  */
 PUBLIC uint32_t MotorRotate(int32_t velocity);
 
+PUBLIC uint32_t MotorRotateTorque(int32_t torque);
+
 PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick);
 
 PUBLIC uint32_t MotorEnableDriver(Enable_t enabled);

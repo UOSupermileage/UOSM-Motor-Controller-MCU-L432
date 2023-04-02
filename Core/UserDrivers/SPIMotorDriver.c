@@ -33,6 +33,8 @@ int32_t lastRampTargetVelocity;
 int32_t lastRampTargetPosition;
 uint8_t actualMotionMode;
 
+uint32_t targetTorqueForTorqueMode = 0;
+uint32_t torqueAcceleration = MOTOR_TORQUE_ACCELERATION;
 
 // => SPI wrapper
 /**
@@ -158,7 +160,6 @@ PUBLIC uint32_t MotorInit() {
 	// Feedback selection
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PHI_E_SELECTION, MOTOR_CONFIG_PHI_E_SELECTION);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_VELOCITY_SELECTION, MOTOR_CONFIG_VELOCITY_SELECTION);
-	tmc4671_writeInt(TMC4671_CS, TMC4671_POSITION_SELECTION, 0x0000);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_MODE_RAMP_MODE_MOTION, MOTOR_CONFIG_MODE_RAMP_MODE_MOTION);
 
 	// Limits
@@ -264,6 +265,26 @@ PUBLIC uint32_t MotorRotate(int32_t velocity) {
 	return 0;
 }
 
+PUBLIC uint32_t MotorRotateTorque(int32_t torque) {
+	tmc4671_switchToMotionMode(TMC4671_CS, TMC4671_MOTION_MODE_TORQUE);
+	actualMotionMode = TMC4671_MOTION_MODE_TORQUE;
+
+	uint32_t diff = abs(torque - targetTorqueForTorqueMode);
+
+
+	if (diff > torqueAcceleration) {
+		if (torque < targetTorqueForTorqueMode) {
+			targetTorqueForTorqueMode -= torqueAcceleration;
+		} else {
+			targetTorqueForTorqueMode += torqueAcceleration;
+		}
+	} else {
+		targetTorqueForTorqueMode = torque;
+	}
+
+	return 0;
+}
+
 PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick) {
 
 	// Do encoder init
@@ -317,7 +338,7 @@ PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick) {
 			rampGenerator.rampPosition = tmc4671_readInt(TMC4671_CS, TMC4671_PID_POSITION_ACTUAL);
 			rampGenerator.lastdXRest = 0;
 		} else if (actualMotionMode == TMC4671_MOTION_MODE_TORQUE) {
-
+			tmc4671_setTargetTorque_mA(TMC4671_CS, motorDriverConfig.torqueMeasurementFactor, targetTorqueForTorqueMode);
 		} else {
 			DebugPrint("Error. MotionMode [%d] is not implemented!", actualMotionMode);
 		}

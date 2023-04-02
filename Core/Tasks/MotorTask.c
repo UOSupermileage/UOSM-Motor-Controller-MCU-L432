@@ -72,9 +72,14 @@ PRIVATE void MotorTask(void *argument)
 #endif
 
 		if (motorInitialized) {
-			DebugPrint("%s Target Velocity [%x]", MOT_TAG,  MOTOR_FIXED_THROTTLE);
 #if MOTOR_MODE == 0
-			MotorRotate(SystemGetTargetVelocity());
+	#if MOTOR_CONFIG_MODE_RAMP_MODE_MOTION == 1
+				DebugPrint("%s Target Torque [%x]", MOT_TAG,  SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS / 1000);
+				MotorRotateTorque(SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS / 1000);
+	#elif MOTOR_CONFIG_MODE_RAMP_MODE_MOTION == 2
+				DebugPrint("%s Target Velocity [%x]", MOT_TAG,  MOTOR_FIXED_THROTTLE);
+				MotorRotate(SystemGetTargetVelocity());
+	#endif
 #endif
 
 #if MOTOR_MODE == 0 || MOTOR_MODE == 1
