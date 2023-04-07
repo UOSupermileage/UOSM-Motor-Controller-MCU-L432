@@ -61,8 +61,6 @@ void Error_Handler(void);
 #define EnableTMC_GPIO_Port GPIOB
 #define CS_CAN_Pin GPIO_PIN_1
 #define CS_CAN_GPIO_Port GPIOB
-#define Software_Fault_Light_Pin GPIO_PIN_10
-#define Software_Fault_Light_GPIO_Port GPIOA
 #define CS_TMC4671_Pin GPIO_PIN_4
 #define CS_TMC4671_GPIO_Port GPIOB
 #define CS_TMC6200_Pin GPIO_PIN_5

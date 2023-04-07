@@ -51,7 +51,7 @@
  *
  **********************************************************************************/
 
-#define MOTOR_FIXED_THROTTLE 200
+//#define MOTOR_FIXED_THROTTLE 1000
 
 /*********************************************************************************
  *
@@ -64,7 +64,7 @@
  **********************************************************************************/
 
 
-#define MOTOR_TORQUE_ACCELERATION 1000
+#define MOTOR_TORQUE_ACCELERATION 1500
 
 
 /*********************************************************************************
@@ -202,14 +202,14 @@
 #define MIN_VELOCITY 0
 
 #if MOTOR == 0
-	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 1000
+	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 2000
 	#define MAX_VELOCITY 4000
 #elif MOTOR == 1
 	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 1000
 	#define MAX_VELOCITY 3000
 #elif MOTOR == 2
-	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 5000
-	#define MAX_VELOCITY 2500
+	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 20000
+	#define MAX_VELOCITY 3000
 #endif
 /*********************************************************************************
  *
@@ -222,15 +222,15 @@
 #if MOTOR == 0
 	#define MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I (uint32_t)0x01000100
 	#define MOTOR_CONFIG_PID_FLUX_P_FLUX_I (uint32_t)0x01000100
-	#define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x00000000
+	#define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x000F0000
 #elif MOTOR == 1
 	#define MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I (uint32_t)0x01000100
 	#define MOTOR_CONFIG_PID_FLUX_P_FLUX_I (uint32_t)0x01000100
 	#define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x00000000
 #elif MOTOR == 2
-	#define MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I (uint32_t)0x02671A8B
-	#define MOTOR_CONFIG_PID_FLUX_P_FLUX_I (uint32_t)0x02671A8B
-	#define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x0104002E
+	#define MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I (uint32_t)0x033E1110
+	#define MOTOR_CONFIG_PID_FLUX_P_FLUX_I (uint32_t)0x033E1110
+	#define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x00000000
 #endif
 /*********************************************************************************
  *
@@ -332,7 +332,7 @@
 	 * Drive parameters
 	 * 0x00080004 is the factory default value
 	 */
-	#define MOTOR_CONFIG_DRIVER_DRIVE_CONFIG (uint32_t)0x00080004
+	#define MOTOR_CONFIG_DRIVER_DRIVE_CONFIG (uint32_t)0x00040004
 
 	#define MOTOR_CLEAR_CHARGE_PUMP_FAULT
 #endif

@@ -256,6 +256,12 @@ uint8_t CANSPI_Receive(iCommsMessage_t * rxMsg)
 	rxMsg->standardMessageID = tempCanMsg.frame.id;
 	rxMsg->dataLength = tempCanMsg.frame.dlc;
 
+	if (tempCanMsg.frame.dlc == 255) {
+		DebugPrint("IGNORING CAN, MESSAGE PROBABLY CORRUPTED");
+		return 0;
+	}
+
+	// TODO: Make this not crash when CAN
 	for(uint8_t i=0; i<tempCanMsg.frame.dlc; i++)
 	{
 		rxMsg->data[i] = tempCanMsg.frame.data[i];

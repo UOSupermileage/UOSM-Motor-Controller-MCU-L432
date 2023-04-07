@@ -21,6 +21,8 @@
 
 #define MAX_SERIAL_PRINT_LENGTH 128
 
+//#define VERBOSE
+
 /* NOTE:
  * Initalization of the serial peripheral is done in main.c
  * Auto generated init by the IOC file */

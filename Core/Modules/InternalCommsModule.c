@@ -127,6 +127,8 @@ PUBLIC result_t IComms_ReceiveNextMessage(iCommsMessage_t * rxMsg)
 PUBLIC uint8_t IComms_HasRxMessage()
 {
 	if(Heap_GetHeapSize(&canRxHeap) != 0) return 1;
+
+	DebugPrint("No Messages...");
 	return 0;
 }
 

@@ -18,7 +18,7 @@
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
 
 #define STACK_SIZE 128 * 4
-#define MOTOR_TASK_PRIORITY (osPriority_t) osPriorityRealtime1
+#define MOTOR_TASK_PRIORITY (osPriority_t) osPriorityHigh3
 #define TIMER_MOTOR_TASK 500UL
 #define TIMER_MOTOR_REINIT_DELAY 5000UL
 
@@ -56,6 +56,8 @@ PRIVATE void MotorTask(void *argument) {
         cycleTick += TIMER_MOTOR_TASK;
         osDelayUntil(cycleTick);
 
+        DebugPrint("Motor Task");
+
 		#if MOTOR_MODE == 0 || MOTOR_MODE == 1
 
 			#ifdef MOTOR_FIXED_THROTTLE
@@ -66,10 +68,10 @@ PRIVATE void MotorTask(void *argument) {
 			if (motorInitialized) {
 				#if MOTOR_MODE == 0
 					#if MOTOR_CONFIG_MODE_RAMP_MODE_MOTION == 1
-						DebugPrint("%s Target Torque [%x]", MOT_TAG, SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS / 1000);
+						DebugPrint("%s Target Torque [%d mA]", MOT_TAG, SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS / 1000);
 						MotorRotateTorque(SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS / 1000);
 					#elif MOTOR_CONFIG_MODE_RAMP_MODE_MOTION == 2
-						DebugPrint("%s Target Velocity [%x]", MOT_TAG, MOTOR_FIXED_THROTTLE);
+						DebugPrint("%s Target Velocity [%d RPM]", MOT_TAG, SystemGetTargetVelocity());
 						MotorRotate(SystemGetTargetVelocity());
 					#endif
 
@@ -83,6 +85,8 @@ PRIVATE void MotorTask(void *argument) {
 				// Motor failed to initialize, wait and then reinit
 				osDelay(TIMER_MOTOR_REINIT_DELAY);
 				motorInitialized = MotorInit();
+//				DebugPrint("%s Read DRV_CONF: %x", MOT_TAG, tmc6200_readInt(TMC6200_CS, TMC6200_DRV_CONF));
+//				DebugPrint("%s Read HALL_MODE: %x", MOT_TAG, tmc4671_readInt(TMC4671_CS, TMC4671_HALL_MODE));
 			}
 		#endif
 
