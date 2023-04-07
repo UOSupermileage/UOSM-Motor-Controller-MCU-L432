@@ -12,6 +12,7 @@
 #include "CANMessageLookUpModule.h"
 #include "SerialDebugDriver.h"
 #include "Profiles.h"
+#include "DataAggregationModule.h"
 
 // Function alias - replace with the driver api
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
@@ -20,7 +21,7 @@
 #define INTERNAL_COMMS_TASK_PRIORITY (osPriority_t) osPriorityRealtime
 #define TIMER_INTERNAL_COMMS_TASK 100UL
 
-#define SPEED_RATE 16
+#define THROTTLE_ERROR_BROADCAST_RATE 5
 
 PUBLIC void InitInternalCommsTask(void);
 PRIVATE void InternalCommsTask(void *argument);
@@ -44,6 +45,9 @@ PRIVATE void InternalCommsTask(void *argument)
 {
 	uint32_t cycleTick = osKernelGetTickCount();
 	DebugPrint("%s icomms", ICT_TAG);
+
+	const ICommsMessageInfo* errorInfo = CANMessageLookUpGetInfo(ERROR_DATA_ID);
+	uint8_t throttleErrorBroadcastCounter = 0;
 
 	IComms_Init();
 	for(;;)
@@ -88,6 +92,21 @@ PRIVATE void InternalCommsTask(void *argument)
 				}
 			}
 
+		}
+
+		// Broadcast
+		if (throttleErrorBroadcastCounter >= THROTTLE_ERROR_BROADCAST_RATE) {
+
+			DebugPrint("%s Sending Throttle Error Code %d!", ICT_TAG, SystemGetThrottleError());
+
+			iCommsMessage_t throttleTxMsg = IComms_CreateErrorMessage(errorInfo->messageID, THROTTLE_TOO_HIGH, SystemGetThrottleError());
+			result_t r = IComms_Transmit(&throttleTxMsg);
+
+			DebugPrint("%s Sending Throttle Error Code! [Result = %d]", ICT_TAG, r);
+			throttleErrorBroadcastCounter = 0;
+		} else {
+			DebugPrint("Increment");
+			throttleErrorBroadcastCounter++;
 		}
 #endif
 	}

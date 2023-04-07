@@ -29,6 +29,13 @@ typedef enum {
 	DISABLED
 } Enable_t;
 
+typedef enum ErrorCode
+{
+	THROTTLE_TOO_HIGH
+} ErrorCode;
+
+typedef enum { Clear = 0, Set = 1 } flag_status_t;
+
 
 typedef uint16_t length_t;
 typedef uint16_t percentage_t;

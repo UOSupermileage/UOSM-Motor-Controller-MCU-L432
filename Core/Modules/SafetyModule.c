@@ -6,6 +6,8 @@
  */
 
 
+#include <ApplicationTypes.h>
+
 #include "SafetyModule.h"
 
 #include "DataAggregationModule.h"
@@ -23,6 +25,7 @@ PUBLIC result_t Safety_SetThrottlePercentage(percentage_t percentage) {
 		return RESULT_FAIL;
 	}
 
+	DebugPrint("%s Good Throttle", SFT_TAG);
 	SystemSetThrottlePercentage(percentage);
 
 	SystemSetThrottleError(Clear);

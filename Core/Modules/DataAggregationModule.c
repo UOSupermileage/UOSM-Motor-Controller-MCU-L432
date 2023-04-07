@@ -86,9 +86,12 @@ PUBLIC void SystemSetSafetyError(flag_status_t status) {
 }
 
 PUBLIC flag_status_t SystemGetThrottleError() {
+	DebugPrint("Getting Throttle Error %d", motorStatus.throttleError);
 	return motorStatus.throttleError;
 }
 
 PUBLIC void SystemSetThrottleError(flag_status_t status) {
-	motorStatus.safetyError = status;
+	motorStatus.throttleError = status;
+	DebugPrint("Setting Throttle Error %d", motorStatus.throttleError);
+
 }

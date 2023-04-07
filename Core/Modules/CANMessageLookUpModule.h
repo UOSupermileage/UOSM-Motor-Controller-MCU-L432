@@ -18,6 +18,7 @@
 typedef enum ICommsMessageLookUpIndex
 {
 	THROTTLE_DATA_ID,
+	ERROR_DATA_ID,
 	SPEED_DATA_ID,
 	MOTOR_TEMPERATURE_ID
 } ICommsMessageLookUpIndex;

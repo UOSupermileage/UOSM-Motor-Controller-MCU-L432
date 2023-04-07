@@ -15,6 +15,7 @@
 
 // Callbacks
 void ThrottleDataCallback(iCommsMessage_t msg);
+void ErrorDataCallback(iCommsMessage_t msg);
 void SpeedDataCallback(iCommsMessage_t msg);
 void MotorTemperatureCallback(iCommsMessage_t msg);
 
@@ -27,6 +28,7 @@ const ICommsMessageInfo CANMessageLookUpTable[NUMBER_CAN_MESSAGE_IDS] =
 	{
 			// Message Index			CAN ID		Num of Bytes		Callback
 			{THROTTLE_DATA_ID,			0x0001, 			2,		&ThrottleDataCallback},
+			{ERROR_DATA_ID,				0x0040,				2,		&ErrorDataCallback},
 			{SPEED_DATA_ID,				0x0400,				2,		&SpeedDataCallback},
 			{MOTOR_TEMPERATURE_ID, 		0x0401,				2,		&MotorTemperatureCallback}
 	};
@@ -38,6 +40,10 @@ void ThrottleDataCallback(iCommsMessage_t msg)
 	uint32_t throttle = readMsg(&msg);
 	DebugPrint("CAN Throttle percentage received: %d", throttle);
 	Safety_SetThrottlePercentage(throttle);
+}
+void ErrorDataCallback(iCommsMessage_t msg)
+{
+	DebugPrint("ErrorDataCallback! %d", msg.standardMessageID);
 }
 void SpeedDataCallback(iCommsMessage_t msg)
 {

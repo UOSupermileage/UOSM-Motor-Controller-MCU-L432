@@ -10,8 +10,6 @@
 
 #include <ApplicationTypes.h>
 
-typedef enum { Clear, Set } flag_status_t;
-
 typedef struct
 {
 	velocity_t throttle; // Percentage value. Ranges from 0 to 1000. 1 = 0.1%. Thus 0% to 100%.
@@ -24,7 +22,7 @@ typedef union {
 		uint32_t iCommsError:1;
 		uint32_t spiError:1;
 		uint32_t safetyError:1;
-		uint32_t throttleError:1; // High if
+		uint32_t throttleError:1; // High if throttle was set too high (See SafetyModule)
 		uint32_t reserved;
 	};
 } motor_status_t;
