@@ -19,7 +19,7 @@
 
 #define STACK_SIZE 128 * 4
 #define MOTOR_TASK_PRIORITY (osPriority_t) osPriorityHigh3
-#define TIMER_MOTOR_TASK 500UL
+#define TIMER_MOTOR_TASK 150UL
 #define TIMER_MOTOR_REINIT_DELAY 5000UL
 
 const char MOT_TAG[] = "#MOT:";
@@ -68,8 +68,8 @@ PRIVATE void MotorTask(void *argument) {
 			if (motorInitialized) {
 				#if MOTOR_MODE == 0
 					#if MOTOR_CONFIG_MODE_RAMP_MODE_MOTION == 1
-						DebugPrint("%s Target Torque [%d mA]", MOT_TAG, SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS / 1000);
-						MotorRotateTorque(SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS / 1000);
+						DebugPrint("%s Target Torque [%d mA]", MOT_TAG, SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000);
+						MotorRotateTorque(SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000);
 					#elif MOTOR_CONFIG_MODE_RAMP_MODE_MOTION == 2
 						DebugPrint("%s Target Velocity [%d RPM]", MOT_TAG, SystemGetTargetVelocity());
 						MotorRotate(SystemGetTargetVelocity());

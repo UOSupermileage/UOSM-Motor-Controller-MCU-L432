@@ -175,6 +175,7 @@ PUBLIC uint32_t MotorInit() {
 
 	// Limits
 	tmc4671_setTorqueFluxLimit_mA(TMC4671_CS, motorDriverConfig.torqueMeasurementFactor, MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_PIDOUT_UQ_UD_LIMITS, MOTOR_CONFIG_PID_UQ_UD_LIMITS);
 
 	// PI settings
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_TORQUE_P_TORQUE_I, MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I);

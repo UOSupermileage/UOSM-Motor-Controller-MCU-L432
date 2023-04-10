@@ -64,7 +64,7 @@
  **********************************************************************************/
 
 
-#define MOTOR_TORQUE_ACCELERATION 1500
+#define MOTOR_TORQUE_ACCELERATION 2000
 
 
 /*********************************************************************************
@@ -208,7 +208,9 @@
 	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 1000
 	#define MAX_VELOCITY 3000
 #elif MOTOR == 2
-	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 20000
+	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 30000
+	#define MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS (uint32_t) 28000
+	#define MOTOR_CONFIG_PID_UQ_UD_LIMITS 28000
 	#define MAX_VELOCITY 3000
 #endif
 /*********************************************************************************
@@ -228,8 +230,8 @@
 	#define MOTOR_CONFIG_PID_FLUX_P_FLUX_I (uint32_t)0x01000100
 	#define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x00000000
 #elif MOTOR == 2
-	#define MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I (uint32_t)0x033E1110
-	#define MOTOR_CONFIG_PID_FLUX_P_FLUX_I (uint32_t)0x033E1110
+	#define MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I (uint32_t)0x0041001E
+	#define MOTOR_CONFIG_PID_FLUX_P_FLUX_I (uint32_t)0x0041001E
 	#define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x00000000
 #endif
 /*********************************************************************************
