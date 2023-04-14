@@ -25,6 +25,9 @@ extern SPI_HandleTypeDef hspi1;
 
 const uint32_t timeout = 50;
 
+static uint8_t abn_counter = 0;
+uint8_t abn_init = 0;
+
 MotorDriverConfig_t motorDriverConfig;
 
 // variables for ramp generator support
@@ -123,7 +126,7 @@ PUBLIC uint32_t MotorInit() {
 	motorDriverConfig.hall_phi_e_old				= 0;
 	motorDriverConfig.hall_phi_e_new				= 0;
 	motorDriverConfig.hall_actual_coarse_offset	= 0;
-	motorDriverConfig.last_Phi_E_Selection		= 0;
+	motorDriverConfig.last_Phi_E_Selection		= 5;
 	motorDriverConfig.last_UQ_UD_EXT				= 0;
 	motorDriverConfig.last_PHI_E_EXT				= 0;
 	motorDriverConfig.torqueMeasurementFactor  	= MOTOR_CONFIG_TORQUE_MESUREMENT_FACTOR;
@@ -169,7 +172,7 @@ PUBLIC uint32_t MotorInit() {
 	tmc4671_writeInt(TMC4671_CS, TMC4671_HALL_PHI_E_PHI_M_OFFSET, MOTOR_CONFIG_HALL_PHI_E_PHI_M_OFFSET);
 
 	// Feedback selection
-	tmc4671_writeInt(TMC4671_CS, TMC4671_PHI_E_SELECTION, MOTOR_CONFIG_PHI_E_SELECTION);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_PHI_E_SELECTION, 5);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_VELOCITY_SELECTION, MOTOR_CONFIG_VELOCITY_SELECTION);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_MODE_RAMP_MODE_MOTION, MOTOR_CONFIG_MODE_RAMP_MODE_MOTION);
 
@@ -317,8 +320,23 @@ PUBLIC uint32_t MotorRotateTorque(int32_t torque) {
 PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick) {
 
 #if MOTOR_MODE == 0 || MOTOR_MODE == 1
+
+//	if (abn_counter >= ABN_INIT_INTERVAL) {
+//
+//		if (abn_init == 0) {
+//			motorDriverConfig.initState = 1;
+//			abn_init = 1;
+//		}
+////		uint32_t currentPhiE = tmc4671_readInt(TMC4671_CS, TMC4671_PHI_E_SELECTION);
+////		tmc4671_updatePhiSelectionAndInitialize(TMC4671_CS, 5, 3, motorDriverConfig.initMode, &motorDriverConfig.initState);
+//
+//		abn_counter = 0;
+//	} else {
+//		abn_counter++;
+//	}
+
 	// Do encoder init
-	tmc4671_periodicJob(TMC4671_CS, actualSystick, motorDriverConfig.initMode, &motorDriverConfig.initState, motorDriverConfig.initWaitTime, &motorDriverConfig.actualInitWaitTime, &motorDriverConfig.startVoltage, &motorDriverConfig.hall_phi_e_old, &motorDriverConfig.hall_phi_e_new, &motorDriverConfig.hall_actual_coarse_offset, &motorDriverConfig.last_Phi_E_Selection, &motorDriverConfig.last_UQ_UD_EXT, &motorDriverConfig.last_PHI_E_EXT);
+	tmc4671_periodicJob(TMC4671_CS, actualSystick, motorDriverConfig.initMode, &motorDriverConfig.initState, motorDriverConfig.initWaitTime, &motorDriverConfig.actualInitWaitTime, motorDriverConfig.startVoltage, &motorDriverConfig.hall_phi_e_old, &motorDriverConfig.hall_phi_e_new, &motorDriverConfig.hall_actual_coarse_offset, &motorDriverConfig.last_Phi_E_Selection, &motorDriverConfig.last_UQ_UD_EXT, &motorDriverConfig.last_PHI_E_EXT);
 #endif
 
 #if MOTOR_MODE == 0

@@ -18,7 +18,7 @@
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
 
 #define STACK_SIZE 128 * 4
-#define MOTOR_TASK_PRIORITY (osPriority_t) osPriorityHigh3
+#define MOTOR_TASK_PRIORITY (osPriority_t) osPriorityRealtime
 #define TIMER_MOTOR_TASK 150UL
 #define TIMER_MOTOR_REINIT_DELAY 5000UL
 

@@ -19,5 +19,6 @@ PUBLIC result_t IComms_Transmit(iCommsMessage_t * txMsg);
 PUBLIC iCommsMessage_t IComms_CreateMessage(uint16_t standardMessageID, uint8_t dataLength, uint8_t data[8]);
 PUBLIC iCommsMessage_t IComms_CreatePercentageMessage(uint16_t standardMessageID, percentage_t percentage);
 PUBLIC iCommsMessage_t IComms_CreateErrorMessage(uint16_t standardMessageID, ErrorCode code, flag_status_t);
+PUBLIC iCommsMessage_t IComms_CreateEventMessage(uint16_t standardMessageID, uint8_t code, uint8_t status);
 
 #endif /* MODULES_INTERNALCOMMSMODULE_H_ */

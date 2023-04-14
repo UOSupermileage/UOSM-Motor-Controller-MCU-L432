@@ -184,6 +184,14 @@ PUBLIC iCommsMessage_t IComms_CreateErrorMessage(uint16_t standardMessageID, uin
 	return IComms_CreateMessage(standardMessageID, 2, data);
 }
 
+PUBLIC iCommsMessage_t IComms_CreateEventMessage(uint16_t standardMessageID, uint8_t code, uint8_t status) {
+	uint8_t data[8];
+	data[0] = status;
+	data[1] = code;
+
+	return IComms_CreateMessage(standardMessageID, 2, data);
+}
+
 /*********************************************************************************
  *
  * 		Heap for Priority Queue

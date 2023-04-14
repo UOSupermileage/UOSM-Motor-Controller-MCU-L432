@@ -53,6 +53,8 @@
 
 //#define MOTOR_FIXED_THROTTLE 1000
 
+#define ABN_INIT_INTERVAL 3
+
 /*********************************************************************************
  *
  * 		Motor Torque Acceleration Step Size
@@ -208,7 +210,7 @@
 	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 1000
 	#define MAX_VELOCITY 3000
 #elif MOTOR == 2
-	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 30000
+	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 32000
 	#define MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS (uint32_t) 28000
 	#define MOTOR_CONFIG_PID_UQ_UD_LIMITS 28000
 	#define MAX_VELOCITY 3000

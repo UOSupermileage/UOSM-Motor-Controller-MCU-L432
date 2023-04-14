@@ -18,10 +18,11 @@
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
 
 #define STACK_SIZE 128*8
-#define INTERNAL_COMMS_TASK_PRIORITY (osPriority_t) osPriorityRealtime
+#define INTERNAL_COMMS_TASK_PRIORITY (osPriority_t) osPriorityHigh3
 #define TIMER_INTERNAL_COMMS_TASK 100UL
 
 #define THROTTLE_ERROR_BROADCAST_RATE 5
+#define DEADMAN_BROADCAST_RATE 2
 
 PUBLIC void InitInternalCommsTask(void);
 PRIVATE void InternalCommsTask(void *argument);
@@ -47,7 +48,10 @@ PRIVATE void InternalCommsTask(void *argument)
 	DebugPrint("%s icomms", ICT_TAG);
 
 	const ICommsMessageInfo* errorInfo = CANMessageLookUpGetInfo(ERROR_DATA_ID);
+	const ICommsMessageInfo* eventInfo = CANMessageLookUpGetInfo(EVENT_DATA_ID);
+
 	uint8_t throttleErrorBroadcastCounter = 0;
+	uint8_t deadmanBroadcastCounter = 0;
 
 	IComms_Init();
 	for(;;)
@@ -86,7 +90,7 @@ PRIVATE void InternalCommsTask(void *argument)
 				if(lookupTableIndex < NUMBER_CAN_MESSAGE_IDS)
 				{
 					// DebugPrint("%s Executing callback", ICT_TAG);
-					CANMessageLookUpTable[lookupTableIndex].canMessageCallback(rxMsg);
+					CANMessageLookUpTable[lookupTableIndex].canMessageCallback(&rxMsg);
 				} else {
 					DebugPrint("%s Unknown message id [%x], index [%d]", ICT_TAG, rxMsg.standardMessageID, lookupTableIndex);
 				}
@@ -107,6 +111,14 @@ PRIVATE void InternalCommsTask(void *argument)
 		} else {
 			DebugPrint("Increment");
 			throttleErrorBroadcastCounter++;
+		}
+
+		// Send Deadman signal to CANBUS to confirm system init
+		if (deadmanBroadcastCounter == DEADMAN_BROADCAST_RATE) {
+			iCommsMessage_t deadmanTxMsg = IComms_CreateEventMessage(eventInfo->messageID, DEADMAN, 1);
+			IComms_Transmit(&deadmanTxMsg);
+
+			deadmanBroadcastCounter = 0;
 		}
 #endif
 	}

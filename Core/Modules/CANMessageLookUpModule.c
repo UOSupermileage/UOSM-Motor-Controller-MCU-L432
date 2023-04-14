@@ -5,7 +5,7 @@
  *      Author: mingy
  */
 
-#include <DataAggregationModule.h>
+#include "DataAggregationModule.h"
 #include "CANMessageLookUpModule.h"
 #include "SerialDebugDriver.h"
 #include "CANDriver.h"
@@ -14,10 +14,10 @@
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
 
 // Callbacks
-void ThrottleDataCallback(iCommsMessage_t msg);
-void ErrorDataCallback(iCommsMessage_t msg);
-void SpeedDataCallback(iCommsMessage_t msg);
-void MotorTemperatureCallback(iCommsMessage_t msg);
+void ThrottleDataCallback(iCommsMessage_t* msg);
+void ErrorDataCallback(iCommsMessage_t* msg);
+void SpeedDataCallback(iCommsMessage_t* msg);
+void EventDataCallback(iCommsMessage_t* msg);
 
 /*********************************************************************************
  *
@@ -28,30 +28,30 @@ const ICommsMessageInfo CANMessageLookUpTable[NUMBER_CAN_MESSAGE_IDS] =
 	{
 			// Message Index			CAN ID		Num of Bytes		Callback
 			{THROTTLE_DATA_ID,			0x0001, 			2,		&ThrottleDataCallback},
-			{ERROR_DATA_ID,				0x0040,				2,		&ErrorDataCallback},
-			{SPEED_DATA_ID,				0x0400,				2,		&SpeedDataCallback},
-			{MOTOR_TEMPERATURE_ID, 		0x0401,				2,		&MotorTemperatureCallback}
+			{SPEED_DATA_ID,				0x0002,				4,		&SpeedDataCallback},
+			{EVENT_DATA_ID, 			0x0400,				2,		&EventDataCallback},
+			{ERROR_DATA_ID,				0x0401,				2,		&ErrorDataCallback},
 	};
 
-void ThrottleDataCallback(iCommsMessage_t msg)
+void ThrottleDataCallback(iCommsMessage_t* msg)
 {
-	DebugPrint("ThrottleDataCallback! %d", msg.standardMessageID);
+	DebugPrint("ThrottleDataCallback! %d", msg->standardMessageID);
 	// DebugPrint("Throttle Raw: [%x][%x] length: [%d]", msg.data[1], msg.data[0], msg.dataLength);
-	uint32_t throttle = readMsg(&msg);
+	uint32_t throttle = readMsg(msg);
 	DebugPrint("CAN Throttle percentage received: %d", throttle);
 	Safety_SetThrottlePercentage(throttle);
 }
-void ErrorDataCallback(iCommsMessage_t msg)
+void ErrorDataCallback(iCommsMessage_t* msg)
 {
-	DebugPrint("ErrorDataCallback! %d", msg.standardMessageID);
+//	DebugPrint("ErrorDataCallback! %d", msg->standardMessageID);
 }
-void SpeedDataCallback(iCommsMessage_t msg)
+void SpeedDataCallback(iCommsMessage_t* msg)
 {
-	DebugPrint("SpeedDataCallback! %d", msg.standardMessageID);
+//	DebugPrint("SpeedDataCallback! %d", msg->standardMessageID);
 }
-void MotorTemperatureCallback(iCommsMessage_t msg)
+void EventDataCallback(iCommsMessage_t* msg)
 {
-	DebugPrint("MotorTemperatureCallback! %d", msg.standardMessageID);
+//	DebugPrint("EventDataCallbackCallback! %d", msg->standardMessageID);
 }
 
 PUBLIC const ICommsMessageInfo* CANMessageLookUpGetInfo(ICommsMessageLookUpIndex id) {

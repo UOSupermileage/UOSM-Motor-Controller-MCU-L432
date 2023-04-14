@@ -34,6 +34,12 @@ typedef enum ErrorCode
 	THROTTLE_TOO_HIGH
 } ErrorCode;
 
+typedef enum EventCode
+{
+	DEADMAN,
+	TIMER
+} EventCode;
+
 typedef enum { Clear = 0, Set = 1 } flag_status_t;
 
 
