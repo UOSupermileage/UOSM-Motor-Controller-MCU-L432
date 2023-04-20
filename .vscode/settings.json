@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "canconfig.h": "c"
+        "canconfig.h": "c",
+        "applicationtypes.h": "c"
     }
 }
