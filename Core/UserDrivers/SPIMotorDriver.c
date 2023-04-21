@@ -25,9 +25,6 @@ extern SPI_HandleTypeDef hspi1;
 
 const uint32_t timeout = 50;
 
-static uint8_t abn_counter = 0;
-uint8_t abn_init = 0;
-
 MotorDriverConfig_t motorDriverConfig;
 
 // variables for ramp generator support
@@ -56,22 +53,23 @@ uint8_t tmc4671_readwriteByte(const uint8_t motor, uint8_t data, uint8_t lastTra
 	// Size == 1 because we will receive a single uint8_t AKA a single byte
 	status = HAL_SPI_TransmitReceive(&hspi1, &data, rx_data, 1, timeout);
 
-	// TODO: Error handle
-	// Create datastore, store status of various tasks/systems
 	if (status != HAL_OK) {
 
 		SystemSetSPIError(Set);
 
 		switch (status) {
 		case HAL_ERROR:
-			DebugPrint("SPI Error to " + motor);
+			DebugPrint("SPI Error to %d", motor);
 			break;
 		case HAL_BUSY:
-			DebugPrint("SPI Busy to " + motor);
+			DebugPrint("SPI Busy to %d", motor);
+			break;
 		case HAL_TIMEOUT:
-			DebugPrint("SPI Timeout to " + motor);
+			DebugPrint("SPI Timeout to %d", motor);
+			break;
 		case HAL_OK:
-			DebugPrint("SPI Ok to " + motor);
+			DebugPrint("SPI Ok to %d", motor);
+			break;
 		}
 	}
 
@@ -103,16 +101,19 @@ void MotorSetCS(uint8_t cs, GPIO_PinState state) {
 
 PUBLIC uint32_t MotorInit() {
 
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
+
 
 	// Set all chip select lines to high
 	MotorSetCS(TMC4671_CS, GPIO_PIN_SET);
 	MotorSetCS(TMC6200_CS, GPIO_PIN_SET);
 
+	SystemSetSPIError(Clear);
+
 	MotorEnableDriver(ENABLED);
-	HAL_Delay(250);
+	HAL_Delay(500);
 
 #ifdef MOTOR_CLEAR_CHARGE_PUMP_FAULT
-	HAL_Delay(250);
 	MotorClearChargePump();
 	HAL_Delay(250);
 #endif
@@ -122,71 +123,100 @@ PUBLIC uint32_t MotorInit() {
 	motorDriverConfig.initWaitTime = 1000;
 	motorDriverConfig.startVoltage             	= 6000;
 	motorDriverConfig.initMode                 	=  MOTOR_INIT_MODE;
-	motorDriverConfig.initState					= 1; //new line
-	motorDriverConfig.hall_phi_e_old				= 0;
-	motorDriverConfig.hall_phi_e_new				= 0;
+	motorDriverConfig.initState					= 0;
+	motorDriverConfig.hall_phi_e_old			= 0;
+	motorDriverConfig.hall_phi_e_new			= 0;
 	motorDriverConfig.hall_actual_coarse_offset	= 0;
 	motorDriverConfig.last_Phi_E_Selection		= 5;
-	motorDriverConfig.last_UQ_UD_EXT				= 0;
-	motorDriverConfig.last_PHI_E_EXT				= 0;
+	motorDriverConfig.last_UQ_UD_EXT			= 0;
+	motorDriverConfig.last_PHI_E_EXT			= 0;
 	motorDriverConfig.torqueMeasurementFactor  	= MOTOR_CONFIG_TORQUE_MESUREMENT_FACTOR;
-	motorDriverConfig.maximumCurrent				= MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS;
+	motorDriverConfig.maximumCurrent			= MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS;
 	motorDriverConfig.actualVelocityPT1			= 0;
 	motorDriverConfig.akkuActualVelocity       	= 0;
-	motorDriverConfig.actualTorquePT1				= 0;
+	motorDriverConfig.actualTorquePT1			= 0;
 	motorDriverConfig.akkuActualTorque         	= 0;
-	motorDriverConfig.positionScaler				= POSITION_SCALE_MAX;
-	motorDriverConfig.enableVelocityFeedForward 	= true;
+	motorDriverConfig.positionScaler			= POSITION_SCALE_MAX;
+	motorDriverConfig.enableVelocityFeedForward	= true;
 	motorDriverConfig.linearScaler             	= 30000; // µm / rotation
 
+#define WRITE_DELAY 0
 
 	// Motor type &  PWM configuration
 	tmc4671_writeInt(TMC4671_CS, TMC4671_MOTOR_TYPE_N_POLE_PAIRS, MOTOR_CONFIG_N_POLE_PAIRS);
+	HAL_Delay(WRITE_DELAY);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PWM_MAXCNT, MOTOR_CONFIG_PWM_MAXCNT);
 
 	// Set default polarity for power stage on init
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PWM_POLARITIES, MOTOR_CONFIG_PWM_POLARITIES);
+	HAL_Delay(WRITE_DELAY);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PWM_BBM_H_BBM_L, MOTOR_CONFIG_PWM_BBM_H_BBM_L);
+	HAL_Delay(WRITE_DELAY);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PWM_SV_CHOP, MOTOR_CONFIG_PWM_SV_CHOP);
+	HAL_Delay(WRITE_DELAY);
 
 	// ADC configuration
 	tmc4671_writeInt(TMC4671_CS, TMC4671_ADC_I_SELECT, MOTOR_CONFIG_ADC_I_SELECT);
+	HAL_Delay(WRITE_DELAY);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_dsADC_MCFG_B_MCFG_A, MOTOR_CONFIG_dsADC_MCFG_B_MCFG_A);
+	HAL_Delay(WRITE_DELAY);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_dsADC_MCLK_A, MOTOR_CONFIG_dsADC_MCLK_A);
+	HAL_Delay(WRITE_DELAY);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_dsADC_MCLK_B, MOTOR_CONFIG_dsADC_MCLK_B);
+	HAL_Delay(WRITE_DELAY);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_dsADC_MDEC_B_MDEC_A, MOTOR_CONFIG_dsADC_MDEC_B_MDEC_A);
+	HAL_Delay(WRITE_DELAY);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_ADC_I0_SCALE_OFFSET, MOTOR_CONFIG_ADC_I0_SCALE_OFFSET);
+	HAL_Delay(WRITE_DELAY);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_ADC_I1_SCALE_OFFSET, MOTOR_CONFIG_ADC_I1_SCALE_OFFSET);
+	HAL_Delay(WRITE_DELAY);
 
 #ifdef ABN
 	tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_MODE, MOTOR_CONFIG_ABN_DECODER_MODE);
+	HAL_Delay(WRITE_DELAY);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_PPR, MOTOR_CONFIG_ABN_DECODER_PPR);
+	HAL_Delay(WRITE_DELAY);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT, MOTOR_CONFIG_ABN_DECODER_COUNT);
+	HAL_Delay(WRITE_DELAY);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT_N, MOTOR_CONFIG_ABN_DECODER_COUNT_N);
+	HAL_Delay(WRITE_DELAY);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_PHI_E_PHI_M_OFFSET, MOTOR_CONFIG_ABN_DECODER_PHI_E_PHI_M_OFFSET);
-
+	HAL_Delay(WRITE_DELAY);
 #endif
 
 	// Digital hall settings
 	tmc4671_writeInt(TMC4671_CS, TMC4671_HALL_MODE, MOTOR_CONFIG_HALL_MODE);
+	HAL_Delay(WRITE_DELAY);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_HALL_PHI_E_PHI_M_OFFSET, MOTOR_CONFIG_HALL_PHI_E_PHI_M_OFFSET);
+	HAL_Delay(WRITE_DELAY);
 
 	// Feedback selection
-	tmc4671_writeInt(TMC4671_CS, TMC4671_PHI_E_SELECTION, 5);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_PHI_E_SELECTION, MOTOR_CONFIG_STARTING_PHI_E_SELECTION);
+	HAL_Delay(WRITE_DELAY);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_VELOCITY_SELECTION, MOTOR_CONFIG_VELOCITY_SELECTION);
+	HAL_Delay(WRITE_DELAY);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_MODE_RAMP_MODE_MOTION, MOTOR_CONFIG_MODE_RAMP_MODE_MOTION);
+	HAL_Delay(WRITE_DELAY);
 
 	// Limits
 	tmc4671_setTorqueFluxLimit_mA(TMC4671_CS, motorDriverConfig.torqueMeasurementFactor, MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS);
+	HAL_Delay(WRITE_DELAY);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PIDOUT_UQ_UD_LIMITS, MOTOR_CONFIG_PID_UQ_UD_LIMITS);
+	HAL_Delay(WRITE_DELAY);
 
 	// PI settings
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_TORQUE_P_TORQUE_I, MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I);
+	HAL_Delay(WRITE_DELAY);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_FLUX_P_FLUX_I, MOTOR_CONFIG_PID_FLUX_P_FLUX_I);
+	HAL_Delay(WRITE_DELAY);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_P_VELOCITY_I, MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I);
+	HAL_Delay(WRITE_DELAY);
 
 	// Stop motor
-	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_TARGET, 0x0000);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_TARGET, 0);
+	HAL_Delay(WRITE_DELAY);
+	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_TORQUE_FLUX_TARGET, 0);
+	HAL_Delay(WRITE_DELAY);
 
 	// ===== Init Ramp Generator =====
 	tmc_linearRamp_init(&rampGenerator);
@@ -195,23 +225,32 @@ PUBLIC uint32_t MotorInit() {
 	lastRampTargetPosition = 0;
 
 	rampGenerator.maxVelocity = (uint32_t)tmc4671_readInt(TMC4671_CS, TMC4671_PID_VELOCITY_LIMIT);
+	HAL_Delay(WRITE_DELAY);
 	rampGenerator.acceleration = (uint32_t)tmc4671_readInt(TMC4671_CS, TMC4671_PID_ACCELERATION_LIMIT);
+	HAL_Delay(WRITE_DELAY);
 
 
 //	 ===== Set 6200 registers =====
 	tmc6200_writeInt(TMC6200_CS, TMC6200_GCONF, MOTOR_CONFIG_DRIVER_GENERAL_CONFIG);
+	HAL_Delay(WRITE_DELAY);
 	tmc6200_writeInt(TMC6200_CS, TMC6200_SHORT_CONF, MOTOR_CONFIG_DRIVER_SHORT_CONFIG);
+	HAL_Delay(WRITE_DELAY);
 	tmc6200_writeInt(TMC6200_CS, TMC6200_DRV_CONF, MOTOR_CONFIG_DRIVER_DRIVE_CONFIG);
+	HAL_Delay(WRITE_DELAY);
 
 	// ===== Verify registers were set =====
 
 	// Read TMC4671 values for validation
 	uint32_t nPolePairs = tmc4671_readInt(TMC4671_CS, TMC4671_MOTOR_TYPE_N_POLE_PAIRS);
+	HAL_Delay(WRITE_DELAY);
 
 	// Read TMC6200 values for validation.
 	uint32_t generalConf = tmc6200_readInt(TMC6200_CS, TMC6200_GCONF);
+	HAL_Delay(WRITE_DELAY);
 	uint32_t shortConf = tmc6200_readInt(TMC6200_CS, TMC6200_SHORT_CONF);
+	HAL_Delay(WRITE_DELAY);
 	uint32_t driveConf = tmc6200_readInt(TMC6200_CS, TMC6200_DRV_CONF);
+	HAL_Delay(WRITE_DELAY);
 
 	DebugPrint("Read [%08x]", nPolePairs);
 	DebugPrint("Read [%08x], [%08x], [%08x]", generalConf, shortConf, driveConf);
@@ -252,8 +291,15 @@ PUBLIC uint32_t MotorInit() {
 	#endif
 #endif
 
+
+	if (SystemGetSPIError() == Set) {
+		DebugPrint("Failed to init do to SPI error");
+		return false;
+	}
+
 	DebugPrint("Motor Initialized!");
 
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
 	return true;
 }
 
@@ -281,25 +327,6 @@ PUBLIC uint32_t MotorRotateTorque(int32_t torque) {
 	tmc4671_switchToMotionMode(TMC4671_CS, TMC4671_MOTION_MODE_TORQUE);
 	actualMotionMode = TMC4671_MOTION_MODE_TORQUE;
 
-//	if (torque > 0) {
-//		DebugPrint("Ignore positive");
-//	} else {
-//		if (torque < targetTorqueForTorqueMode) {
-//			// need to decrease (into the negatives, thus more torque)
-//			if (torque < targetTorqueForTorqueMode - torqueAcceleration) {
-//				targetTorqueForTorqueMode -= torqueAcceleration;
-//			} else {
-//				targetTorqueForTorqueMode = torque;
-//			}
-//		} else {
-//			if (torque > targetTorqueForTorqueMode + torqueAcceleration) {
-//				targetTorqueForTorqueMode += torqueAcceleration;
-//			} else {
-//				targetTorqueForTorqueMode = torque;
-//			}
-//		}
-//	}
-
 	uint32_t diff = abs(torque - targetTorqueForTorqueMode);
 
 	if (diff > torqueAcceleration) {
@@ -321,22 +348,13 @@ PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick) {
 
 #if MOTOR_MODE == 0 || MOTOR_MODE == 1
 
-//	if (abn_counter >= ABN_INIT_INTERVAL) {
-//
-//		if (abn_init == 0) {
-//			motorDriverConfig.initState = 1;
-//			abn_init = 1;
-//		}
-////		uint32_t currentPhiE = tmc4671_readInt(TMC4671_CS, TMC4671_PHI_E_SELECTION);
-////		tmc4671_updatePhiSelectionAndInitialize(TMC4671_CS, 5, 3, motorDriverConfig.initMode, &motorDriverConfig.initState);
-//
-//		abn_counter = 0;
-//	} else {
-//		abn_counter++;
+	// Motor is spinning above minimum RPM
+//	if (tmc4671_readInt(TMC4671_CS, TMC4671_PID_VELOCITY_ACTUAL) > MOTOR_CONFIG_MIN_VELOCITY_FOR_ENCODER_INIT) {
+//		// Do encoder init
+//		tmc4671_updatePhiSelectionAndInitialize(TMC4671_CS, tmc4671_readInt(TMC4671_CS, TMC4671_PHI_E_SELECTION), MOTOR_CONFIG_TARGET_PHI_E_SELECTION, motorDriverConfig.initMode,  &motorDriverConfig.initState);
 //	}
 
-	// Do encoder init
-	tmc4671_periodicJob(TMC4671_CS, actualSystick, motorDriverConfig.initMode, &motorDriverConfig.initState, motorDriverConfig.initWaitTime, &motorDriverConfig.actualInitWaitTime, motorDriverConfig.startVoltage, &motorDriverConfig.hall_phi_e_old, &motorDriverConfig.hall_phi_e_new, &motorDriverConfig.hall_actual_coarse_offset, &motorDriverConfig.last_Phi_E_Selection, &motorDriverConfig.last_UQ_UD_EXT, &motorDriverConfig.last_PHI_E_EXT);
+//	tmc4671_periodicJob(TMC4671_CS, actualSystick, motorDriverConfig.initMode, &motorDriverConfig.initState, motorDriverConfig.initWaitTime, &motorDriverConfig.actualInitWaitTime, motorDriverConfig.startVoltage, &motorDriverConfig.hall_phi_e_old, &motorDriverConfig.hall_phi_e_new, &motorDriverConfig.hall_actual_coarse_offset, &motorDriverConfig.last_Phi_E_Selection, &motorDriverConfig.last_UQ_UD_EXT, &motorDriverConfig.last_PHI_E_EXT);
 #endif
 
 #if MOTOR_MODE == 0

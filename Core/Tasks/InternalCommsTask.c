@@ -18,7 +18,7 @@
 #define DebugPrint(...) SerialPrintln(__VA_ARGS__)
 
 #define STACK_SIZE 128*8
-#define INTERNAL_COMMS_TASK_PRIORITY (osPriority_t) osPriorityHigh3
+#define INTERNAL_COMMS_TASK_PRIORITY (osPriority_t) osPriorityRealtime3
 #define TIMER_INTERNAL_COMMS_TASK 100UL
 
 #define THROTTLE_ERROR_BROADCAST_RATE 5
@@ -52,6 +52,8 @@ PRIVATE void InternalCommsTask(void *argument)
 
 	uint8_t throttleErrorBroadcastCounter = 0;
 	uint8_t deadmanBroadcastCounter = 0;
+
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
 
 	IComms_Init();
 	for(;;)
