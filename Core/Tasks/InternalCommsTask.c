@@ -86,7 +86,7 @@ PRIVATE void InternalCommsTask(void *argument)
 				if(lookupTableIndex < NUMBER_CAN_MESSAGE_IDS)
 				{
 					// DebugPrint("%s Executing callback", ICT_TAG);
-					CANMessageLookUpTable[lookupTableIndex].canMessageCallback(rxMsg);
+					CANMessageLookUpTable[lookupTableIndex].canMessageCallback(&rxMsg);
 				} else {
 					DebugPrint("%s Unknown message id [%x], index [%d]", ICT_TAG, rxMsg.standardMessageID, lookupTableIndex);
 				}
