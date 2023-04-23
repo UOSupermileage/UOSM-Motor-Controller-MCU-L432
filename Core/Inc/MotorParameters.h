@@ -29,7 +29,9 @@
  * 2 == RTMI operation, do nothing except enable driver and clear charge pump if configured
  */
 
-#define MOTOR_MODE 0
+#define MOTOR_MODE 1
+
+#define MOTOR_CONFIG_AUTO_INIT_ENC
 
 /*********************************************************************************
  *
@@ -191,7 +193,7 @@
 	#define MOTOR_CONFIG_STARTING_PHI_E_SELECTION (uint32_t)0x00000005
 	#define MOTOR_CONFIG_TARGET_PHI_E_SELECTION (uint32_t)0x00000003
 
-	#define MOTOR_CONFIG_MIN_VELOCITY_FOR_ENCODER_INIT 10
+	#define MOTOR_CONFIG_MIN_VELOCITY_FOR_ENCODER_INIT -10
 
 	#define MOTOR_CONFIG_PHI_E_SELECTION (uint32_t)0x00000003
 	#define MOTOR_CONFIG_VELOCITY_SELECTION (uint32_t)0x00000009

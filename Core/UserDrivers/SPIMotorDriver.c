@@ -307,18 +307,16 @@ PUBLIC uint32_t MotorRotateTorque(int32_t torque) {
 
 PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick) {
 
-#if MOTOR_MODE == 0 || MOTOR_MODE == 1
-
 	// Motor is spinning above minimum RPM
-	if (tmc4671_readInt(TMC4671_CS, TMC4671_PID_VELOCITY_ACTUAL) > MOTOR_CONFIG_MIN_VELOCITY_FOR_ENCODER_INIT) {
+	if (tmc4671_readInt(TMC4671_CS, TMC4671_PID_VELOCITY_ACTUAL) < MOTOR_CONFIG_MIN_VELOCITY_FOR_ENCODER_INIT) {
 		// Do encoder init
 		tmc4671_updatePhiSelectionAndInitialize(TMC4671_CS, tmc4671_readInt(TMC4671_CS, TMC4671_PHI_E_SELECTION), MOTOR_CONFIG_TARGET_PHI_E_SELECTION, motorDriverConfig.initMode,  &motorDriverConfig.initState);
+	} else {
+		DebugPrint("Motor hasn't reached target RPM yet...");
 	}
 
 	tmc4671_periodicJob(TMC4671_CS, actualSystick, motorDriverConfig.initMode, &motorDriverConfig.initState, motorDriverConfig.initWaitTime, &motorDriverConfig.actualInitWaitTime, motorDriverConfig.startVoltage, &motorDriverConfig.hall_phi_e_old, &motorDriverConfig.hall_phi_e_new, &motorDriverConfig.hall_actual_coarse_offset, &motorDriverConfig.last_Phi_E_Selection, &motorDriverConfig.last_UQ_UD_EXT, &motorDriverConfig.last_PHI_E_EXT);
-#endif
 
-#if MOTOR_MODE == 0
 	// 1ms velocity ramp handling
 	static uint32_t lastSystick;
 
@@ -381,7 +379,6 @@ PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick) {
 
 		lastSystick = actualSystick;
 	}
-#endif
 
 	return 0;
 }

@@ -76,6 +76,27 @@ PRIVATE void MotorTask(void *argument) {
 					#endif
 
 					MotorPeriodicJob(cycleTick);
+				#elif MOTOR_MODE == 1
+					#ifdef MOTOR_CONFIG_AUTO_INIT_ENC
+						static uint8_t isDone = 0;
+						if (!isDone) {
+							if (tmc4671_readInt(TMC4671_CS, TMC4671_PHI_E_SELECTION) != MOTOR_CONFIG_TARGET_PHI_E_SELECTION) {
+
+								DebugPrint("Initializing Encoder...");
+								MotorRotateTorque(SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000);
+								MotorPeriodicJob(cycleTick);
+
+							} else if (tmc4671_readRegister16BitValue(TMC4671_CS, TMC4671_PID_TORQUE_FLUX_TARGET, BIT_16_TO_31) != 0) {
+								MotorRotateTorque(0);
+								MotorPeriodicJob(cycleTick);
+							} else {
+								isDone = 1;
+								DebugPrint("Initialized Encoder!");
+							}
+						} else {
+							DebugPrint("Encoder already initialized!");
+						}
+					#endif
 				#endif
 			} else {
 				// Motor was not initialized. This indicates that communication with the TMC4671 or TMC6200 failed.
