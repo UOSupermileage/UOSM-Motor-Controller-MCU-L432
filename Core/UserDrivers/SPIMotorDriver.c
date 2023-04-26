@@ -412,7 +412,7 @@ PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick)
 			{
 				tmc4671_setRelativeTargetPosition(TMC4671_CS, MOTOR_CONFIG_POSITION_OFFSET_INCREMENT);
 			}
-			else
+			else if (tmc4671_getActualTorque_raw(TMC4671_CS) < 1000 && MotorGetActualVelocity() < 5 && MotorGetActualVelocity() > -5)
 			{
 				tmc4671_setAbsolutTargetPosition(TMC4671_CS, 0);
 			}
