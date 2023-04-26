@@ -36,6 +36,8 @@ uint8_t actualMotionMode;
 uint32_t targetTorqueForTorqueMode = 0;
 uint32_t torqueAcceleration = MOTOR_TORQUE_ACCELERATION;
 
+int16_t maxPositionTorque = 0;
+
 // => SPI wrapper
 /**
  * Return the result of writing a single byte.
@@ -53,11 +55,13 @@ uint8_t tmc4671_readwriteByte(const uint8_t motor, uint8_t data, uint8_t lastTra
 	// Size == 1 because we will receive a single uint8_t AKA a single byte
 	status = HAL_SPI_TransmitReceive(&hspi1, &data, rx_data, 1, timeout);
 
-	if (status != HAL_OK) {
+	if (status != HAL_OK)
+	{
 
 		SystemSetSPIError(Set);
 
-		switch (status) {
+		switch (status)
+		{
 		case HAL_ERROR:
 			DebugPrint("SPI Error to %d", motor);
 			break;
@@ -74,7 +78,8 @@ uint8_t tmc4671_readwriteByte(const uint8_t motor, uint8_t data, uint8_t lastTra
 	}
 
 	// If end of data transfer, set CS to high
-	if (lastTransfer) {
+	if (lastTransfer)
+	{
 		MotorSetCS(motor, GPIO_PIN_SET);
 	}
 
@@ -88,21 +93,23 @@ uint8_t tmc6200_readwriteByte(uint8_t motor, uint8_t data, uint8_t lastTransfer)
 
 // <= SPI wrapper
 
-void MotorSetCS(uint8_t cs, GPIO_PinState state) {
-	switch (cs) {
-		case TMC4671_CS:
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, state);
-			break;
-		case TMC6200_CS:
-			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, state);
-			break;
+void MotorSetCS(uint8_t cs, GPIO_PinState state)
+{
+	switch (cs)
+	{
+	case TMC4671_CS:
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, state);
+		break;
+	case TMC6200_CS:
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, state);
+		break;
 	}
 }
 
-PUBLIC uint32_t MotorInit() {
+PUBLIC uint32_t MotorInit()
+{
 
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
-
 
 	// Set all chip select lines to high
 	MotorSetCS(TMC4671_CS, GPIO_PIN_SET);
@@ -121,24 +128,24 @@ PUBLIC uint32_t MotorInit() {
 #if MOTOR_MODE == 0 || MOTOR_MODE == 1
 
 	motorDriverConfig.initWaitTime = 1000;
-	motorDriverConfig.startVoltage             	= 6000;
-	motorDriverConfig.initMode                 	=  MOTOR_INIT_MODE;
-	motorDriverConfig.initState					= 0;
-	motorDriverConfig.hall_phi_e_old			= 0;
-	motorDriverConfig.hall_phi_e_new			= 0;
-	motorDriverConfig.hall_actual_coarse_offset	= 0;
-	motorDriverConfig.last_Phi_E_Selection		= 5;
-	motorDriverConfig.last_UQ_UD_EXT			= 0;
-	motorDriverConfig.last_PHI_E_EXT			= 0;
-	motorDriverConfig.torqueMeasurementFactor  	= MOTOR_CONFIG_TORQUE_MESUREMENT_FACTOR;
-	motorDriverConfig.maximumCurrent			= MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS;
-	motorDriverConfig.actualVelocityPT1			= 0;
-	motorDriverConfig.akkuActualVelocity       	= 0;
-	motorDriverConfig.actualTorquePT1			= 0;
-	motorDriverConfig.akkuActualTorque         	= 0;
-	motorDriverConfig.positionScaler			= POSITION_SCALE_MAX;
-	motorDriverConfig.enableVelocityFeedForward	= true;
-	motorDriverConfig.linearScaler             	= 30000; // µm / rotation
+	motorDriverConfig.startVoltage = 6000;
+	motorDriverConfig.initMode = MOTOR_INIT_MODE;
+	motorDriverConfig.initState = 0;
+	motorDriverConfig.hall_phi_e_old = 0;
+	motorDriverConfig.hall_phi_e_new = 0;
+	motorDriverConfig.hall_actual_coarse_offset = 0;
+	motorDriverConfig.last_Phi_E_Selection = 5;
+	motorDriverConfig.last_UQ_UD_EXT = 0;
+	motorDriverConfig.last_PHI_E_EXT = 0;
+	motorDriverConfig.torqueMeasurementFactor = MOTOR_CONFIG_TORQUE_MESUREMENT_FACTOR;
+	motorDriverConfig.maximumCurrent = MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS;
+	motorDriverConfig.actualVelocityPT1 = 0;
+	motorDriverConfig.akkuActualVelocity = 0;
+	motorDriverConfig.actualTorquePT1 = 0;
+	motorDriverConfig.akkuActualTorque = 0;
+	motorDriverConfig.positionScaler = POSITION_SCALE_MAX;
+	motorDriverConfig.enableVelocityFeedForward = true;
+	motorDriverConfig.linearScaler = 30000; // µm / rotation
 
 	// Motor type &  PWM configuration
 	tmc4671_writeInt(TMC4671_CS, TMC4671_MOTOR_TYPE_N_POLE_PAIRS, MOTOR_CONFIG_N_POLE_PAIRS);
@@ -197,8 +204,7 @@ PUBLIC uint32_t MotorInit() {
 	rampGenerator.maxVelocity = (uint32_t)tmc4671_readInt(TMC4671_CS, TMC4671_PID_VELOCITY_LIMIT);
 	rampGenerator.acceleration = (uint32_t)tmc4671_readInt(TMC4671_CS, TMC4671_PID_ACCELERATION_LIMIT);
 
-
-//	 ===== Set 6200 registers =====
+	//	 ===== Set 6200 registers =====
 	tmc6200_writeInt(TMC6200_CS, TMC6200_GCONF, MOTOR_CONFIG_DRIVER_GENERAL_CONFIG);
 	tmc6200_writeInt(TMC6200_CS, TMC6200_SHORT_CONF, MOTOR_CONFIG_DRIVER_SHORT_CONFIG);
 	tmc6200_writeInt(TMC6200_CS, TMC6200_DRV_CONF, MOTOR_CONFIG_DRIVER_DRIVE_CONFIG);
@@ -216,44 +222,48 @@ PUBLIC uint32_t MotorInit() {
 	DebugPrint("Read [%08x]", nPolePairs);
 	DebugPrint("Read [%08x], [%08x], [%08x]", generalConf, shortConf, driveConf);
 
-
-	if ((generalConf == MOTOR_CONFIG_DRIVER_GENERAL_CONFIG) && (shortConf == MOTOR_CONFIG_DRIVER_SHORT_CONFIG) && (driveConf == MOTOR_CONFIG_DRIVER_DRIVE_CONFIG)) {
+	if ((generalConf == MOTOR_CONFIG_DRIVER_GENERAL_CONFIG) && (shortConf == MOTOR_CONFIG_DRIVER_SHORT_CONFIG) && (driveConf == MOTOR_CONFIG_DRIVER_DRIVE_CONFIG))
+	{
 		DebugPrint("Motor Driver [" MOTOR_DRIVER_LABEL "] successfuly initialized!");
-	} else {
+	}
+	else
+	{
 		DebugPrint("Failed to initialize Motor Driver [" MOTOR_DRIVER_LABEL "]");
 		return false;
 	}
 
 	// If value is read is correct, than motor registers were properly set
-	if (nPolePairs == MOTOR_CONFIG_N_POLE_PAIRS) {
+	if (nPolePairs == MOTOR_CONFIG_N_POLE_PAIRS)
+	{
 		DebugPrint("Motor Controller [" MOTOR_LABEL "] successfuly initialized!");
 	}
-	else {
+	else
+	{
 		DebugPrint("Failed to initialize Motor Controller [" MOTOR_LABEL "]");
 		return false;
 	}
-//
-//	uint32_t stats1 = tmc6200_readInt(TMC6200_CS, TMC6200_GSTAT);
-//	if (stats1 != 0 && stats1 != 1) {
-//		DebugPrint("Motor Driver [" MOTOR_DRIVER_LABEL "] Fault Detected: [%x]", stats1);
-//		MotorPrintFaults();
-////		MotorEnableDriver(DISABLED);
-//		return false;
-//	}
+	//
+	//	uint32_t stats1 = tmc6200_readInt(TMC6200_CS, TMC6200_GSTAT);
+	//	if (stats1 != 0 && stats1 != 1) {
+	//		DebugPrint("Motor Driver [" MOTOR_DRIVER_LABEL "] Fault Detected: [%x]", stats1);
+	//		MotorPrintFaults();
+	////		MotorEnableDriver(DISABLED);
+	//		return false;
+	//	}
 
 #elif MOTOR_MODE == 2
-    MotorSetCS(TMC4671_CS, GPIO_PIN_SET);
-    MotorSetCS(TMC6200_CS, GPIO_PIN_SET);
-    MotorEnableDriver(ENABLED);
-    HAL_Delay(1000);
+	MotorSetCS(TMC4671_CS, GPIO_PIN_SET);
+	MotorSetCS(TMC6200_CS, GPIO_PIN_SET);
+	MotorEnableDriver(ENABLED);
+	HAL_Delay(1000);
 
-	#ifdef MOTOR_CLEAR_CHARGE_PUMP_FAULT
-		MotorClearChargePump();
-	#endif
+#ifdef MOTOR_CLEAR_CHARGE_PUMP_FAULT
+	MotorClearChargePump();
+#endif
 #endif
 
-
-	if (SystemGetSPIError() == Set) {
+	if (SystemGetSPIError() == Set)
+	{
 		DebugPrint("Failed to init do to SPI error");
 		return false;
 	}
@@ -267,21 +277,23 @@ PUBLIC uint32_t MotorInit() {
 /**
  * Basic function for validation connection to the TMC4671
  */
-PUBLIC uint32_t MotorValidateSPI() {
+PUBLIC uint32_t MotorValidateSPI()
+{
 	return tmc4671_readInt(TMC4671_CS, TMC4671_MOTOR_TYPE_N_POLE_PAIRS) == MOTOR_CONFIG_N_POLE_PAIRS && tmc6200_readInt(TMC6200_CS, TMC6200_GCONF) == MOTOR_CONFIG_DRIVER_GENERAL_CONFIG;
 }
 
 // ===== Motor interaction =====
 
-
-PUBLIC uint32_t MotorRotate(int32_t velocity) {
+PUBLIC uint8_t MotorRotate(int32_t velocity)
+{
 	tmc4671_switchToMotionMode(TMC4671_CS, TMC4671_MOTION_MODE_VELOCITY);
 	actualMotionMode = TMC4671_MOTION_MODE_VELOCITY;
 	rampGenerator.targetVelocity = velocity;
 	return 0;
 }
 
-PUBLIC uint32_t MotorRotateTorque(int32_t torque) {
+PUBLIC uint8_t MotorRotateTorque(int32_t torque)
+{
 
 	DebugPrint("MotorRotateTorque: input %x", torque);
 
@@ -290,13 +302,19 @@ PUBLIC uint32_t MotorRotateTorque(int32_t torque) {
 
 	uint32_t diff = abs(torque - targetTorqueForTorqueMode);
 
-	if (diff > torqueAcceleration) {
-		if (torque < targetTorqueForTorqueMode) {
+	if (diff > torqueAcceleration)
+	{
+		if (torque < targetTorqueForTorqueMode)
+		{
 			targetTorqueForTorqueMode -= torqueAcceleration;
-		} else {
+		}
+		else
+		{
 			targetTorqueForTorqueMode += torqueAcceleration;
 		}
-	} else {
+	}
+	else
+	{
 		targetTorqueForTorqueMode = torque;
 	}
 
@@ -305,13 +323,25 @@ PUBLIC uint32_t MotorRotateTorque(int32_t torque) {
 	return 0;
 }
 
-PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick) {
+PUBLIC uint8_t MotorRotatePosition(int32_t torque)
+{
+	tmc4671_switchToMotionMode(TMC4671_CS, TMC4671_MOTION_MODE_POSITION);
+	actualMotionMode = TMC4671_MOTION_MODE_POSITION;
+
+	maxPositionTorque = torque;
+}
+
+PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick)
+{
 
 	// Motor is spinning above minimum RPM
-	if (tmc4671_readInt(TMC4671_CS, TMC4671_PID_VELOCITY_ACTUAL) < MOTOR_CONFIG_MIN_VELOCITY_FOR_ENCODER_INIT) {
+	if (tmc4671_readInt(TMC4671_CS, TMC4671_PID_VELOCITY_ACTUAL) < MOTOR_CONFIG_MIN_VELOCITY_FOR_ENCODER_INIT)
+	{
 		// Do encoder init
-		tmc4671_updatePhiSelectionAndInitialize(TMC4671_CS, tmc4671_readInt(TMC4671_CS, TMC4671_PHI_E_SELECTION), MOTOR_CONFIG_TARGET_PHI_E_SELECTION, motorDriverConfig.initMode,  &motorDriverConfig.initState);
-	} else {
+		tmc4671_updatePhiSelectionAndInitialize(TMC4671_CS, tmc4671_readInt(TMC4671_CS, TMC4671_PHI_E_SELECTION), MOTOR_CONFIG_TARGET_PHI_E_SELECTION, motorDriverConfig.initMode, &motorDriverConfig.initState);
+	}
+	else
+	{
 		DebugPrint("Motor hasn't reached target RPM yet...");
 	}
 
@@ -320,7 +350,8 @@ PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick) {
 	// 1ms velocity ramp handling
 	static uint32_t lastSystick;
 
-	if (lastSystick != actualSystick) {
+	if (lastSystick != actualSystick)
+	{
 
 		DebugPrint("SysTick");
 
@@ -329,25 +360,29 @@ PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick) {
 
 		// filter actual current
 		int16_t actualCurrentRaw = TMC4671_FIELD_READ(TMC4671_CS, TMC4671_PID_TORQUE_FLUX_ACTUAL, TMC4671_PID_TORQUE_ACTUAL_MASK, TMC4671_PID_TORQUE_ACTUAL_SHIFT);
-		if ((actualCurrentRaw > -32000) && (actualCurrentRaw < 32000)) {
+		if ((actualCurrentRaw > -32000) && (actualCurrentRaw < 32000))
+		{
 			int32_t actualCurrent = ((int32_t)actualCurrentRaw * (int32_t)motorDriverConfig.torqueMeasurementFactor) / 256;
-			motorDriverConfig.actualTorquePT1 = tmc_filterPT1(&motorDriverConfig.akkuActualTorque , actualCurrent, motorDriverConfig.actualTorquePT1, 4, 8);
+			motorDriverConfig.actualTorquePT1 = tmc_filterPT1(&motorDriverConfig.akkuActualTorque, actualCurrent, motorDriverConfig.actualTorquePT1, 4, 8);
 		}
 
 		// filter actual flux
 		int16_t actualFluxRaw = TMC4671_FIELD_READ(TMC4671_CS, TMC4671_PID_TORQUE_FLUX_ACTUAL, TMC4671_PID_FLUX_ACTUAL_MASK, TMC4671_PID_FLUX_ACTUAL_SHIFT);
-		if ((actualFluxRaw > -32000) && (actualFluxRaw < 32000)) {
+		if ((actualFluxRaw > -32000) && (actualFluxRaw < 32000))
+		{
 			int32_t actualFlux = ((int32_t)actualFluxRaw * (int32_t)motorDriverConfig.torqueMeasurementFactor) / 256;
-			motorDriverConfig.actualFluxPT1 = tmc_filterPT1(&motorDriverConfig.akkuActualFlux , actualFlux, motorDriverConfig.actualFluxPT1, 2, 8);
+			motorDriverConfig.actualFluxPT1 = tmc_filterPT1(&motorDriverConfig.akkuActualFlux, actualFlux, motorDriverConfig.actualFluxPT1, 2, 8);
 		}
 
 		DebugPrint("MotionMode: %x", actualMotionMode);
 
-		if (actualMotionMode == TMC4671_MOTION_MODE_VELOCITY) {
+		if (actualMotionMode == TMC4671_MOTION_MODE_VELOCITY)
+		{
 			tmc_linearRamp_computeRampVelocity(&rampGenerator);
 
 			// set new target velocity (only if changed)
-			if (rampGenerator.rampVelocity != lastRampTargetVelocity) {
+			if (rampGenerator.rampVelocity != lastRampTargetVelocity)
+			{
 				// set new target velocity
 				DebugPrint("Writing Velocity Target: %d", TMC4671_PID_VELOCITY_TARGET);
 				tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_TARGET, rampGenerator.rampVelocity);
@@ -355,7 +390,9 @@ PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick) {
 
 				// turn off velocity feed forward
 				tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_OFFSET, 0);
-			} else {
+			}
+			else
+			{
 				DebugPrint("Ramp Velocity Unchanged! [%d]", lastRampTargetVelocity);
 			}
 
@@ -363,17 +400,25 @@ PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick) {
 			tmc4671_writeInt(TMC4671_CS, TMC4671_PID_POSITION_TARGET, tmc4671_readInt(TMC4671_CS, TMC4671_PID_POSITION_ACTUAL));
 			rampGenerator.rampPosition = tmc4671_readInt(TMC4671_CS, TMC4671_PID_POSITION_ACTUAL);
 			rampGenerator.lastdXRest = 0;
-		} else if (actualMotionMode == TMC4671_MOTION_MODE_TORQUE) {
+		}
+		else if (actualMotionMode == TMC4671_MOTION_MODE_TORQUE)
+		{
 			DebugPrint("Actual Target Torque: %dmA", targetTorqueForTorqueMode);
 			tmc4671_setTargetTorque_mA(TMC4671_CS, motorDriverConfig.torqueMeasurementFactor, -1 * targetTorqueForTorqueMode);
-
-//			if (targetTorqueForTorqueMode > 800) {
-//				tmc4671_writeInt(TMC4671_CS, TMC4671_PWM_SV_CHOP, 0x00000007);
-//			} else {
-//				tmc4671_writeInt(TMC4671_CS, TMC4671_PWM_SV_CHOP, 0x00000000);
-//			}
-
-		} else {
+		}
+		else if (actualMotionMode == TMC4671_MOTION_MODE_POSITION)
+		{
+			if (tmc4671_getActualTorque_raw(TMC4671_CS) > maxPositionTorque)
+			{
+				tmc4671_setRelativeTargetPosition(TMC4671_CS, MOTOR_CONFIG_POSITION_OFFSET_INCREMENT);
+			}
+			else
+			{
+				tmc4671_setAbsolutTargetPosition(TMC4671_CS, 0);
+			}
+		}
+		else
+		{
 			DebugPrint("Error. MotionMode [%d] is not implemented!", actualMotionMode);
 		}
 
@@ -383,25 +428,30 @@ PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick) {
 	return 0;
 }
 
-PUBLIC velocity_t MotorGetActualVelocity() {
+PUBLIC velocity_t MotorGetActualVelocity()
+{
 	return tmc4671_getActualVelocity(TMC4671_CS);
 }
 
-PUBLIC uint32_t MotorEnableDriver(Enable_t enabled) {
+PUBLIC uint32_t MotorEnableDriver(Enable_t enabled)
+{
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, enabled == ENABLED ? GPIO_PIN_SET : GPIO_PIN_RESET);
 	return 0;
 }
 
-PUBLIC uint32_t MotorDeInit() {
+PUBLIC uint32_t MotorDeInit()
+{
 	return MotorEnableDriver(DISABLED);
 }
 
-PUBLIC void MotorHealth() {
+PUBLIC void MotorHealth()
+{
 	DebugPrint("MotorHealth: NOT IMPLEMENTED");
 }
 
-PUBLIC void MotorClearChargePump() {
-//	// Clear the charge pump fault generated by our custom PCB
+PUBLIC void MotorClearChargePump()
+{
+	//	// Clear the charge pump fault generated by our custom PCB
 	tmc6200_writeInt(TMC6200_CS, TMC6200_GSTAT, 0x00000008);
 	DebugPrint("Cleared Charge Pump Fault");
 }
@@ -409,54 +459,67 @@ PUBLIC void MotorClearChargePump() {
 /**
  * NOT SURE IF THIS ACTUALLY WORKS!
  */
-PUBLIC void MotorPrintFaults() {
+PUBLIC void MotorPrintFaults()
+{
 	uint32_t stats = tmc6200_readInt(TMC6200_CS, TMC6200_GSTAT);
 
-	if (stats & (1 << 1)) {
+	if (stats & (1 << 1))
+	{
 		DebugPrint("Fault: drv_otpw");
 	}
 
-	if (stats & (1 << 2)) {
+	if (stats & (1 << 2))
+	{
 		DebugPrint("Fault: drv_ot");
 	}
 
-	if (stats & (1 << 3)) {
+	if (stats & (1 << 3))
+	{
 		DebugPrint("Fault: uv_cp");
 	}
 
-	if (stats & (1 << 4)) {
+	if (stats & (1 << 4))
+	{
 		DebugPrint("Fault: shortdet_u");
 	}
 
-	if (stats & (1 << 5)) {
+	if (stats & (1 << 5))
+	{
 		DebugPrint("Fault: s2gu");
 	}
 
-	if (stats & (1 << 6)) {
+	if (stats & (1 << 6))
+	{
 		DebugPrint("Fault: s2vsu");
 	}
 
-	if (stats & (1 << 8)) {
+	if (stats & (1 << 8))
+	{
 		DebugPrint("Fault: shortdet_v");
 	}
 
-	if (stats & (1 << 9)) {
+	if (stats & (1 << 9))
+	{
 		DebugPrint("Fault: s2gv");
 	}
 
-	if (stats & (1 << 10)) {
+	if (stats & (1 << 10))
+	{
 		DebugPrint("Fault: s2vsv");
 	}
 
-	if (stats & (1 << 12)) {
+	if (stats & (1 << 12))
+	{
 		DebugPrint("Fault: shortdet_w");
 	}
 
-	if (stats & (1 << 13)) {
+	if (stats & (1 << 13))
+	{
 		DebugPrint("Fault: s2gw");
 	}
 
-	if (stats & (1 << 14)) {
+	if (stats & (1 << 14))
+	{
 		DebugPrint("Fault: s2vsw");
 	}
 }
