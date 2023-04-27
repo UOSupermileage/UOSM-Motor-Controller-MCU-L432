@@ -8,7 +8,7 @@
 #ifndef MODULES_DATAAGGREGATIONMODULE_H_
 #define MODULES_DATAAGGREGATIONMODULE_H_
 
-#include <ApplicationTypes.h>
+#include "ApplicationTypes.h"
 
 typedef struct
 {

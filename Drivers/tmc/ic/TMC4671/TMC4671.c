@@ -7,10 +7,7 @@
 #include "TMC4671.h"
 #include "stm32l4xx_hal.h"
 
-#include "SerialDebugDriver.h"
-
-// Function alias - replace with the driver api
-#define DebugPrint(...) SerialPrintln(__VA_ARGS__)
+#include "ApplicationTypes.h"
 
 
 #define STATE_NOTHING_TO_DO    0

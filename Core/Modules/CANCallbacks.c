@@ -3,10 +3,6 @@
 #include "CANMessageLookUpModule.h"
 #include "SafetyModule.h"
 
-#include "SerialDebugDriver.h"
-
-#define DebugPrint(...) SerialPrintln(__VA_ARGS__)
-
 void ThrottleDataCallback(iCommsMessage_t msg)
 {
 	DebugPrint("ThrottleDataCallback! %d", msg.standardMessageID);

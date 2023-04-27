@@ -9,13 +9,9 @@
 #include "DataAggregationModule.h"
 #include "MotorParameters.h"
 #include "Profiles.h"
-#include "SerialDebugDriver.h"
 #include "tmc/ic/TMC4671/TMC4671.h"
 #include "tmc/ic/TMC6200/TMC6200.h"
 #include "tmc/ic/TMC6200/TMC6200_Register.h"
-
-// Function alias - replace with the driver api
-#define DebugPrint(...) SerialPrintln(__VA_ARGS__)
 
 #define STACK_SIZE 128 * 4
 #define MOTOR_TASK_PRIORITY (osPriority_t) osPriorityRealtime
@@ -36,7 +32,7 @@ const osThreadAttr_t MotorTask_attributes = {
 
 PUBLIC void InitMotorTask(void)
 {
-#ifdef MOTOR_PROFILE
+#ifdef PROFILE_MOTOR
 	MotorTaskHandle = osThreadNew(MotorTask, NULL, &MotorTask_attributes);
 #endif
 }

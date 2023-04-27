@@ -5,15 +5,9 @@
  *      Author: jeremycote
  */
 
-
-#include <ApplicationTypes.h>
-
 #include "SafetyModule.h"
 
 #include "DataAggregationModule.h"
-
-#include "SerialDebugDriver.h"
-#define DebugPrint(...) SerialPrintln(__VA_ARGS__)
 
 static const char SFT_TAG[] = "#SFT:";
 

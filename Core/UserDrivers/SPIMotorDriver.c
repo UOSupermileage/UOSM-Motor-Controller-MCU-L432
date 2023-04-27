@@ -8,8 +8,6 @@
 #include "DataAggregationModule.h"
 #include "SPIMotorDriver.h"
 
-#include "SerialDebugDriver.h"
-
 // TMC headers
 #include "tmc/ic/TMC4671/TMC4671.h"
 #include "tmc/ic/TMC6200/TMC6200.h"
@@ -17,9 +15,6 @@
 #include "tmc/ramp/LinearRamp.h"
 
 #include "MotorParameters.h"
-
-// Function alias - replace with the driver api
-#define DebugPrint(...) SerialPrintln(__VA_ARGS__)
 
 extern SPI_HandleTypeDef hspi1;
 

@@ -8,10 +8,7 @@
  */
 
 #include "DataAggregationModule.h"
-#include "SerialDebugDriver.h"
 #include "MotorParameters.h"
-
-#define DebugPrint(...) SerialPrintln(__VA_ARGS__)
 
 // ===== Motor Data =====
 

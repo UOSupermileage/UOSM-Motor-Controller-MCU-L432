@@ -9,12 +9,8 @@
 #include "InternalCommsTask.h"
 #include "InternalCommsModule.h"
 #include "CANMessageLookUpModule.h"
-#include "SerialDebugDriver.h"
 #include "Profiles.h"
 #include "DataAggregationModule.h"
-
-// Function alias - replace with the driver api
-#define DebugPrint(...) SerialPrintln(__VA_ARGS__)
 
 #define STACK_SIZE 128 * 8
 #define INTERNAL_COMMS_TASK_PRIORITY (osPriority_t) osPriorityRealtime3

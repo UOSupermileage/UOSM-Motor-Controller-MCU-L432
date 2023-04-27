@@ -13,15 +13,10 @@
 
 #include "stdint.h"
 
-#include "SerialDebugDriver.h"
-
 #include "SPIMotorDriver.h"
 
 #include "LEDStatusDriver.h"
 #include "Profiles.h"
-
-// Function alias - replace with the driver api
-#define DebugPrint(...) SerialPrintln(__VA_ARGS__)
 
 #define STACK_SIZE 128*4
 #define SAFETY_TASK_PRIORITY (osPriority_t) osPriorityHigh
