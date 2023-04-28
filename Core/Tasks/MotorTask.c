@@ -57,20 +57,22 @@ PRIVATE void MotorTask(void *argument)
 
 		DebugPrint("Motor Task");
 
-		if (SystemGetMotorMode() == MOTOR_MODE_NORMAL || SystemGetModeMode() == MOTOR_MODE_RTMI) {
+		if (SystemGetMotorMode() == MOTOR_MODE_NORMAL || SystemGetMotorMode() == MOTOR_MODE_RTMI) {
 
 			if (motorInitialized) {
 
-				switch (SystemGetMotorMode()) {
+				switch (SystemGetMotionMode()) {
 					case TMC4671_MOTION_MODE_TORQUE:
-						torque_t t = SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000;
-						DebugPrint("%s Target Torque [%d mA]", MOT_TAG, t);
-						MotorRotateTorque(t);
+						;
+						torque_t torque = SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000;
+						DebugPrint("%s Target Torque [%d mA]", MOT_TAG, torque);
+						MotorRotateTorque(torque);
 						break;
 					case TMC4671_MOTION_MODE_VELOCITY:
-						velocity_t v = (MAX_VELOCITY) / MAX_PERCENTAGE * percentage;
+						;
+						velocity_t v = (MAX_VELOCITY) / MAX_PERCENTAGE * SystemGetThrottlePercentage();
 
-						if (MotorGetReverseVelocity() == Set) {
+						if (SystemGetReverseVelocity() == Set) {
 							v *= -1;
 						}
 
@@ -78,9 +80,10 @@ PRIVATE void MotorTask(void *argument)
 						MotorRotateVelocity(v);
 						break;
 					case TMC4671_MOTION_MODE_POSITION:
-						torque_t t = SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000;
-						DebugPrint("%s Dynamo Torque [%d mA]", MOT_TAG, t);
-						MotorRotatePosition(t);
+						;
+						torque_t positionTorque = SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000;
+						DebugPrint("%s Dynamo Torque [%d mA]", MOT_TAG, positionTorque);
+						MotorRotatePosition(positionTorque);
 						break;
 				}
 

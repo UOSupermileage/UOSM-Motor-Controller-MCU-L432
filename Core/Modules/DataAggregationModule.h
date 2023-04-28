@@ -17,6 +17,7 @@ typedef struct
 	flag_status_t ignoreThrottle;
 	uint16_t maxVelocity;
 	flag_status_t reverseVelocity;
+	uint8_t motionMode;
 } motor_config_t;
 
 typedef union {
@@ -45,6 +46,12 @@ PUBLIC void SystemSetIgnoreThrottle(flag_status_t ignore);
 
 PUBLIC uint16_t SystemGetMaxVelocity();
 PUBLIC void SystemSetMaxVelocity(uint16_t velocity);
+
+PUBLIC flag_status_t SystemGetReverseVelocity();
+PUBLIC void SystemSetReverseVelocity(flag_status_t reverse);
+
+PUBLIC uint8_t SystemGetMotionMode();
+PUBLIC void SystemSetMotionMode(uint8_t mode);
 
 // ===== Motor Status Getters and Setters =====
 

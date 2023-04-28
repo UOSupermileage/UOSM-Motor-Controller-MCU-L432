@@ -18,9 +18,6 @@ PRIVATE motor_config_t motorConfig;
 PRIVATE motor_status_t motorStatus;
 
 PUBLIC void InitDataAggregator() {
-	motorConfig = 0;
-	motorStatus = 0;
-
 	#ifdef MOTOR_FIXED_THROTTLE
 		motorConfig.throttle = MOTOR_FIXED_THROTTLE;
 		motorConfig.ignoreThrottle = Set;
@@ -75,6 +72,13 @@ PUBLIC flag_status_t SystemGetReverseVelocity() {
 }
 PUBLIC void SystemSetReverseVelocity(flag_status_t reverse) {
 	motorConfig.reverseVelocity = reverse;
+}
+
+PUBLIC uint8_t SystemGetMotionMode() {
+	return motorConfig.motionMode;
+}
+PUBLIC void SystemSetMotionMode(uint8_t mode) {
+	motorConfig.motionMode = mode;
 }
 
 // ===== Motor Status Getters and Setters =====

@@ -267,9 +267,9 @@ PUBLIC uint8_t MotorInit()
 		return false;
 	}
 
-	#ifdef MOTOR_CONFIG_AUTO_INIT_ENCODER && ABN
+	#ifdef MOTOR_CONFIG_AUTO_INIT_ENCODER
 		
-		if (MotorInitEncoder() !- 0) {
+		if (MotorInitEncoder() != 0) {
 			DebugPrint("Failed to init encoder");
 			return false;
 		}
@@ -334,9 +334,18 @@ PUBLIC uint8_t MotorRotatePosition(torque_t torque)
 	return 0;
 }
 
+PRIVATE int16_t MotorGetS16CircleDifference(int16_t newValue, int16_t oldValue)
+{
+	return (newValue - oldValue);
+}
+
 PRIVATE static void MotorInitEncoderPeriodicJob(uint8_t motor, uint8_t *initState, uint16_t *actualInitWaitTime,
 		int16_t *hall_phi_e_old, int16_t *hall_phi_e_new, int16_t *hall_actual_coarse_offset)
 {
+#define STATE_NOTHING_TO_DO 0
+#define STATE_START_INIT 1
+#define STATE_WAIT_INIT_TIME 2
+
 	switch (*initState)
 	{
 	case STATE_NOTHING_TO_DO:
@@ -350,7 +359,7 @@ PRIVATE static void MotorInitEncoderPeriodicJob(uint8_t motor, uint8_t *initStat
 		*hall_phi_e_old = TMC4671_FIELD_READ(motor, TMC4671_HALL_PHI_E_INTERPOLATED_PHI_E, TMC4671_HALL_PHI_E_MASK, TMC4671_HALL_PHI_E_SHIFT);
 
 		// read actual abn_decoder angle and compute difference to actual hall angle
-		*hall_actual_coarse_offset = tmc4671_getS16CircleDifference(*hall_phi_e_old, (int16_t) tmc4671_readRegister16BitValue(motor, TMC4671_ABN_DECODER_PHI_E_PHI_M, BIT_16_TO_31));
+		*hall_actual_coarse_offset = MotorGetS16CircleDifference(*hall_phi_e_old, (int16_t) tmc4671_readRegister16BitValue(motor, TMC4671_ABN_DECODER_PHI_E_PHI_M, BIT_16_TO_31));
 
 		// set ABN_DECODER_PHI_E_OFFSET to actual hall-abn-difference, to use the actual hall angle for coarse initialization
 		tmc4671_writeRegister16BitValue(motor, TMC4671_ABN_DECODER_PHI_E_PHI_M_OFFSET, BIT_16_TO_31, *hall_actual_coarse_offset);
@@ -365,13 +374,13 @@ PRIVATE static void MotorInitEncoderPeriodicJob(uint8_t motor, uint8_t *initStat
 		if(*hall_phi_e_old != *hall_phi_e_new)
 		{
 			// estimated value = old value + diff between old and new (handle int16_t overrun)
-			int16_t hall_phi_e_estimated = *hall_phi_e_old + tmc4671_getS16CircleDifference(*hall_phi_e_new, *hall_phi_e_old)/2;
+			int16_t hall_phi_e_estimated = *hall_phi_e_old + MotorGetS16CircleDifference(*hall_phi_e_new, *hall_phi_e_old)/2;
 
 			// read actual abn_decoder angle and consider last set abn_decoder_offset
 			int16_t abn_phi_e_actual = (int16_t) tmc4671_readRegister16BitValue(motor, TMC4671_ABN_DECODER_PHI_E_PHI_M, BIT_16_TO_31) - *hall_actual_coarse_offset;
 
 			// set ABN_DECODER_PHI_E_OFFSET to actual estimated angle - abn_phi_e_actual difference
-			tmc4671_writeRegister16BitValue(motor, TMC4671_ABN_DECODER_PHI_E_PHI_M_OFFSET, BIT_16_TO_31, tmc4671_getS16CircleDifference(hall_phi_e_estimated, abn_phi_e_actual));
+			tmc4671_writeRegister16BitValue(motor, TMC4671_ABN_DECODER_PHI_E_PHI_M_OFFSET, BIT_16_TO_31, MotorGetS16CircleDifference(hall_phi_e_estimated, abn_phi_e_actual));
 			
 			// go to ready state
 			*initState = 0;
@@ -384,14 +393,20 @@ PRIVATE static void MotorInitEncoderPeriodicJob(uint8_t motor, uint8_t *initStat
 }
 
 PUBLIC uint8_t MotorInitEncoder() {
+
+	torque_t t = MOTOR_CONFIG_ENCODER_INIT_STRENGTH;
+	if (SystemGetReverseVelocity() == Set) {
+		t *= -1;
+	}
+
 #define HALL 5
 #define ENC 3
 
-	tmc4671_writeRegister16BitValue(motor, TMC4671_PHI_E_SELECTION, BIT_0_TO_15, HALL);
+	tmc4671_writeRegister16BitValue(TMC4671_CS, TMC4671_PHI_E_SELECTION, BIT_0_TO_15, HALL);
 
 	// Start spining the motor	
 	tmc4671_switchToMotionMode(TMC4671_CS, TMC4671_MOTION_MODE_TORQUE);
-	tmc4671_setTargetTorque_mA(TMC4671_CS, motorDriverConfig.torqueMeasurementFactor, MOTOR_CONFIG_ENCODER_INIT_STRENGTH);
+	tmc4671_setTargetTorque_mA(TMC4671_CS, motorDriverConfig.torqueMeasurementFactor, t);
 
 	HAL_Delay(100);
 
@@ -406,7 +421,6 @@ PUBLIC uint8_t MotorInitEncoder() {
 	int16_t hall_phi_e_old;
 	int16_t hall_phi_e_new;
 	int16_t hall_actual_coarse_offset;
-	uint16_t last_Phi_E_Selection;
 
 	uint8_t c = 0;
 
@@ -429,8 +443,8 @@ PUBLIC uint8_t MotorInitEncoder() {
 	HAL_Delay(100);
 
 	// switch to encoder
-	tmc4671_writeRegister16BitValue(motor, TMC4671_PHI_E_SELECTION, BIT_0_TO_15, ENC);
-	tmc4671_setTargetTorque_mA(TMC4671_CS, motorDriverConfig.torqueMeasurementFactor, MOTOR_CONFIG_ENCODER_INIT_STRENGTH);
+	tmc4671_writeRegister16BitValue(TMC4671_CS, TMC4671_PHI_E_SELECTION, BIT_0_TO_15, ENC);
+	tmc4671_setTargetTorque_mA(TMC4671_CS, motorDriverConfig.torqueMeasurementFactor, t);
 	HAL_Delay(100);
 
 	if (MotorGetActualVelocity() < MOTOR_CONFIG_ENCODER_INIT_SPEED) {
@@ -509,13 +523,13 @@ PUBLIC velocity_t MotorGetActualVelocity()
 	return tmc4671_getActualVelocity(TMC4671_CS);
 }
 
-PUBLIC uint32_t MotorEnableDriver(Enable_t enabled)
+PUBLIC uint8_t MotorEnableDriver(Enable_t enabled)
 {
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, enabled == ENABLED ? GPIO_PIN_SET : GPIO_PIN_RESET);
 	return 0;
 }
 
-PUBLIC uint32_t MotorDeInit()
+PUBLIC uint8_t MotorDeInit()
 {
 	return MotorEnableDriver(DISABLED);
 }
