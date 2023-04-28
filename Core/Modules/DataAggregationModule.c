@@ -21,10 +21,13 @@ PUBLIC void InitDataAggregator() {
 	#ifdef MOTOR_FIXED_THROTTLE
 		motorConfig.throttle = MOTOR_FIXED_THROTTLE;
 		motorConfig.ignoreThrottle = Set;
+	#else
+		motorConfig.ignoreThrottle = Clear;
 	#endif
 
+	motorConfig.motionMode = MOTOR_CONFIG_MODE_RAMP_MODE_MOTION;
 	motorConfig.maxVelocity = MAX_VELOCITY;
-	motorConfig.reverseVelocity = 1;
+	SystemSetReverseVelocity(Set);
 }
 
 // ===== Motor Config Getters and Setters =====

@@ -11,8 +11,11 @@
 #include "InternalCommsTask.h"
 #include "MotorTask.h"
 
+#include "DataAggregationModule.h"
+
 void RunTaskManager( void )
 {
+	InitDataAggregator();
 	InitInternalCommsTask();
 	InitSafetyTask();
 	InitMotorTask();

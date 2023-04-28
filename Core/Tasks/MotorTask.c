@@ -16,7 +16,7 @@
 #define STACK_SIZE 128 * 4
 #define MOTOR_TASK_PRIORITY (osPriority_t) osPriorityRealtime
 #define TIMER_MOTOR_TASK 150UL
-#define TIMER_MOTOR_REINIT_DELAY 5000UL
+#define TIMER_MOTOR_REINIT_DELAY 100UL
 
 const char MOT_TAG[] = "#MOT:";
 
@@ -55,7 +55,7 @@ PRIVATE void MotorTask(void *argument)
 		cycleTick += TIMER_MOTOR_TASK;
 		osDelayUntil(cycleTick);
 
-		DebugPrint("Motor Task");
+		DebugPrint("Motor Task: Motor mode [%d]", SystemGetMotorMode());
 
 		if (SystemGetMotorMode() == MOTOR_MODE_NORMAL || SystemGetMotorMode() == MOTOR_MODE_RTMI) {
 
