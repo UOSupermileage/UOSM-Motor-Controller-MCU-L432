@@ -17,40 +17,64 @@ PRIVATE motor_config_t motorConfig;
 
 PRIVATE motor_status_t motorStatus;
 
+PUBLIC void InitDataAggregator() {
+	motorConfig = 0;
+	motorStatus = 0;
+
+	#ifdef MOTOR_FIXED_THROTTLE
+		motorConfig.throttle = MOTOR_FIXED_THROTTLE;
+		motorConfig.ignoreThrottle = Set;
+	#endif
+
+	motorConfig.maxVelocity = MAX_VELOCITY;
+	motorConfig.reverseVelocity = 1;
+}
+
 // ===== Motor Config Getters and Setters =====
 PUBLIC percentage_t SystemGetThrottlePercentage() {
 	return motorConfig.throttle;
 }
 
 PUBLIC void SystemSetThrottlePercentage(percentage_t percentage) {
+	
+	if (motorConfig.ignoreThrottle) {
+		DebugPrint("Ignoring thorttle input...");
+		return;
+	}
+	
 	if (percentage > MAX_PERCENTAGE) {
 		motorConfig.throttle = MAX_PERCENTAGE;
-		motorConfig.targetVelocity = MAX_VELOCITY;
 	} else {
 		motorConfig.throttle = percentage;
-		motorConfig.targetVelocity = (MAX_VELOCITY - MIN_VELOCITY) / MAX_PERCENTAGE * percentage + MIN_VELOCITY;
-	}
-
-	// DebugPrint("Value: [%d]", motorConfig.targetVelocity);
-}
-
-
-PRIVATE void SystemSetTargetVelocity(velocity_t velocity) {
-
-	if (velocity < MIN_VELOCITY) {
-		motorConfig.targetVelocity = MIN_VELOCITY;
-		motorConfig.throttle = MIN_PERCENTAGE;
-	} else if (velocity > MAX_VELOCITY) {
-		motorConfig.targetVelocity = MAX_VELOCITY;
-		motorConfig.throttle = MAX_PERCENTAGE;
-	} else {
-		motorConfig.targetVelocity = velocity;
-		motorConfig.throttle = (velocity - MIN_VELOCITY) / (MAX_VELOCITY - MIN_VELOCITY) * MAX_PERCENTAGE;
 	}
 }
 
-PRIVATE velocity_t SystemGetTargetVelocity() {
-	return motorConfig.targetVelocity;
+PUBLIC MotorMode SystemGetMotorMode() {
+	return motorConfig.mode;
+}
+PUBLIC void SystemSetMotorMode(MotorMode mode) {
+	motorConfig.mode = mode;
+}
+
+PUBLIC flag_status_t SystemGetIgnoreThrottle() {
+	return motorConfig.ignoreThrottle;
+}
+PUBLIC void SystemSetIgnoreThrottle(flag_status_t ignore) {
+	motorConfig.ignoreThrottle = ignore;
+}
+
+PUBLIC uint16_t SystemGetMaxVelocity() {
+	return motorConfig.maxVelocity;
+}
+PUBLIC void SystemSetMaxVelocity(uint16_t velocity) {
+	motorConfig.maxVelocity = velocity;
+}
+
+PUBLIC flag_status_t SystemGetReverseVelocity() {
+	return motorConfig.reverseVelocity;
+}
+PUBLIC void SystemSetReverseVelocity(flag_status_t reverse) {
+	motorConfig.reverseVelocity = reverse;
 }
 
 // ===== Motor Status Getters and Setters =====

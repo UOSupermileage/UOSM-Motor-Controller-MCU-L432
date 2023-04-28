@@ -373,8 +373,6 @@ int16_t tmc4671_getS16CircleDifference(int16_t newValue, int16_t oldValue)
 void tmc4671_doEncoderInitializationMode2(uint8_t motor, uint8_t *initState, uint16_t *actualInitWaitTime,
 		int16_t *hall_phi_e_old, int16_t *hall_phi_e_new, int16_t *hall_actual_coarse_offset, uint16_t *last_Phi_E_Selection)
 {
-	DebugPrint("InitState: %d", *initState);
-
 	switch (*initState)
 	{
 	case STATE_NOTHING_TO_DO:
@@ -429,8 +427,6 @@ void tmc4671_doEncoderInitializationMode2(uint8_t motor, uint8_t *initState, uin
 
 			// go to ready state
 			*initState = 0;
-		} else {
-			DebugPrint("Angle has not changed, old: %x, new: %x", *hall_phi_e_old, *hall_phi_e_new);
 		}
 		break;
 	default:

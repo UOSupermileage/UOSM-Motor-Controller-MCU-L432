@@ -12,8 +12,11 @@
 
 typedef struct
 {
-	velocity_t throttle; // Percentage value. Ranges from 0 to 1000. 1 = 0.1%. Thus 0% to 100%.
-	velocity_t targetVelocity;
+	percentage_t throttle; // Percentage value. Ranges from 0 to 1000. 1 = 0.1%. Thus 0% to 100%.
+	MotorMode mode;
+	flag_status_t ignoreThrottle;
+	uint16_t maxVelocity;
+	flag_status_t reverseVelocity;
 } motor_config_t;
 
 typedef union {
@@ -34,8 +37,14 @@ void InitDataAggregator();
 PUBLIC percentage_t SystemGetThrottlePercentage();
 PUBLIC void SystemSetThrottlePercentage(percentage_t throttle);
 
-PUBLIC velocity_t SystemGetTargetVelocity();
-PRIVATE void SystemSetTargetVelocity(velocity_t velocity);
+PUBLIC MotorMode SystemGetMotorMode();
+PUBLIC void SystemSetMotorMode(MotorMode mode);
+
+PUBLIC flag_status_t SystemGetIgnoreThrottle();
+PUBLIC void SystemSetIgnoreThrottle(flag_status_t ignore);
+
+PUBLIC uint16_t SystemGetMaxVelocity();
+PUBLIC void SystemSetMaxVelocity(uint16_t velocity);
 
 // ===== Motor Status Getters and Setters =====
 

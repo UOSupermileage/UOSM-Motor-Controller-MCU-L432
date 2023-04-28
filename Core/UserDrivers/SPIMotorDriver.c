@@ -101,7 +101,7 @@ void MotorSetCS(uint8_t cs, GPIO_PinState state)
 	}
 }
 
-PUBLIC uint32_t MotorInit()
+PUBLIC uint8_t MotorInit()
 {
 
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
@@ -198,6 +198,10 @@ PUBLIC uint32_t MotorInit()
 
 	rampGenerator.maxVelocity = (uint32_t)tmc4671_readInt(TMC4671_CS, TMC4671_PID_VELOCITY_LIMIT);
 	rampGenerator.acceleration = (uint32_t)tmc4671_readInt(TMC4671_CS, TMC4671_PID_ACCELERATION_LIMIT);
+	
+	// Turn off feed forward
+	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_OFFSET, 0);
+
 
 	//	 ===== Set 6200 registers =====
 	tmc6200_writeInt(TMC6200_CS, TMC6200_GCONF, MOTOR_CONFIG_DRIVER_GENERAL_CONFIG);
@@ -263,6 +267,14 @@ PUBLIC uint32_t MotorInit()
 		return false;
 	}
 
+	#ifdef MOTOR_CONFIG_AUTO_INIT_ENCODER && ABN
+		
+		if (MotorInitEncoder() !- 0) {
+			DebugPrint("Failed to init encoder");
+			return false;
+		}
+	#endif
+
 	DebugPrint("Motor Initialized!");
 
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
@@ -279,7 +291,7 @@ PUBLIC uint32_t MotorValidateSPI()
 
 // ===== Motor interaction =====
 
-PUBLIC uint8_t MotorRotate(int32_t velocity)
+PUBLIC uint8_t MotorRotateVelocity(velocity_t velocity)
 {
 	tmc4671_switchToMotionMode(TMC4671_CS, TMC4671_MOTION_MODE_VELOCITY);
 	actualMotionMode = TMC4671_MOTION_MODE_VELOCITY;
@@ -287,11 +299,8 @@ PUBLIC uint8_t MotorRotate(int32_t velocity)
 	return 0;
 }
 
-PUBLIC uint8_t MotorRotateTorque(int32_t torque)
+PUBLIC uint8_t MotorRotateTorque(torque_t torque)
 {
-
-	DebugPrint("MotorRotateTorque: input %x", torque);
-
 	tmc4671_switchToMotionMode(TMC4671_CS, TMC4671_MOTION_MODE_TORQUE);
 	actualMotionMode = TMC4671_MOTION_MODE_TORQUE;
 
@@ -313,43 +322,133 @@ PUBLIC uint8_t MotorRotateTorque(int32_t torque)
 		targetTorqueForTorqueMode = torque;
 	}
 
-	DebugPrint("MotorRotateTorque: output %d", torque);
-
 	return 0;
 }
 
-PUBLIC uint8_t MotorRotatePosition(int32_t torque)
+PUBLIC uint8_t MotorRotatePosition(torque_t torque)
 {
 	tmc4671_switchToMotionMode(TMC4671_CS, TMC4671_MOTION_MODE_POSITION);
 	actualMotionMode = TMC4671_MOTION_MODE_POSITION;
 
 	maxPositionTorque = torque;
+	return 0;
 }
 
-PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick)
+PRIVATE static void MotorInitEncoderPeriodicJob(uint8_t motor, uint8_t *initState, uint16_t *actualInitWaitTime,
+		int16_t *hall_phi_e_old, int16_t *hall_phi_e_new, int16_t *hall_actual_coarse_offset)
 {
-
-	// Motor is spinning above minimum RPM
-	if (tmc4671_readInt(TMC4671_CS, TMC4671_PID_VELOCITY_ACTUAL) < MOTOR_CONFIG_MIN_VELOCITY_FOR_ENCODER_INIT)
+	switch (*initState)
 	{
-		// Do encoder init
-		tmc4671_updatePhiSelectionAndInitialize(TMC4671_CS, tmc4671_readInt(TMC4671_CS, TMC4671_PHI_E_SELECTION), MOTOR_CONFIG_TARGET_PHI_E_SELECTION, motorDriverConfig.initMode, &motorDriverConfig.initState);
+	case STATE_NOTHING_TO_DO:
+		*actualInitWaitTime = 0;
+		break;
+	case STATE_START_INIT: // started by writing 1 to initState
+		// set ABN_DECODER_PHI_E_OFFSET to zero
+		tmc4671_writeRegister16BitValue(motor, TMC4671_ABN_DECODER_PHI_E_PHI_M_OFFSET, BIT_16_TO_31, 0);
+
+		// read actual hall angle
+		*hall_phi_e_old = TMC4671_FIELD_READ(motor, TMC4671_HALL_PHI_E_INTERPOLATED_PHI_E, TMC4671_HALL_PHI_E_MASK, TMC4671_HALL_PHI_E_SHIFT);
+
+		// read actual abn_decoder angle and compute difference to actual hall angle
+		*hall_actual_coarse_offset = tmc4671_getS16CircleDifference(*hall_phi_e_old, (int16_t) tmc4671_readRegister16BitValue(motor, TMC4671_ABN_DECODER_PHI_E_PHI_M, BIT_16_TO_31));
+
+		// set ABN_DECODER_PHI_E_OFFSET to actual hall-abn-difference, to use the actual hall angle for coarse initialization
+		tmc4671_writeRegister16BitValue(motor, TMC4671_ABN_DECODER_PHI_E_PHI_M_OFFSET, BIT_16_TO_31, *hall_actual_coarse_offset);
+
+		*initState = STATE_WAIT_INIT_TIME;
+		break;
+	case STATE_WAIT_INIT_TIME:
+		// read actual hall angle
+		*hall_phi_e_new = TMC4671_FIELD_READ(motor, TMC4671_HALL_PHI_E_INTERPOLATED_PHI_E, TMC4671_HALL_PHI_E_MASK, TMC4671_HALL_PHI_E_SHIFT);
+
+		// wait until hall angle changed
+		if(*hall_phi_e_old != *hall_phi_e_new)
+		{
+			// estimated value = old value + diff between old and new (handle int16_t overrun)
+			int16_t hall_phi_e_estimated = *hall_phi_e_old + tmc4671_getS16CircleDifference(*hall_phi_e_new, *hall_phi_e_old)/2;
+
+			// read actual abn_decoder angle and consider last set abn_decoder_offset
+			int16_t abn_phi_e_actual = (int16_t) tmc4671_readRegister16BitValue(motor, TMC4671_ABN_DECODER_PHI_E_PHI_M, BIT_16_TO_31) - *hall_actual_coarse_offset;
+
+			// set ABN_DECODER_PHI_E_OFFSET to actual estimated angle - abn_phi_e_actual difference
+			tmc4671_writeRegister16BitValue(motor, TMC4671_ABN_DECODER_PHI_E_PHI_M_OFFSET, BIT_16_TO_31, tmc4671_getS16CircleDifference(hall_phi_e_estimated, abn_phi_e_actual));
+			
+			// go to ready state
+			*initState = 0;
+		}
+		break;
+	default:
+		*initState = 0;
+		break;
 	}
-	else
-	{
-		DebugPrint("Motor hasn't reached target RPM yet...");
+}
+
+PUBLIC uint8_t MotorInitEncoder() {
+#define HALL 5
+#define ENC 3
+
+	tmc4671_writeRegister16BitValue(motor, TMC4671_PHI_E_SELECTION, BIT_0_TO_15, HALL);
+
+	// Start spining the motor	
+	tmc4671_switchToMotionMode(TMC4671_CS, TMC4671_MOTION_MODE_TORQUE);
+	tmc4671_setTargetTorque_mA(TMC4671_CS, motorDriverConfig.torqueMeasurementFactor, MOTOR_CONFIG_ENCODER_INIT_STRENGTH);
+
+	HAL_Delay(100);
+
+	// Check if motor actually started spinning
+	if (MotorGetActualVelocity() < MOTOR_CONFIG_ENCODER_INIT_SPEED) {
+		tmc4671_setTargetTorque_mA(TMC4671_CS, motorDriverConfig.torqueMeasurementFactor, 0);
+		return 1;
 	}
 
-	tmc4671_periodicJob(TMC4671_CS, actualSystick, motorDriverConfig.initMode, &motorDriverConfig.initState, motorDriverConfig.initWaitTime, &motorDriverConfig.actualInitWaitTime, motorDriverConfig.startVoltage, &motorDriverConfig.hall_phi_e_old, &motorDriverConfig.hall_phi_e_new, &motorDriverConfig.hall_actual_coarse_offset, &motorDriverConfig.last_Phi_E_Selection, &motorDriverConfig.last_UQ_UD_EXT, &motorDriverConfig.last_PHI_E_EXT);
+	uint8_t initState = 1;
+	uint16_t actualInitWaitTime;
+	int16_t hall_phi_e_old;
+	int16_t hall_phi_e_new;
+	int16_t hall_actual_coarse_offset;
+	uint16_t last_Phi_E_Selection;
 
+	uint8_t c = 0;
+
+	MotorInitEncoderPeriodicJob(TMC4671_CS, &initState, &actualInitWaitTime, &hall_phi_e_old, &hall_phi_e_new, &hall_actual_coarse_offset);
+
+	while (initState != 0 && c <= 10) {
+		HAL_Delay(100);
+		
+		MotorInitEncoderPeriodicJob(TMC4671_CS, &initState, &actualInitWaitTime, &hall_phi_e_old, &hall_phi_e_new, &hall_actual_coarse_offset);
+		c++;
+	}
+
+	// Failed to init encoder
+	if (initState != 0) {
+		return 1;
+	}
+
+	// Stop motor
+	tmc4671_setTargetTorque_mA(TMC4671_CS, motorDriverConfig.torqueMeasurementFactor, 0);
+	HAL_Delay(100);
+
+	// switch to encoder
+	tmc4671_writeRegister16BitValue(motor, TMC4671_PHI_E_SELECTION, BIT_0_TO_15, ENC);
+	tmc4671_setTargetTorque_mA(TMC4671_CS, motorDriverConfig.torqueMeasurementFactor, MOTOR_CONFIG_ENCODER_INIT_STRENGTH);
+	HAL_Delay(100);
+
+	if (MotorGetActualVelocity() < MOTOR_CONFIG_ENCODER_INIT_SPEED) {
+		tmc4671_setTargetTorque_mA(TMC4671_CS, motorDriverConfig.torqueMeasurementFactor, 0);
+		return 1;
+	}
+
+	tmc4671_setTargetTorque_mA(TMC4671_CS, motorDriverConfig.torqueMeasurementFactor, 0);
+	return 0;
+}
+
+PUBLIC uint8_t MotorPeriodicJob(uint32_t actualSystick)
+{
 	// 1ms velocity ramp handling
 	static uint32_t lastSystick;
 
 	if (lastSystick != actualSystick)
 	{
-
-		DebugPrint("SysTick");
-
 		// filter actual velocity
 		motorDriverConfig.actualVelocityPT1 = tmc_filterPT1(&motorDriverConfig.akkuActualVelocity, tmc4671_getActualVelocity(TMC4671_CS), motorDriverConfig.actualVelocityPT1, 3, 8);
 
@@ -369,52 +468,34 @@ PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick)
 			motorDriverConfig.actualFluxPT1 = tmc_filterPT1(&motorDriverConfig.akkuActualFlux, actualFlux, motorDriverConfig.actualFluxPT1, 2, 8);
 		}
 
-		DebugPrint("MotionMode: %x", actualMotionMode);
+		switch (actualMotionMode) {
+			case TMC4671_MOTION_MODE_TORQUE:
+				DebugPrint("Actual Target Torque: %dmA", targetTorqueForTorqueMode);
+				tmc4671_setTargetTorque_mA(TMC4671_CS, motorDriverConfig.torqueMeasurementFactor, -1 * targetTorqueForTorqueMode);
+				break;
+			case TMC4671_MOTION_MODE_VELOCITY:
+				tmc_linearRamp_computeRampVelocity(&rampGenerator);
 
-		if (actualMotionMode == TMC4671_MOTION_MODE_VELOCITY)
-		{
-			tmc_linearRamp_computeRampVelocity(&rampGenerator);
+				// set new target velocity (only if changed)
+				if (rampGenerator.rampVelocity != lastRampTargetVelocity)
+				{
+					// set new target velocity
+					DebugPrint("Writing Velocity Target: %d", TMC4671_PID_VELOCITY_TARGET);
+					tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_TARGET, rampGenerator.rampVelocity);
+					lastRampTargetVelocity = rampGenerator.rampVelocity;
 
-			// set new target velocity (only if changed)
-			if (rampGenerator.rampVelocity != lastRampTargetVelocity)
-			{
-				// set new target velocity
-				DebugPrint("Writing Velocity Target: %d", TMC4671_PID_VELOCITY_TARGET);
-				tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_TARGET, rampGenerator.rampVelocity);
-				lastRampTargetVelocity = rampGenerator.rampVelocity;
+					// turn off velocity feed forward
+				}
 
-				// turn off velocity feed forward
-				tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_OFFSET, 0);
-			}
-			else
-			{
-				DebugPrint("Ramp Velocity Unchanged! [%d]", lastRampTargetVelocity);
-			}
-
-			// keep position ramp and target position on track
-			tmc4671_writeInt(TMC4671_CS, TMC4671_PID_POSITION_TARGET, tmc4671_readInt(TMC4671_CS, TMC4671_PID_POSITION_ACTUAL));
-			rampGenerator.rampPosition = tmc4671_readInt(TMC4671_CS, TMC4671_PID_POSITION_ACTUAL);
-			rampGenerator.lastdXRest = 0;
-		}
-		else if (actualMotionMode == TMC4671_MOTION_MODE_TORQUE)
-		{
-			DebugPrint("Actual Target Torque: %dmA", targetTorqueForTorqueMode);
-			tmc4671_setTargetTorque_mA(TMC4671_CS, motorDriverConfig.torqueMeasurementFactor, -1 * targetTorqueForTorqueMode);
-		}
-		else if (actualMotionMode == TMC4671_MOTION_MODE_POSITION)
-		{
-			if (tmc4671_getActualTorque_raw(TMC4671_CS) > maxPositionTorque)
-			{
-				tmc4671_setRelativeTargetPosition(TMC4671_CS, MOTOR_CONFIG_POSITION_OFFSET_INCREMENT);
-			}
-			else if (tmc4671_getActualTorque_raw(TMC4671_CS) < 1000 && MotorGetActualVelocity() < 5 && MotorGetActualVelocity() > -5)
-			{
-				tmc4671_setAbsolutTargetPosition(TMC4671_CS, 0);
-			}
-		}
-		else
-		{
-			DebugPrint("Error. MotionMode [%d] is not implemented!", actualMotionMode);
+				// keep position ramp and target position on track
+				tmc4671_writeInt(TMC4671_CS, TMC4671_PID_POSITION_TARGET, tmc4671_readInt(TMC4671_CS, TMC4671_PID_POSITION_ACTUAL));
+				rampGenerator.rampPosition = tmc4671_readInt(TMC4671_CS, TMC4671_PID_POSITION_ACTUAL);
+				rampGenerator.lastdXRest = 0;
+				break;
+			case TMC4671_MOTION_MODE_POSITION:
+				break;
+			default:
+				break;
 		}
 
 		lastSystick = actualSystick;
@@ -452,69 +533,71 @@ PUBLIC void MotorClearChargePump()
 }
 
 /**
- * NOT SURE IF THIS ACTUALLY WORKS!
+ * PRETTY SURE THIS WORKS...
  */
 PUBLIC void MotorPrintFaults()
 {
 	uint32_t stats = tmc6200_readInt(TMC6200_CS, TMC6200_GSTAT);
 
-	if (stats & (1 << 1))
-	{
-		DebugPrint("Fault: drv_otpw");
-	}
+	if (stats != 0 && stats != 1) {
+		if (stats & (1 << 1))
+		{
+			DebugPrint("Fault: drv_otpw");
+		}
 
-	if (stats & (1 << 2))
-	{
-		DebugPrint("Fault: drv_ot");
-	}
+		if (stats & (1 << 2))
+		{
+			DebugPrint("Fault: drv_ot");
+		}
 
-	if (stats & (1 << 3))
-	{
-		DebugPrint("Fault: uv_cp");
-	}
+		if (stats & (1 << 3))
+		{
+			DebugPrint("Fault: uv_cp");
+		}
 
-	if (stats & (1 << 4))
-	{
-		DebugPrint("Fault: shortdet_u");
-	}
+		if (stats & (1 << 4))
+		{
+			DebugPrint("Fault: shortdet_u");
+		}
 
-	if (stats & (1 << 5))
-	{
-		DebugPrint("Fault: s2gu");
-	}
+		if (stats & (1 << 5))
+		{
+			DebugPrint("Fault: s2gu");
+		}
 
-	if (stats & (1 << 6))
-	{
-		DebugPrint("Fault: s2vsu");
-	}
+		if (stats & (1 << 6))
+		{
+			DebugPrint("Fault: s2vsu");
+		}
 
-	if (stats & (1 << 8))
-	{
-		DebugPrint("Fault: shortdet_v");
-	}
+		if (stats & (1 << 8))
+		{
+			DebugPrint("Fault: shortdet_v");
+		}
 
-	if (stats & (1 << 9))
-	{
-		DebugPrint("Fault: s2gv");
-	}
+		if (stats & (1 << 9))
+		{
+			DebugPrint("Fault: s2gv");
+		}
 
-	if (stats & (1 << 10))
-	{
-		DebugPrint("Fault: s2vsv");
-	}
+		if (stats & (1 << 10))
+		{
+			DebugPrint("Fault: s2vsv");
+		}
 
-	if (stats & (1 << 12))
-	{
-		DebugPrint("Fault: shortdet_w");
-	}
+		if (stats & (1 << 12))
+		{
+			DebugPrint("Fault: shortdet_w");
+		}
 
-	if (stats & (1 << 13))
-	{
-		DebugPrint("Fault: s2gw");
-	}
+		if (stats & (1 << 13))
+		{
+			DebugPrint("Fault: s2gw");
+		}
 
-	if (stats & (1 << 14))
-	{
-		DebugPrint("Fault: s2vsw");
+		if (stats & (1 << 14))
+		{
+			DebugPrint("Fault: s2vsw");
+		}
 	}
 }

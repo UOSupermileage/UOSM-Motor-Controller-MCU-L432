@@ -57,77 +57,50 @@ PRIVATE void MotorTask(void *argument)
 
 		DebugPrint("Motor Task");
 
-#if MOTOR_MODE == 0 || MOTOR_MODE == 1
+		if (SystemGetMotorMode() == MOTOR_MODE_NORMAL || SystemGetModeMode() == MOTOR_MODE_RTMI) {
 
-#ifdef MOTOR_FIXED_THROTTLE
-		// Set throttle on each execution of loop to ensure throttle is not changed
-		SystemSetThrottlePercentage(MOTOR_FIXED_THROTTLE);
-#endif
+			if (motorInitialized) {
 
-		if (motorInitialized)
-		{
-#if MOTOR_MODE == 0
-#if MOTOR_CONFIG_MODE_RAMP_MODE_MOTION == 1
-			DebugPrint("%s Target Torque [%d mA]", MOT_TAG, SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000);
-			MotorRotateTorque(SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000);
-#elif MOTOR_CONFIG_MODE_RAMP_MODE_MOTION == 2
-			DebugPrint("%s Target Velocity [%d RPM]", MOT_TAG, SystemGetTargetVelocity());
-			MotorRotate(SystemGetTargetVelocity());
-#elif MOTOR_CONFIG_MODE_RAMP_MODE_MOTION == 3
-			DebugPrint("%s Dynamo", MOT_TAG);
-			MotorRotatePosition(SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000);
-#endif
+				switch (SystemGetMotorMode()) {
+					case TMC4671_MOTION_MODE_TORQUE:
+						torque_t t = SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000;
+						DebugPrint("%s Target Torque [%d mA]", MOT_TAG, t);
+						MotorRotateTorque(t);
+						break;
+					case TMC4671_MOTION_MODE_VELOCITY:
+						velocity_t v = (MAX_VELOCITY) / MAX_PERCENTAGE * percentage;
 
-			MotorPeriodicJob(cycleTick);
-#elif MOTOR_MODE == 1 || (MOTOR_MODE == 0 && MOTOR_CONFIG_MODE_RAMP_MODE_MOTION == 3)
-#ifdef MOTOR_CONFIG_AUTO_INIT_ENC
-			static uint8_t isDone = 0;
-			if (!isDone)
-			{
-				if (tmc4671_readInt(TMC4671_CS, TMC4671_PHI_E_SELECTION) != MOTOR_CONFIG_TARGET_PHI_E_SELECTION)
-				{
+						if (MotorGetReverseVelocity() == Set) {
+							v *= -1;
+						}
 
-					DebugPrint("Initializing Encoder...");
-					MotorRotateTorque(SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000);
-					MotorPeriodicJob(cycleTick);
+						DebugPrint("%s Target Velocity [%d RPM]", MOT_TAG, v);
+						MotorRotateVelocity(v);
+						break;
+					case TMC4671_MOTION_MODE_POSITION:
+						torque_t t = SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000;
+						DebugPrint("%s Dynamo Torque [%d mA]", MOT_TAG, t);
+						MotorRotatePosition(t);
+						break;
 				}
-				else if (tmc4671_readRegister16BitValue(TMC4671_CS, TMC4671_PID_TORQUE_FLUX_TARGET, BIT_16_TO_31) != 0)
-				{
-					MotorRotateTorque(0);
-					MotorPeriodicJob(cycleTick);
-				}
-				else
-				{
-					isDone = 1;
-					DebugPrint("Initialized Encoder!");
-				}
+
+				MotorPeriodicJob(cycleTick);
+			} else {
+				// Motor was not initialized. This indicates that communication with the TMC4671 or TMC6200 failed.
+				SystemSetSPIError(Set);
+				DebugPrint("%s Failed to initialize motor!", MOT_TAG);
+
+				// Motor failed to initialize, wait and then reinit
+				osDelay(TIMER_MOTOR_REINIT_DELAY);
+				motorInitialized = MotorInit();
 			}
-			else
-			{
-				DebugPrint("Encoder already initialized!");
-			}
-#endif
 
-#endif
+		} else {
+			DebugPrint("Motor Idle...");
 		}
-		else
-		{
-			// Motor was not initialized. This indicates that communication with the TMC4671 or TMC6200 failed.
-			SystemSetSPIError(Set);
-			DebugPrint("%s Failed to initialize motor!", MOT_TAG);
 
-			// Motor failed to initialize, wait and then reinit
-			osDelay(TIMER_MOTOR_REINIT_DELAY);
-			motorInitialized = MotorInit();
-			//				DebugPrint("%s Read DRV_CONF: %x", MOT_TAG, tmc6200_readInt(TMC6200_CS, TMC6200_DRV_CONF));
-			//				DebugPrint("%s Read HALL_MODE: %x", MOT_TAG, tmc4671_readInt(TMC4671_CS, TMC4671_HALL_MODE));
-		}
-#endif
-
-#ifdef VERBOSE
 		// Read registers in TMC6200 and check for faults
 		MotorPrintFaults();
-#endif
 	}
 	/// [task]
 }

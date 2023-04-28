@@ -12,6 +12,8 @@
 #ifndef INC_MOTORPARAMETERS_H_
 #define INC_MOTORPARAMETERS_H_
 
+#include "ApplicationTypes.h"
+
 /**
  * Select Target Motor
  * 0 == QBL4208-81-04-019	(Tiny Motor) (Eval board)
@@ -29,9 +31,11 @@
  * 2 == RTMI operation, do nothing except enable driver and clear charge pump if configured
  */
 
-#define MOTOR_MODE 0
+#define MOTOR_MODE MOTOR_MODE_NORMAL
 
-#define MOTOR_CONFIG_AUTO_INIT_ENC
+#define MOTOR_CONFIG_AUTO_INIT_ENCODER
+#define MOTOR_CONFIG_ENCODER_INIT_STRENGTH 1000
+#define MOTOR_CONFIG_ENCODER_INIT_SPEED 30
 
 /*********************************************************************************
  *
@@ -42,7 +46,7 @@
  *
  **********************************************************************************/
 
-#define MOTOR_CONFIG_MODE_RAMP_MODE_MOTION 3
+#define MOTOR_CONFIG_MODE_RAMP_MODE_MOTION 2
 /*********************************************************************************
  *
  * 		Fixed Throttle Value in RPM (Use for testing only)
@@ -200,8 +204,6 @@
 
 #define MOTOR_CONFIG_STARTING_PHI_E_SELECTION (uint32_t)0x00000005
 #define MOTOR_CONFIG_TARGET_PHI_E_SELECTION (uint32_t)0x00000003
-
-#define MOTOR_CONFIG_MIN_VELOCITY_FOR_ENCODER_INIT -10
 
 #define MOTOR_CONFIG_PHI_E_SELECTION (uint32_t)0x00000003
 #define MOTOR_CONFIG_VELOCITY_SELECTION (uint32_t)0x00000009

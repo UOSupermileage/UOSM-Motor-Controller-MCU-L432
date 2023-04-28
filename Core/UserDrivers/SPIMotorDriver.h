@@ -61,23 +61,26 @@ PUBLIC uint32_t MotorValidateSPI();
 /**
  * Rotate the motor
  */
-PUBLIC uint8_t MotorRotate(int32_t velocity);
+PUBLIC uint8_t MotorRotateVelocity(velocity_t velocity);
 
-PUBLIC uint8_t MotorRotateTorque(int32_t torque);
+PUBLIC uint8_t MotorRotateTorque(torque_t torque);
 
-PUBLIC uint8_t MotorRotatePosition(int32_t torque);
+PUBLIC uint8_t MotorRotatePosition(torque_t torque);
 
-PUBLIC uint32_t MotorPeriodicJob(uint32_t actualSystick);
+PUBLIC uint8_t MotorPeriodicJob(uint32_t actualSystick);
 
-PUBLIC uint32_t MotorEnableDriver(Enable_t enabled);
+PUBLIC uint8_t MotorEnableDriver(Enable_t enabled);
 
 PUBLIC velocity_t MotorGetActualVelocity();
 /**
  * Initialize registers in the TMC4671 and TMC6200. Must be called before motor
  * will function properly. Returns true if motor init was successful.
  */
-PUBLIC uint32_t MotorInit();
-PUBLIC uint32_t MotorDeInit();
+PUBLIC uint8_t MotorInit();
+
+PUBLIC uint8_t MotorDeInit();
+
+PUBLIC uint8_t MotorInitEncoder();
 
 PUBLIC void MotorHealth();
 
