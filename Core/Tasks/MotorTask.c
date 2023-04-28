@@ -65,6 +65,11 @@ PRIVATE void MotorTask(void *argument)
 					case TMC4671_MOTION_MODE_TORQUE:
 						;
 						torque_t torque = SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000;
+						
+						if (SystemGetReverseVelocity() == Set) {
+							torque *= -1;
+						}
+						
 						DebugPrint("%s Target Torque [%d mA]", MOT_TAG, torque);
 						MotorRotateTorque(torque);
 						break;

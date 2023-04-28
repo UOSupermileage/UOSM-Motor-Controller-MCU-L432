@@ -395,7 +395,9 @@ PRIVATE static void MotorInitEncoderPeriodicJob(uint8_t motor, uint8_t *initStat
 PUBLIC uint8_t MotorInitEncoder() {
 
 	torque_t t = MOTOR_CONFIG_ENCODER_INIT_STRENGTH;
-	if (SystemGetReverseVelocity() == Set) {
+	
+	// If not reversing, then reverse t because we want this to spin in reverse
+	if (SystemGetReverseVelocity() == Clear) {
 		t *= -1;
 	}
 
@@ -485,7 +487,7 @@ PUBLIC uint8_t MotorPeriodicJob(uint32_t actualSystick)
 		switch (actualMotionMode) {
 			case TMC4671_MOTION_MODE_TORQUE:
 				DebugPrint("Actual Target Torque: %dmA", targetTorqueForTorqueMode);
-				tmc4671_setTargetTorque_mA(TMC4671_CS, motorDriverConfig.torqueMeasurementFactor, -1 * targetTorqueForTorqueMode);
+				tmc4671_setTargetTorque_mA(TMC4671_CS, motorDriverConfig.torqueMeasurementFactor, targetTorqueForTorqueMode);
 				break;
 			case TMC4671_MOTION_MODE_VELOCITY:
 				tmc_linearRamp_computeRampVelocity(&rampGenerator);
