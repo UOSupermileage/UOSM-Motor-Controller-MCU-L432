@@ -28,6 +28,8 @@ PUBLIC void InitDataAggregator() {
 	motorConfig.motionMode = MOTOR_CONFIG_MODE_RAMP_MODE_MOTION;
 	motorConfig.maxVelocity = MAX_VELOCITY;
 	SystemSetReverseVelocity(Set);
+	SystemSetMotorInitializing(Set);
+
 }
 
 // ===== Motor Config Getters and Setters =====
@@ -122,4 +124,11 @@ PUBLIC void SystemSetThrottleError(flag_status_t status) {
 	motorStatus.throttleError = status;
 	DebugPrint("Setting Throttle Error %d", motorStatus.throttleError);
 
+}
+
+PUBLIC flag_status_t  SystemGetMotorInitializing() {
+	return motorStatus.motorInitializing;
+}
+PUBLIC void SystemSetMotorInitializing(flag_status_t status) {
+	motorStatus.motorInitializing = status;
 }

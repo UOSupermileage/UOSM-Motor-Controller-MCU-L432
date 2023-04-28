@@ -27,6 +27,7 @@ typedef union {
 		uint32_t spiError:1;
 		uint32_t safetyError:1;
 		uint32_t throttleError:1; // High if throttle was set too high (See SafetyModule)
+		uint32_t motorInitializing:1;
 		uint32_t reserved;
 	};
 } motor_status_t;
@@ -72,5 +73,8 @@ PUBLIC void SystemSetSafetyError(flag_status_t status);
 PUBLIC flag_status_t SystemGetThrottleError();
 
 PUBLIC void SystemSetThrottleError(flag_status_t status);
+
+PUBLIC flag_status_t  SystemGetMotorInitializing();
+PUBLIC void SystemSetMotorInitializing(flag_status_t status);
 
 #endif /* MODULES_DATAAGGREGATIONMODULE_H_ */

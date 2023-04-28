@@ -17,7 +17,8 @@
 #define TIMER_INTERNAL_COMMS_TASK 100UL
 
 #define THROTTLE_ERROR_BROADCAST_RATE 5
-#define DEADMAN_BROADCAST_RATE 2
+#define DEADMAN_BROADCAST_RATE 3
+#define MOTOR_INIT_BROADCAST_RATE 3
 
 PUBLIC void InitInternalCommsTask(void);
 PRIVATE void InternalCommsTask(void *argument);
@@ -46,6 +47,7 @@ PRIVATE void InternalCommsTask(void *argument)
 
 	uint8_t throttleErrorBroadcastCounter = 0;
 	uint8_t deadmanBroadcastCounter = 0;
+	uint8_t motorInitCounter = 0;
 
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
 
@@ -83,6 +85,19 @@ PRIVATE void InternalCommsTask(void *argument)
 			IComms_Transmit(&deadmanTxMsg);
 
 			deadmanBroadcastCounter = 0;
+		} else {
+			deadmanBroadcastCounter++;
+		}
+
+
+		if (motorInitCounter == MOTOR_INIT_BROADCAST_RATE)
+		{
+			iCommsMessage_t initTxMsg = IComms_CreateEventMessage(eventInfo->messageID, MOTOR_INITIALIZING, SystemGetMotorInitializing());
+			IComms_Transmit(&initTxMsg);
+
+			motorInitCounter = 0;
+		} else {
+			motorInitCounter++;
 		}
 #endif
 	}

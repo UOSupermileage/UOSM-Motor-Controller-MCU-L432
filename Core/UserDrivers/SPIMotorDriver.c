@@ -111,6 +111,7 @@ PUBLIC uint8_t MotorInit()
 	MotorSetCS(TMC6200_CS, GPIO_PIN_SET);
 
 	SystemSetSPIError(Clear);
+	SystemSetMotorInitializing(Set);
 
 	tmc4671_writeInt(TMC4671_CS, TMC4671_MODE_RAMP_MODE_MOTION, 0);
 
@@ -277,6 +278,8 @@ PUBLIC uint8_t MotorInit()
 	#endif
 
 	DebugPrint("Motor Initialized!");
+
+	SystemSetMotorInitializing(Clear);
 
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
 	return true;
