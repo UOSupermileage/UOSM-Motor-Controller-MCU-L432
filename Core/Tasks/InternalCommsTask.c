@@ -11,6 +11,7 @@
 #include "CANMessageLookUpModule.h"
 #include "Profiles.h"
 #include "DataAggregationModule.h"
+#include "SPIMotorDriver.h"
 
 #define STACK_SIZE 128 * 8
 #define INTERNAL_COMMS_TASK_PRIORITY (osPriority_t) osPriorityRealtime3
@@ -19,6 +20,7 @@
 #define THROTTLE_ERROR_BROADCAST_RATE 5
 #define DEADMAN_BROADCAST_RATE 3
 #define MOTOR_INIT_BROADCAST_RATE 3
+#define MOTOR_RPM_BROADCAST_RATE 3
 
 PUBLIC void InitInternalCommsTask(void);
 PRIVATE void InternalCommsTask(void *argument);
@@ -44,10 +46,12 @@ PRIVATE void InternalCommsTask(void *argument)
 
 	const ICommsMessageInfo *errorInfo = CANMessageLookUpGetInfo(ERROR_DATA_ID);
 	const ICommsMessageInfo *eventInfo = CANMessageLookUpGetInfo(EVENT_DATA_ID);
+	const ICommsMessageInfo *rpmInfo = CANMessageLookUpGetInfo(MOTOR_RPM_DATA_ID);
 
 	uint8_t throttleErrorBroadcastCounter = 0;
 	uint8_t deadmanBroadcastCounter = 0;
 	uint8_t motorInitCounter = 0;
+	uint8_t motorRPMBroadcastCounter = 0;
 
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
 
@@ -98,6 +102,15 @@ PRIVATE void InternalCommsTask(void *argument)
 			motorInitCounter = 0;
 		} else {
 			motorInitCounter++;
+		}
+
+		if (motorRPMBroadcastCounter == MOTOR_RPM_BROADCAST_RATE) {
+			iCommsMessage_t rpmTxMsg = IComms_CreateInt32BitMessage(rpmInfo->messageID, MotorGetActualVelocity());
+			IComms_Transmit(&rpmTxMsg);
+
+			motorRPMBroadcastCounter = 0;
+		} else {
+			motorRPMBroadcastCounter++;
 		}
 #endif
 	}

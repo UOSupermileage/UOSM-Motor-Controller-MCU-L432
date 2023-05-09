@@ -25,6 +25,7 @@ PUBLIC void InitDataAggregator() {
 		motorConfig.ignoreThrottle = Clear;
 	#endif
 
+	motorConfig.mode = MOTOR_MODE;
 	motorConfig.motionMode = MOTOR_CONFIG_MODE_RAMP_MODE_MOTION;
 	motorConfig.maxVelocity = MAX_VELOCITY;
 	SystemSetReverseVelocity(Set);

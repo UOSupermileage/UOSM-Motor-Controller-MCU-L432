@@ -16,7 +16,7 @@
 #define STACK_SIZE 128 * 4
 #define MOTOR_TASK_PRIORITY (osPriority_t) osPriorityRealtime
 #define TIMER_MOTOR_TASK 150UL
-#define TIMER_MOTOR_REINIT_DELAY 100UL
+//#define TIMER_MOTOR_REINIT_DELAY 100UL
 
 const char MOT_TAG[] = "#MOT:";
 
@@ -60,46 +60,47 @@ PRIVATE void MotorTask(void *argument)
 		if (SystemGetMotorMode() == MOTOR_MODE_NORMAL || SystemGetMotorMode() == MOTOR_MODE_RTMI) {
 
 			if (motorInitialized) {
+				if (SystemGetMotorMode() == MOTOR_MODE_NORMAL) {
+					switch (SystemGetMotionMode()) {
+						case TMC4671_MOTION_MODE_TORQUE:
+							;
+							torque_t torque = SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000;
 
-				switch (SystemGetMotionMode()) {
-					case TMC4671_MOTION_MODE_TORQUE:
-						;
-						torque_t torque = SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000;
-						
-						if (SystemGetReverseVelocity() == Set) {
-							torque *= -1;
-						}
-						
-						DebugPrint("%s Target Torque [%d mA]", MOT_TAG, torque);
-						MotorRotateTorque(torque);
-						break;
-					case TMC4671_MOTION_MODE_VELOCITY:
-						;
-						velocity_t v = (MAX_VELOCITY) / MAX_PERCENTAGE * SystemGetThrottlePercentage();
+							if (SystemGetReverseVelocity() == Set) {
+								torque *= -1;
+							}
 
-						if (SystemGetReverseVelocity() == Set) {
-							v *= -1;
-						}
+							DebugPrint("%s Target Torque [%d mA]", MOT_TAG, torque);
+							MotorRotateTorque(torque);
+							break;
+						case TMC4671_MOTION_MODE_VELOCITY:
+							;
+							velocity_t v = (MAX_VELOCITY) / MAX_PERCENTAGE * SystemGetThrottlePercentage();
 
-						DebugPrint("%s Target Velocity [%d RPM]", MOT_TAG, v);
-						MotorRotateVelocity(v);
-						break;
-					case TMC4671_MOTION_MODE_POSITION:
-						;
-						torque_t positionTorque = SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000;
-						DebugPrint("%s Dynamo Torque [%d mA]", MOT_TAG, positionTorque);
-						MotorRotatePosition(positionTorque);
-						break;
+							if (SystemGetReverseVelocity() == Set) {
+								v *= -1;
+							}
+
+							DebugPrint("%s Target Velocity [%d RPM]", MOT_TAG, v);
+							MotorRotateVelocity(v);
+							break;
+						case TMC4671_MOTION_MODE_POSITION:
+							;
+							torque_t positionTorque = SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000;
+							DebugPrint("%s Dynamo Torque [%d mA]", MOT_TAG, positionTorque);
+							MotorRotatePosition(positionTorque);
+							break;
+					}
+
+					MotorPeriodicJob(cycleTick);
 				}
-
-				MotorPeriodicJob(cycleTick);
 			} else {
 				// Motor was not initialized. This indicates that communication with the TMC4671 or TMC6200 failed.
 				SystemSetSPIError(Set);
 				DebugPrint("%s Failed to initialize motor!", MOT_TAG);
 
 				// Motor failed to initialize, wait and then reinit
-				osDelay(TIMER_MOTOR_REINIT_DELAY);
+//				osDelay(TIMER_MOTOR_REINIT_DELAY);
 				motorInitialized = MotorInit();
 			}
 

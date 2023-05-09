@@ -27,13 +27,14 @@
 /**
  * Select Motor Mode
  * 0 == Normal operation, set registers in TMC chips, make motor spin
- * 1 == Idle operation, set registers in TMC chips, do not make motor spin
- * 2 == RTMI operation, do nothing except enable driver and clear charge pump if configured
+ * 1 == RTMI operation, set registers in TMC chips, do not make motor spin
+ * 2 == Idle operation, do nothing except enable driver and clear charge pump if configured
  */
 
 #define MOTOR_MODE MOTOR_MODE_NORMAL
 
 #define MOTOR_CONFIG_AUTO_INIT_ENCODER
+
 #define MOTOR_CONFIG_ENCODER_INIT_STRENGTH 1000
 #define MOTOR_CONFIG_ENCODER_INIT_SPEED 30
 

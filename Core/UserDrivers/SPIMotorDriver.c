@@ -308,23 +308,23 @@ PUBLIC uint8_t MotorRotateTorque(torque_t torque)
 	tmc4671_switchToMotionMode(TMC4671_CS, TMC4671_MOTION_MODE_TORQUE);
 	actualMotionMode = TMC4671_MOTION_MODE_TORQUE;
 
-	uint32_t diff = abs(torque - targetTorqueForTorqueMode);
-
-	if (diff > torqueAcceleration)
-	{
-		if (torque < targetTorqueForTorqueMode)
-		{
-			targetTorqueForTorqueMode -= torqueAcceleration;
-		}
-		else
-		{
-			targetTorqueForTorqueMode += torqueAcceleration;
-		}
-	}
-	else
-	{
+//	uint32_t diff = abs(torque - targetTorqueForTorqueMode);
+//
+//	if (diff > torqueAcceleration)
+//	{
+//		if (torque < targetTorqueForTorqueMode)
+//		{
+//			targetTorqueForTorqueMode -= torqueAcceleration;
+//		}
+//		else
+//		{
+//			targetTorqueForTorqueMode += torqueAcceleration;
+//		}
+//	}
+//	else
+//	{
 		targetTorqueForTorqueMode = torque;
-	}
+//	}
 
 	return 0;
 }
