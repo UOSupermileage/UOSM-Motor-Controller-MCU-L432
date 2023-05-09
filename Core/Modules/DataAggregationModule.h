@@ -77,4 +77,7 @@ PUBLIC void SystemSetThrottleError(flag_status_t status);
 PUBLIC flag_status_t  SystemGetMotorInitializing();
 PUBLIC void SystemSetMotorInitializing(flag_status_t status);
 
+PUBLIC velocity_t SystemGetMotorVelocity();
+PUBLIC void SystemSetMotorVelocity(velocity_t velocity);
+
 #endif /* MODULES_DATAAGGREGATIONMODULE_H_ */

@@ -13,9 +13,8 @@
 // ===== Motor Data =====
 
 PRIVATE motor_config_t motorConfig;
-
-
 PRIVATE motor_status_t motorStatus;
+PRIVATE velocity_t velocity;
 
 PUBLIC void InitDataAggregator() {
 	#ifdef MOTOR_FIXED_THROTTLE
@@ -132,4 +131,11 @@ PUBLIC flag_status_t  SystemGetMotorInitializing() {
 }
 PUBLIC void SystemSetMotorInitializing(flag_status_t status) {
 	motorStatus.motorInitializing = status;
+}
+
+PUBLIC velocity_t SystemGetMotorVelocity() {
+	return velocity;
+}
+PUBLIC void SystemSetMotorVelocity(velocity_t v) {
+	velocity = v;
 }

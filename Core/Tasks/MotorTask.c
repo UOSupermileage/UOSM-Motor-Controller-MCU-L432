@@ -55,6 +55,8 @@ PRIVATE void MotorTask(void *argument)
 		cycleTick += TIMER_MOTOR_TASK;
 		osDelayUntil(cycleTick);
 
+		SystemSetMotorVelocity(MotorGetActualVelocity());
+
 		DebugPrint("Motor Task: Motor mode [%d]", SystemGetMotorMode());
 
 		if (SystemGetMotorMode() == MOTOR_MODE_NORMAL || SystemGetMotorMode() == MOTOR_MODE_RTMI) {
