@@ -31,7 +31,7 @@
  * 2 == Idle operation, do nothing except enable driver and clear charge pump if configured
  */
 
-#define MOTOR_MODE MOTOR_MODE_NORMAL
+#define MOTOR_MODE 1
 
 #define MOTOR_CONFIG_AUTO_INIT_ENCODER
 
@@ -47,7 +47,7 @@
  *
  **********************************************************************************/
 
-#define MOTOR_CONFIG_MODE_RAMP_MODE_MOTION 1
+#define MOTOR_CONFIG_MODE_RAMP_MODE_MOTION 2
 /*********************************************************************************
  *
  * 		Fixed Throttle Value in RPM (Use for testing only)
@@ -229,10 +229,17 @@
 #define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t)1000
 #define MAX_VELOCITY 3000
 #elif MOTOR == 2
-#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t)32000
+
+#if MOTOR_CONFIG_MODE_RAMP_MODE_MOTION == 2
+	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t)25000
+#else
+	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t)32000
+#endif
+
 #define MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS (uint32_t)28000
 #define MOTOR_CONFIG_PID_UQ_UD_LIMITS 28000
 #define MAX_VELOCITY 3000
+#define MOTOR_CONFIG_ACCELERATION_LIMIT 50
 #endif
 /*********************************************************************************
  *
@@ -253,7 +260,7 @@
 #elif MOTOR == 2
 #define MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I (uint32_t)0x0041001E
 #define MOTOR_CONFIG_PID_FLUX_P_FLUX_I (uint32_t)0x0041001E
-#define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x00000000
+#define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x27100078
 #endif
 /*********************************************************************************
  *

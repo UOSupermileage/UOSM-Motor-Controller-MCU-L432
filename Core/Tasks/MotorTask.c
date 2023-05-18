@@ -77,7 +77,7 @@ PRIVATE void MotorTask(void *argument)
 							break;
 						case TMC4671_MOTION_MODE_VELOCITY:
 							;
-							velocity_t v = (MAX_VELOCITY) / MAX_PERCENTAGE * SystemGetThrottlePercentage();
+							velocity_t v = (MAX_VELOCITY) * SystemGetThrottlePercentage() / MAX_PERCENTAGE;
 
 							if (SystemGetReverseVelocity() == Set) {
 								v *= -1;
