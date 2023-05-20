@@ -496,23 +496,23 @@ PUBLIC uint8_t MotorPeriodicJob(uint32_t actualSystick)
 				tmc4671_setTargetTorque_raw(TMC4671_CS, targetTorqueForTorqueMode);
 				break;
 			case TMC4671_MOTION_MODE_VELOCITY:
-				tmc_linearRamp_computeRampVelocity(&rampGenerator);
+//				tmc_linearRamp_computeRampVelocity(&rampGenerator);
 
 				// set new target velocity (only if changed)
-				if (rampGenerator.rampVelocity != lastRampTargetVelocity)
-				{
+//				if (rampGenerator.rampVelocity != lastRampTargetVelocity)
+//				{
 					// set new target velocity
 					DebugPrint("Writing Velocity Target: %d", TMC4671_PID_VELOCITY_TARGET);
-					tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_TARGET, rampGenerator.rampVelocity);
-					lastRampTargetVelocity = rampGenerator.rampVelocity;
+					tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_TARGET, rampGenerator.targetVelocity);
+//					lastRampTargetVelocity = rampGenerator.rampVelocity;
 
 					// turn off velocity feed forward
-				}
+//				}
 
 				// keep position ramp and target position on track
-				tmc4671_writeInt(TMC4671_CS, TMC4671_PID_POSITION_TARGET, tmc4671_readInt(TMC4671_CS, TMC4671_PID_POSITION_ACTUAL));
-				rampGenerator.rampPosition = tmc4671_readInt(TMC4671_CS, TMC4671_PID_POSITION_ACTUAL);
-				rampGenerator.lastdXRest = 0;
+//				tmc4671_writeInt(TMC4671_CS, TMC4671_PID_POSITION_TARGET, tmc4671_readInt(TMC4671_CS, TMC4671_PID_POSITION_ACTUAL));
+//				rampGenerator.rampPosition = tmc4671_readInt(TMC4671_CS, TMC4671_PID_POSITION_ACTUAL);
+//				rampGenerator.lastdXRest = 0;
 				break;
 			case TMC4671_MOTION_MODE_POSITION:
 				break;

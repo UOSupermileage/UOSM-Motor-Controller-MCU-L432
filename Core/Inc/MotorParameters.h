@@ -31,11 +31,11 @@
  * 2 == Idle operation, do nothing except enable driver and clear charge pump if configured
  */
 
-#define MOTOR_MODE 1
+#define MOTOR_MODE 0
 
 #define MOTOR_CONFIG_AUTO_INIT_ENCODER
 
-#define MOTOR_CONFIG_ENCODER_INIT_STRENGTH 1000
+#define MOTOR_CONFIG_ENCODER_INIT_STRENGTH 1500
 #define MOTOR_CONFIG_ENCODER_INIT_SPEED 30
 
 /*********************************************************************************
@@ -239,7 +239,7 @@
 #define MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS (uint32_t)28000
 #define MOTOR_CONFIG_PID_UQ_UD_LIMITS 28000
 #define MAX_VELOCITY 3000
-#define MOTOR_CONFIG_ACCELERATION_LIMIT 50
+#define MOTOR_CONFIG_ACCELERATION_LIMIT 100000
 #endif
 /*********************************************************************************
  *
@@ -260,7 +260,7 @@
 #elif MOTOR == 2
 #define MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I (uint32_t)0x0041001E
 #define MOTOR_CONFIG_PID_FLUX_P_FLUX_I (uint32_t)0x0041001E
-#define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x27100078
+#define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x04B0000C
 #endif
 /*********************************************************************************
  *
