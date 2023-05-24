@@ -299,9 +299,18 @@ PUBLIC uint32_t MotorValidateSPI()
 
 PUBLIC uint8_t MotorRotateVelocity(velocity_t velocity)
 {
-	tmc4671_switchToMotionMode(TMC4671_CS, TMC4671_MOTION_MODE_VELOCITY);
-	actualMotionMode = TMC4671_MOTION_MODE_VELOCITY;
-	rampGenerator.targetVelocity = velocity;
+	if (velocity == 0) {
+		tmc4671_switchToMotionMode(TMC4671_CS, 0);
+		actualMotionMode = 0;
+		rampGenerator.targetVelocity = 0;
+	}
+	else {
+		tmc4671_switchToMotionMode(TMC4671_CS, TMC4671_MOTION_MODE_VELOCITY);
+		actualMotionMode = TMC4671_MOTION_MODE_VELOCITY;
+		rampGenerator.targetVelocity = velocity;
+	}
+
+
 	return 0;
 }
 

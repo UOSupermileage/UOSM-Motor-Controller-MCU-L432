@@ -260,7 +260,7 @@
 #elif MOTOR == 2
 #define MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I (uint32_t)0x0041001E
 #define MOTOR_CONFIG_PID_FLUX_P_FLUX_I (uint32_t)0x0041001E
-#define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x04B0000C
+#define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x6D600100
 #endif
 /*********************************************************************************
  *
