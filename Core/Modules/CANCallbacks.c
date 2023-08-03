@@ -3,6 +3,7 @@
 #include "CANMessageLookUpModule.h"
 #include "SafetyModule.h"
 #include "CANDriver.h"
+#include "DataAggregationModule.h"
 
 void ThrottleDataCallback(iCommsMessage_t* msg)
 {

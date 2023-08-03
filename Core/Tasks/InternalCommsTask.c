@@ -13,7 +13,7 @@
 #include "DataAggregationModule.h"
 #include "SPIMotorDriver.h"
 
-#define STACK_SIZE 1024 * 5
+#define STACK_SIZE 1024 * 2
 #define INTERNAL_COMMS_TASK_PRIORITY (osPriority_t) osPriorityRealtime3
 #define TIMER_INTERNAL_COMMS_TASK 100UL
 
