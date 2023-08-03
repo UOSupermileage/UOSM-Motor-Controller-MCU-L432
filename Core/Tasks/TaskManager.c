@@ -12,11 +12,13 @@
 #include "MotorTask.h"
 
 #include "DataAggregationModule.h"
+#include "SafetyModule.h"
 
 void RunTaskManager( void )
 {
 	InitDataAggregator();
 	InitInternalCommsTask();
+//	Safety_SetThrottlePercentage(1000);
 	InitSafetyTask();
 	InitMotorTask();
 }

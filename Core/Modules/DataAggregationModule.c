@@ -29,7 +29,6 @@ PUBLIC void InitDataAggregator() {
 	motorConfig.maxVelocity = MAX_VELOCITY;
 	SystemSetReverseVelocity(Set);
 	SystemSetMotorInitializing(Set);
-
 }
 
 // ===== Motor Config Getters and Setters =====
@@ -138,4 +137,11 @@ PUBLIC velocity_t SystemGetMotorVelocity() {
 }
 PUBLIC void SystemSetMotorVelocity(velocity_t v) {
 	velocity = v;
+}
+
+PUBLIC flag_status_t SystemGetDriverEnabled(){
+	return motorStatus.driverEnabled;
+}
+PUBLIC void SystemSetDriverEnabled(flag_status_t enabled) {
+	motorStatus.driverEnabled = enabled;
 }

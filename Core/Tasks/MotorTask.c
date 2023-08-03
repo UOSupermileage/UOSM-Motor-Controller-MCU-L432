@@ -49,6 +49,8 @@ PRIVATE void MotorTask(void *argument)
 	DebugPrint("%s Initializing MotorTask", MOT_TAG);
 	uint32_t motorInitialized = MotorInit();
 
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, SET);
+
 	for (;;)
 	{
 		// Increment cycleTick and wait until the delay has passed
@@ -59,24 +61,24 @@ PRIVATE void MotorTask(void *argument)
 
 		DebugPrint("Motor Task: Motor mode [%d]", SystemGetMotorMode());
 
-		if (SystemGetMotorMode() == MOTOR_MODE_NORMAL || SystemGetMotorMode() == MOTOR_MODE_RTMI) {
-
+//		if (SystemGetMotorMode() == MOTOR_MODE_NORMAL || SystemGetMotorMode() == MOTOR_MODE_RTMI) {
+#if MOTOR_MODE == 0 || MOTOR_MODE == 1
 			if (motorInitialized) {
-				if (SystemGetMotorMode() == MOTOR_MODE_NORMAL) {
-					switch (SystemGetMotionMode()) {
-						case TMC4671_MOTION_MODE_TORQUE:
-							;
-							torque_t torque = SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000;
-
-							if (SystemGetReverseVelocity() == Set) {
-								torque *= -1;
-							}
-
-							DebugPrint("%s Target Torque [%d mA]", MOT_TAG, torque);
-							MotorRotateTorque(torque);
-							break;
-						case TMC4671_MOTION_MODE_VELOCITY:
-							;
+//				if (SystemGetMotorMode() == MOTOR_MODE_NORMAL) {
+//					switch (SystemGetMotionMode()) {
+//						case TMC4671_MOTION_MODE_TORQUE:
+//							;
+//							torque_t torque = SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000;
+//
+//							if (SystemGetReverseVelocity() == Set) {
+//								torque *= -1;
+//							}
+//
+//							DebugPrint("%s Target Torque [%d mA]", MOT_TAG, torque);
+//							MotorRotateTorque(torque);
+//							break;
+//						case TMC4671_MOTION_MODE_VELOCITY:
+//							;
 							velocity_t v = (MAX_VELOCITY) * SystemGetThrottlePercentage() / MAX_PERCENTAGE;
 
 							if (SystemGetReverseVelocity() == Set) {
@@ -85,17 +87,18 @@ PRIVATE void MotorTask(void *argument)
 
 							DebugPrint("%s Target Velocity [%d RPM]", MOT_TAG, v);
 							MotorRotateVelocity(v);
-							break;
-						case TMC4671_MOTION_MODE_POSITION:
-							;
-							torque_t positionTorque = SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000;
-							DebugPrint("%s Dynamo Torque [%d mA]", MOT_TAG, positionTorque);
-							MotorRotatePosition(positionTorque);
-							break;
-					}
+//							break;
+//						case TMC4671_MOTION_MODE_POSITION:
+//							;
+//							torque_t positionTorque = SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000;
+//							DebugPrint("%s Dynamo Torque [%d mA]", MOT_TAG, positionTorque);
+//							MotorRotatePosition(positionTorque);
+//							break;
+//					}
 
 					MotorPeriodicJob(cycleTick);
-				}
+//					HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, SystemGetDriverEnabled() ? SET : RESET);
+//				}
 			} else {
 				// Motor was not initialized. This indicates that communication with the TMC4671 or TMC6200 failed.
 				SystemSetSPIError(Set);
@@ -105,10 +108,11 @@ PRIVATE void MotorTask(void *argument)
 //				osDelay(TIMER_MOTOR_REINIT_DELAY);
 				motorInitialized = MotorInit();
 			}
+#endif
 
-		} else {
-			DebugPrint("Motor Idle...");
-		}
+//		} else {
+//			DebugPrint("Motor Idle...");
+//		}
 
 		// Read registers in TMC6200 and check for faults
 		MotorPrintFaults();

@@ -239,7 +239,7 @@
 #define MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS (uint32_t)28000
 #define MOTOR_CONFIG_PID_UQ_UD_LIMITS 28000
 #define MAX_VELOCITY 3000
-#define MOTOR_CONFIG_ACCELERATION_LIMIT 100000
+#define MOTOR_CONFIG_ACCELERATION_LIMIT 300
 #endif
 /*********************************************************************************
  *

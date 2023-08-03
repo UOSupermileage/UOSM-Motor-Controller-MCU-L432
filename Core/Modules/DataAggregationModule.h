@@ -28,6 +28,7 @@ typedef union {
 		uint32_t safetyError:1;
 		uint32_t throttleError:1; // High if throttle was set too high (See SafetyModule)
 		uint32_t motorInitializing:1;
+		uint32_t driverEnabled:1;
 		uint32_t reserved;
 	};
 } motor_status_t;
@@ -53,6 +54,9 @@ PUBLIC void SystemSetReverseVelocity(flag_status_t reverse);
 
 PUBLIC uint8_t SystemGetMotionMode();
 PUBLIC void SystemSetMotionMode(uint8_t mode);
+
+PUBLIC flag_status_t SystemGetDriverEnabled();
+PUBLIC void SystemSetDriverEnabled(flag_status_t enabled);
 
 // ===== Motor Status Getters and Setters =====
 

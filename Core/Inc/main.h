@@ -57,6 +57,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define ENABLE_6200_Pin GPIO_PIN_0
+#define ENABLE_6200_GPIO_Port GPIOA
 #define EnableTMC_Pin GPIO_PIN_0
 #define EnableTMC_GPIO_Port GPIOB
 #define CS_CAN_Pin GPIO_PIN_1

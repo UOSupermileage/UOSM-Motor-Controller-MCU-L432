@@ -15,12 +15,12 @@
 
 #include "SPIMotorDriver.h"
 
-#include "LEDStatusDriver.h"
+//#include "LEDStatusDriver.h"
 #include "Profiles.h"
 
 #define STACK_SIZE 128*4
 #define SAFETY_TASK_PRIORITY (osPriority_t) osPriorityHigh
-#define TIMER_SAFETY_TASK 5000UL
+#define TIMER_SAFETY_TASK 1000UL
 
 const char SFT_TAG[] = "#SFT:";
 
@@ -36,9 +36,7 @@ const osThreadAttr_t SafetyTask_attributes = {
 
 PUBLIC void InitSafetyTask(void)
 {
-
 	SafetyTaskHandle = osThreadNew(SafetyTask, NULL, &SafetyTask_attributes);
-
 }
 PRIVATE void SafetyTask(void *argument)
 {
@@ -53,13 +51,19 @@ PRIVATE void SafetyTask(void *argument)
 #ifdef PROFILE_SAFETY
 		DebugPrint("%s Safety Error [%d],  SPI Error [%d], iComms Error [%d]", SFT_TAG, SystemGetSafetyError(), SystemGetSPIError(), SystemGetiCommsError());
 
-		if (MotorValidateSPI()) {
-			SystemSetSPIError(Clear);
-		} else {
-			SystemSetSPIError(Set);
-		}
+		static uint8_t s = 0;
+//
+//		if (s) {
+//			SystemSetSPIError(Clear);
+//		} else {
+//			SystemSetSPIError(Set);
+//		}
 
-		STATUS_PeriodicDisplayStatusCode();
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, s);
+
+		s = !s;
+
+//		STATUS_PeriodicDisplayStatusCode();
 #endif
 	}
 }

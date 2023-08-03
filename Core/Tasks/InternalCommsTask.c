@@ -13,7 +13,7 @@
 #include "DataAggregationModule.h"
 #include "SPIMotorDriver.h"
 
-#define STACK_SIZE 128 * 8
+#define STACK_SIZE 1024 * 5
 #define INTERNAL_COMMS_TASK_PRIORITY (osPriority_t) osPriorityRealtime3
 #define TIMER_INTERNAL_COMMS_TASK 100UL
 
@@ -67,7 +67,6 @@ PRIVATE void InternalCommsTask(void *argument)
 		// Broadcast
 		if (throttleErrorBroadcastCounter >= THROTTLE_ERROR_BROADCAST_RATE)
 		{
-
 			DebugPrint("%s Sending Throttle Error Code %d!", ICT_TAG, SystemGetThrottleError());
 
 			iCommsMessage_t throttleTxMsg = IComms_CreateErrorMessage(errorInfo->messageID, THROTTLE_TOO_HIGH, SystemGetThrottleError());
