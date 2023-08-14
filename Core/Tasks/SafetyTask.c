@@ -52,18 +52,10 @@ PRIVATE void SafetyTask(void *argument)
 		DebugPrint("%s Safety Error [%d],  SPI Error [%d], iComms Error [%d]", SFT_TAG, SystemGetSafetyError(), SystemGetSPIError(), SystemGetiCommsError());
 
 		static uint8_t s = 0;
-//
-//		if (s) {
-//			SystemSetSPIError(Clear);
-//		} else {
-//			SystemSetSPIError(Set);
-//		}
 
 		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, s);
 
 		s = !s;
-
-//		STATUS_PeriodicDisplayStatusCode();
 #endif
 	}
 }

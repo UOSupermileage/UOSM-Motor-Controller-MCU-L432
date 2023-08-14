@@ -13,7 +13,7 @@
 #include "DataAggregationModule.h"
 #include "SPIMotorDriver.h"
 
-#define STACK_SIZE 1024 * 2
+#define STACK_SIZE 128 * 8
 #define INTERNAL_COMMS_TASK_PRIORITY (osPriority_t) osPriorityRealtime3
 #define TIMER_INTERNAL_COMMS_TASK 100UL
 
@@ -23,7 +23,7 @@
 #define MOTOR_RPM_BROADCAST_RATE 3
 
 PUBLIC void InitInternalCommsTask(void);
-PRIVATE void InternalCommsTask(void *argument);
+PRIVATE _Noreturn void InternalCommsTask(void *argument);
 
 const char ICT_TAG[] = "#ICT:";
 
@@ -36,23 +36,25 @@ const osThreadAttr_t InternalCommsTask_attributes = {
 
 PUBLIC void InitInternalCommsTask(void)
 {
-
 	InternalCommsTaskHandle = osThreadNew(InternalCommsTask, NULL, &InternalCommsTask_attributes);
 }
-PRIVATE void InternalCommsTask(void *argument)
+PRIVATE _Noreturn void InternalCommsTask(void *argument)
 {
 	uint32_t cycleTick = osKernelGetTickCount();
 	DebugPrint("%s icomms", ICT_TAG);
 
+        // Get CAN message info to be able to send these types of messages
 	const ICommsMessageInfo *errorInfo = CANMessageLookUpGetInfo(ERROR_DATA_ID);
 	const ICommsMessageInfo *eventInfo = CANMessageLookUpGetInfo(EVENT_DATA_ID);
 	const ICommsMessageInfo *rpmInfo = CANMessageLookUpGetInfo(MOTOR_RPM_DATA_ID);
 
+        // Create counters to keep track of when to send messages
 	uint8_t throttleErrorBroadcastCounter = 0;
 	uint8_t deadmanBroadcastCounter = 0;
 	uint8_t motorInitCounter = 0;
 	uint8_t motorRPMBroadcastCounter = 0;
 
+        // Pull CAN CS High
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_SET);
 
 	IComms_Init();
@@ -62,9 +64,10 @@ PRIVATE void InternalCommsTask(void *argument)
 		osDelayUntil(cycleTick);
 
 #ifdef PROFILE_ICOMMS
+                // Receive messages
 		IComms_PeriodicReceive();
 
-		// Broadcast
+		// Broadcast messages
 		if (throttleErrorBroadcastCounter >= THROTTLE_ERROR_BROADCAST_RATE)
 		{
 			DebugPrint("%s Sending Throttle Error Code %d!", ICT_TAG, SystemGetThrottleError());

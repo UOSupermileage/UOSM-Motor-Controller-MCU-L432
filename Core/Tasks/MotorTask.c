@@ -10,13 +10,11 @@
 #include "MotorParameters.h"
 #include "Profiles.h"
 #include "tmc/ic/TMC4671/TMC4671.h"
-#include "tmc/ic/TMC6200/TMC6200.h"
-#include "tmc/ic/TMC6200/TMC6200_Register.h"
 
-#define STACK_SIZE 128 * 4
+// TODO: Does this task need more memory?
+#define STACK_SIZE 128 * 8
 #define MOTOR_TASK_PRIORITY (osPriority_t) osPriorityRealtime
 #define TIMER_MOTOR_TASK 150UL
-//#define TIMER_MOTOR_REINIT_DELAY 100UL
 
 const char MOT_TAG[] = "#MOT:";
 
@@ -47,72 +45,43 @@ PRIVATE void MotorTask(void *argument)
 
 	// Initialize the system as configured in MotorParameters.h
 	DebugPrint("%s Initializing MotorTask", MOT_TAG);
-	uint32_t motorInitialized = MotorInit();
-
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, SET);
+	uint8_t motorInitialized = MotorInit();
 
 	for (;;)
 	{
-		// Increment cycleTick and wait until the delay has passed
-		cycleTick += TIMER_MOTOR_TASK;
-		osDelayUntil(cycleTick);
+            // Increment cycleTick and wait until the delay has passed
+            cycleTick += TIMER_MOTOR_TASK;
+            osDelayUntil(cycleTick);
 
-		SystemSetMotorVelocity(MotorGetActualVelocity());
+            // Store Motor RPM from TMC in the Aggregator
+            SystemSetMotorVelocity(MotorGetActualVelocity());
 
-		DebugPrint("Motor Task: Motor mode [%d]", SystemGetMotorMode());
+            DebugPrint("Motor Task: Motor mode [%d]", SystemGetMotorMode());
 
-//		if (SystemGetMotorMode() == MOTOR_MODE_NORMAL || SystemGetMotorMode() == MOTOR_MODE_RTMI) {
 #if MOTOR_MODE == 0 || MOTOR_MODE == 1
-			if (motorInitialized) {
-//				if (SystemGetMotorMode() == MOTOR_MODE_NORMAL) {
-//					switch (SystemGetMotionMode()) {
-//						case TMC4671_MOTION_MODE_TORQUE:
-//							;
-//							torque_t torque = SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000;
-//
-//							if (SystemGetReverseVelocity() == Set) {
-//								torque *= -1;
-//							}
-//
-//							DebugPrint("%s Target Torque [%d mA]", MOT_TAG, torque);
-//							MotorRotateTorque(torque);
-//							break;
-//						case TMC4671_MOTION_MODE_VELOCITY:
-//							;
-							velocity_t v = (MAX_VELOCITY) * SystemGetThrottlePercentage() / MAX_PERCENTAGE;
+            // Enable 6200 depending on state stored in Aggregator
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, SystemGetDriverEnabled() == Set ? GPIO_PIN_SET : GPIO_PIN_RESET);
 
-							if (SystemGetReverseVelocity() == Set) {
-								v *= -1;
-							}
+            if (motorInitialized) {
+                velocity_t v = (MAX_VELOCITY / MAX_PERCENTAGE) * SystemGetThrottlePercentage();
 
-							DebugPrint("%s Target Velocity [%d RPM]", MOT_TAG, v);
-							MotorRotateVelocity(v);
-//							break;
-//						case TMC4671_MOTION_MODE_POSITION:
-//							;
-//							torque_t positionTorque = SystemGetThrottlePercentage() * MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS / 1000;
-//							DebugPrint("%s Dynamo Torque [%d mA]", MOT_TAG, positionTorque);
-//							MotorRotatePosition(positionTorque);
-//							break;
-//					}
+                if (SystemGetReverseVelocity() == Set) {
+                        v *= -1;
+                }
 
-					MotorPeriodicJob(cycleTick);
-//					HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, SystemGetDriverEnabled() ? SET : RESET);
-//				}
-			} else {
-				// Motor was not initialized. This indicates that communication with the TMC4671 or TMC6200 failed.
-				SystemSetSPIError(Set);
-				DebugPrint("%s Failed to initialize motor!", MOT_TAG);
+                DebugPrint("%s Target Velocity [%d RPM]", MOT_TAG, v);
+                MotorRotateVelocity(v);
 
-				// Motor failed to initialize, wait and then reinit
-//				osDelay(TIMER_MOTOR_REINIT_DELAY);
-				motorInitialized = MotorInit();
-			}
+                MotorPeriodicJob();
+            } else {
+                // Motor was not initialized. This indicates that communication with the TMC4671 or TMC6200 failed.
+                SystemSetSPIError(Set);
+                DebugPrint("%s Failed to initialize motor!", MOT_TAG);
+
+                // Motor failed to initialize, wait and then reinit
+                motorInitialized = MotorInit();
+            }
 #endif
-
-//		} else {
-//			DebugPrint("Motor Idle...");
-//		}
 
 		// Read registers in TMC6200 and check for faults
 		MotorPrintFaults();

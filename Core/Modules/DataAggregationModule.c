@@ -39,7 +39,7 @@ PUBLIC percentage_t SystemGetThrottlePercentage() {
 PUBLIC void SystemSetThrottlePercentage(percentage_t percentage) {
 	
 	if (motorConfig.ignoreThrottle) {
-		DebugPrint("Ignoring thorttle input...");
+		DebugPrint("Ignoring throttle input...");
 		return;
 	}
 	

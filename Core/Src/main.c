@@ -103,6 +103,17 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
+  uint32_t resetCause = RCC->CSR;
+
+  if (resetCause & RCC_CSR_BORRSTF) {
+      // Brown out occured
+      for (int i = 0; i < 100; i++) {
+          HAL_GPIO_TogglePin(ENABLE_6200_GPIO_Port, ENABLE_6200_Pin);
+          HAL_Delay(10);
+      }
+      HAL_GPIO_WritePin(ENABLE_6200_GPIO_Port, ENABLE_6200_Pin, 0);
+  }
+
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -130,11 +141,11 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_THREADS */
   /*+----------------------------------------------+
-  	|                                              |
-  	|       !!!!!!!IMPORTANT!!!!                   |
-  	|RunTaskManager() is the only function to run! |
-  	|                                              |
-  	+----------------------------------------------+
+    |                                              |
+    |       !!!!!!!IMPORTANT!!!!                   |
+    |RunTaskManager() is the only function to run! |
+    |                                              |
+    +----------------------------------------------+
   */
   RunTaskManager();
   /* USER CODE END RTOS_THREADS */
@@ -152,7 +163,6 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -349,8 +359,12 @@ void Error_Handler(void)
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
+  uint16_t i = 0;
   while (1)
   {
+    HAL_GPIO_TogglePin(ENABLE_6200_GPIO_Port, ENABLE_6200_Pin);
+    HAL_Delay(10 * (i % 3) + 1);
+    i++;
   }
   /* USER CODE END Error_Handler_Debug */
 }

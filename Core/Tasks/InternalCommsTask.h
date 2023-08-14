@@ -17,7 +17,7 @@
 
 
 PUBLIC void InitInternalCommsTask(void);
-PRIVATE void InternalCommsTask(void *argument);
+PRIVATE _Noreturn void InternalCommsTask(void *argument);
 
 
 #endif /* TASKS_INTERNALCOMMSTASK_H_ */
