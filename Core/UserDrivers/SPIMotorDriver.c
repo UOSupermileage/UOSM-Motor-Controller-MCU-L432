@@ -384,10 +384,33 @@ PUBLIC uint8_t MotorInitEncoder() {
 	return 0;
 }
 
+#define RAMP_SIZE 4
+static ramp_point_t ramp[RAMP_SIZE] = {
+    {-1,500},
+    {600,25},
+    {2400,50},
+    {3000,25}
+};
+
 PUBLIC uint8_t MotorPeriodicJob()
 {
 	DebugPrint("Writing Velocity Target: %d", TMC4671_PID_VELOCITY_TARGET);
-        tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_TARGET, targetVelocity);
+        // Ramp logic
+        velocity_t velocity_rpm = MotorGetActualVelocity();
+        uint8_t ix;
+        velocity_t actual_target_velocity;
+        while (ix < RAMP_SIZE - 1 && velocity_rpm > ramp[ix].rpm_target) {
+                ix++;
+        }
+
+        if (targetVelocity - velocity_rpm > ramp[ix]){
+                 actual_target_velocity = velocity_rpm + ramp[ix].acceleration
+                 // Acceleration is written in rpms per tick (1 tick = 150 ms)
+        } else {
+                 actual_target_velocity = targetVelocity
+        }
+
+        tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_TARGET, actual_target_velocity);
 
 	return 0;
 }

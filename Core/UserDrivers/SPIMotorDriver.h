@@ -17,6 +17,11 @@
 #define TMC4671_CS 0
 #define TMC6200_CS 1
 
+typedef struct {
+        velocity_t rpm_target;
+        uint16_t acceleration;
+} ramp_point_t;
+
 /**
  * Read Write a single byte over SPI.
  * CS is held low until function is called with lastTransfer == 12.
