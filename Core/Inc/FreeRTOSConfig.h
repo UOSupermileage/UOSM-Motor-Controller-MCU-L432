@@ -31,6 +31,8 @@
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
 
+#define configRECORD_STACK_HIGH_ADDRESS 1
+
 /*-----------------------------------------------------------
  * Application specific definitions.
  *

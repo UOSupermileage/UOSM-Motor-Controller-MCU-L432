@@ -65,10 +65,6 @@ PRIVATE void MotorTask(void *argument)
             if (motorInitialized) {
                 velocity_t v = (MAX_VELOCITY / MAX_PERCENTAGE) * SystemGetThrottlePercentage();
 
-                if (SystemGetReverseVelocity() == Set) {
-                        v *= -1;
-                }
-
                 DebugPrint("%s Target Velocity [%d RPM]", MOT_TAG, v);
                 MotorRotateVelocity(v);
 

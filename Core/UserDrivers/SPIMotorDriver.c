@@ -384,33 +384,46 @@ PUBLIC uint8_t MotorInitEncoder() {
 	return 0;
 }
 
-#define RAMP_SIZE 4
+#define RAMP_SIZE 6
 static ramp_point_t ramp[RAMP_SIZE] = {
     {-1,500},
-    {600,25},
-    {2400,50},
-    {3000,25}
+    {100, 80},
+    {300, 70},
+    {1200, 60},
+    {2400,60},
+    {3000, 30}
 };
 
 PUBLIC uint8_t MotorPeriodicJob()
 {
 	DebugPrint("Writing Velocity Target: %d", TMC4671_PID_VELOCITY_TARGET);
         // Ramp logic
-        velocity_t velocity_rpm = MotorGetActualVelocity();
-        uint8_t ix;
-        velocity_t actual_target_velocity;
-        while (ix < RAMP_SIZE - 1 && velocity_rpm > ramp[ix].rpm_target) {
+        velocity_t actualVelocity = MotorGetActualVelocity();
+
+        // If motor is needs negatives to advance, flip actual velocity
+        if (SystemGetReverseVelocity() == Set) {
+                actualVelocity *= -1;
+        }
+
+        velocity_t actualTargetVelocity;
+
+        uint8_t ix = 0;
+        while (ix < RAMP_SIZE - 1 && actualVelocity > ramp[ix].rpm_target) {
                 ix++;
         }
 
-        if (targetVelocity - velocity_rpm > ramp[ix]){
-                 actual_target_velocity = velocity_rpm + ramp[ix].acceleration
+        if (targetVelocity > actualVelocity && (targetVelocity - actualVelocity) > ramp[ix].acceleration){
+                actualTargetVelocity = actualVelocity + ramp[ix].acceleration;
                  // Acceleration is written in rpms per tick (1 tick = 150 ms)
         } else {
-                 actual_target_velocity = targetVelocity
+                actualTargetVelocity = targetVelocity;
         }
 
-        tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_TARGET, actual_target_velocity);
+        if (SystemGetReverseVelocity() == Set) {
+                actualTargetVelocity *= -1;
+        }
+
+        tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_TARGET, actualTargetVelocity);
 
 	return 0;
 }
