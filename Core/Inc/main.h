@@ -57,6 +57,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define Motor_Select_Switch_Pin GPIO_PIN_15
+#define Motor_Select_Switch_GPIO_Port GPIOC
 #define ENABLE_6200_Pin GPIO_PIN_0
 #define ENABLE_6200_GPIO_Port GPIOA
 #define EnableTMC_Pin GPIO_PIN_0
@@ -67,6 +69,8 @@ void Error_Handler(void);
 #define CS_TMC4671_GPIO_Port GPIOB
 #define CS_TMC6200_Pin GPIO_PIN_5
 #define CS_TMC6200_GPIO_Port GPIOB
+#define Motor_Select_Pin GPIO_PIN_7
+#define Motor_Select_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

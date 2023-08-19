@@ -12,7 +12,6 @@
 #include "tmc/ic/TMC4671/TMC4671.h"
 #include "tmc/ic/TMC6200/TMC6200.h"
 #include "tmc/ic/TMC6200/TMC6200_Register.h"
-#include "tmc/ramp/LinearRamp.h"
 
 #include "MotorParameters.h"
 
@@ -21,6 +20,41 @@ extern SPI_HandleTypeDef hspi1;
 #define TIMEOUT 50
 
 static velocity_t targetVelocity;
+
+static ramp_point_t motorLowSpeedRamp[] = {
+    {-1,500},
+    {100, 80},
+    {300, 70},
+    {1200, 60},
+    {2400,60},
+    {3000, 30}
+};
+static motor_t motorLowSpeed = {
+    MOTOR_LOW_SPEED,
+    0,
+    0,
+    motorLowSpeedRamp,
+    6
+};
+
+static ramp_point_t motorHighSpeedRamp[] = {
+    {-1,500},
+    {100, 80},
+    {300, 70},
+    {1200, 60},
+    {2400,60},
+    {3000, 30}
+};
+static motor_t motorHighSpeed = {
+    MOTOR_HIGH_SPEED,
+    0,
+    0,
+    motorHighSpeedRamp,
+    6
+};
+
+static motor_t* activeMotor = &motorLowSpeed;
+
 
 // => SPI wrapper
 /**
@@ -41,7 +75,6 @@ uint8_t tmc4671_readwriteByte(const uint8_t motor, uint8_t data, uint8_t lastTra
 
 	if (status != HAL_OK)
 	{
-
 		SystemSetSPIError(Set);
 
 		switch (status)
@@ -79,15 +112,32 @@ uint8_t tmc6200_readwriteByte(uint8_t motor, uint8_t data, uint8_t lastTransfer)
 
 void MotorSetCS(uint8_t cs, GPIO_PinState state)
 {
-	switch (cs)
-	{
+	switch (cs) {
 	case TMC4671_CS:
 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, state);
 		break;
 	case TMC6200_CS:
 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, state);
 		break;
+        default:
+                break;
 	}
+}
+
+void MotorSelect(MotorCode code) {
+        uint8_t didChange = activeMotor->id != code;
+
+        if (didChange) {
+                MotorEnableDriver(DISABLED);
+                osDelayUntil(osKernelGetTickCount() + 100);
+        }
+
+        activeMotor = code == MOTOR_LOW_SPEED ? &motorLowSpeed : &motorHighSpeed;
+        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, code == MOTOR_LOW_SPEED ? GPIO_PIN_SET : GPIO_PIN_RESET);
+
+        if (didChange) {
+                MotorInit();
+        }
 }
 
 PUBLIC uint8_t MotorInit()
@@ -384,16 +434,6 @@ PUBLIC uint8_t MotorInitEncoder() {
 	return 0;
 }
 
-#define RAMP_SIZE 6
-static ramp_point_t ramp[RAMP_SIZE] = {
-    {-1,500},
-    {100, 80},
-    {300, 70},
-    {1200, 60},
-    {2400,60},
-    {3000, 30}
-};
-
 PUBLIC uint8_t MotorPeriodicJob()
 {
 	DebugPrint("Writing Velocity Target: %d", TMC4671_PID_VELOCITY_TARGET);
@@ -408,12 +448,12 @@ PUBLIC uint8_t MotorPeriodicJob()
         velocity_t actualTargetVelocity;
 
         uint8_t ix = 0;
-        while (ix < RAMP_SIZE - 1 && actualVelocity > ramp[ix].rpm_target) {
+        while (ix < activeMotor->rampSize - 1 && actualVelocity > activeMotor->rampPoints[ix].rpm_target) {
                 ix++;
         }
 
-        if (targetVelocity > actualVelocity && (targetVelocity - actualVelocity) > ramp[ix].acceleration){
-                actualTargetVelocity = actualVelocity + ramp[ix].acceleration;
+        if (targetVelocity > actualVelocity && (targetVelocity - actualVelocity) > activeMotor->rampPoints[ix].acceleration){
+                actualTargetVelocity = actualVelocity + activeMotor->rampPoints[ix].acceleration;
                  // Acceleration is written in rpms per tick (1 tick = 150 ms)
         } else {
                 actualTargetVelocity = targetVelocity;
@@ -439,16 +479,6 @@ PUBLIC uint8_t MotorEnableDriver(Enable_t enabled)
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, enabled == ENABLED ? GPIO_PIN_SET : GPIO_PIN_RESET);
 
 	return 0;
-}
-
-PUBLIC uint8_t MotorDeInit()
-{
-	return MotorEnableDriver(DISABLED);
-}
-
-PUBLIC void MotorHealth()
-{
-	DebugPrint("MotorHealth: NOT IMPLEMENTED");
 }
 
 PUBLIC void MotorClearChargePump()

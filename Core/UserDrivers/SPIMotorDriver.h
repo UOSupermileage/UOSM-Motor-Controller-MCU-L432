@@ -10,6 +10,7 @@
 
 // STM headers
 #include "stm32l4xx_hal.h"
+#include "cmsis_os.h"
 
 // Our headers
 #include "ApplicationTypes.h"
@@ -22,6 +23,14 @@ typedef struct {
         uint16_t acceleration;
 } ramp_point_t;
 
+typedef struct {
+    MotorCode id;
+    uint32_t pi;
+    velocity_t maxVelocity;
+    ramp_point_t* rampPoints;
+    uint8_t rampSize;
+} motor_t;
+
 /**
  * Read Write a single byte over SPI.
  * CS is held low until function is called with lastTransfer == 12.
@@ -32,6 +41,12 @@ PUBLIC uint8_t tmc4671_readwriteByte(uint8_t motor, uint8_t data, uint8_t lastTr
  * Set the Chip Select (CS) pin for a particular slave to state
  */
 PRIVATE void MotorSetCS(uint8_t cs, GPIO_PinState state);
+
+/**
+ * Set which motor is being driven
+ * @param motor
+ */
+PRIVATE void MotorSelect(MotorCode motor);
 
 PUBLIC uint32_t MotorValidateSPI();
 
@@ -52,11 +67,7 @@ PUBLIC velocity_t MotorGetActualVelocity();
  */
 PUBLIC uint8_t MotorInit();
 
-PUBLIC uint8_t MotorDeInit();
-
 PUBLIC uint8_t MotorInitEncoder();
-
-PUBLIC void MotorHealth();
 
 PUBLIC void MotorClearChargePump();
 

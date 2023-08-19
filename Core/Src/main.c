@@ -163,6 +163,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -297,6 +298,7 @@ static void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
@@ -304,7 +306,14 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOA, ENABLE_6200_Pin|GPIO_PIN_10, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, EnableTMC_Pin|CS_CAN_Pin|CS_TMC4671_Pin|CS_TMC6200_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, EnableTMC_Pin|CS_CAN_Pin|CS_TMC4671_Pin|CS_TMC6200_Pin
+                          |Motor_Select_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : Motor_Select_Switch_Pin */
+  GPIO_InitStruct.Pin = Motor_Select_Switch_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(Motor_Select_Switch_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : ENABLE_6200_Pin PA10 */
   GPIO_InitStruct.Pin = ENABLE_6200_Pin|GPIO_PIN_10;
@@ -313,8 +322,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : EnableTMC_Pin CS_CAN_Pin CS_TMC4671_Pin CS_TMC6200_Pin */
-  GPIO_InitStruct.Pin = EnableTMC_Pin|CS_CAN_Pin|CS_TMC4671_Pin|CS_TMC6200_Pin;
+  /*Configure GPIO pins : EnableTMC_Pin CS_CAN_Pin CS_TMC4671_Pin CS_TMC6200_Pin
+                           Motor_Select_Pin */
+  GPIO_InitStruct.Pin = EnableTMC_Pin|CS_CAN_Pin|CS_TMC4671_Pin|CS_TMC6200_Pin
+                          |Motor_Select_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
