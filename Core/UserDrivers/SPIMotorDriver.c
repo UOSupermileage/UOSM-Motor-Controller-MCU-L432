@@ -185,9 +185,6 @@ PUBLIC uint8_t MotorInit()
 #ifdef ABN
 	tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_MODE, MOTOR_CONFIG_ABN_DECODER_MODE);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_PPR, MOTOR_CONFIG_ABN_DECODER_PPR);
-	tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT, MOTOR_CONFIG_ABN_DECODER_COUNT);
-	tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT_N, MOTOR_CONFIG_ABN_DECODER_COUNT_N);
-	tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_PHI_E_PHI_M_OFFSET, MOTOR_CONFIG_ABN_DECODER_PHI_E_PHI_M_OFFSET);
 #endif
 
 	// Digital hall settings
@@ -268,12 +265,14 @@ PUBLIC uint8_t MotorInit()
 #endif
 
         // AKA BANG BANG
-	#ifdef MOTOR_CONFIG_AUTO_INIT_ENCODER
+	#ifdef ABN
+        #ifdef MOTOR_CONFIG_AUTO_INIT_ENCODER
 		if (MotorInitEncoder() != 0) {
 			DebugPrint("Failed to init encoder");
 			return false;
 		}
-	#endif
+        #endif
+        #endif
 
 	DebugPrint("Motor Initialized!");
 
@@ -370,68 +369,57 @@ PRIVATE static void MotorInitEncoderPeriodicJob(uint8_t motor, uint8_t *initStat
 
 PUBLIC uint8_t MotorInitEncoder() {
 
-	torque_t t = MOTOR_CONFIG_ENCODER_INIT_STRENGTH;
+	uint8_t t = MOTOR_CONFIG_ABN_INIT_VELOCITY;
 	
 	// If not reversing, then reverse t because we want this to spin in reverse
 	if (SystemGetReverseVelocity() == Clear) {
 		t *= -1;
 	}
 
-#define HALL 5
-#define ENC 3
+        // Set acceleration to 60
+        tmc4671_writeInt(TMC4671_CS, TMC4671_OPENLOOP_ACCELERATION, MOTOR_CONFIG_ABN_INIT_ACCELERATION);
 
-	tmc4671_writeRegister16BitValue(TMC4671_CS, TMC4671_PHI_E_SELECTION, BIT_0_TO_15, HALL);
+        // Set velocity to reverse at 10 RPM
+        tmc4671_writeInt(TMC4671_CS, TMC4671_OPENLOOP_VELOCITY_TARGET, t);
 
-	// Start spining the motor	
-	tmc4671_switchToMotionMode(TMC4671_CS, TMC4671_MOTION_MODE_TORQUE);
-	tmc4671_setTargetTorque_raw(TMC4671_CS, t);
+        tmc4671_writeInt(TMC4671_CS, TMC4671_UQ_UD_EXT, MOTOR_CONFIG_ABN_INIT_UQ_UD_EXIT);
 
-	HAL_Delay(500);
+        // Use Open Loop Mode (Phi E Selection)
+        tmc4671_writeInt(TMC4671_CS, TMC4671_PHI_E_SELECTION, 2);
 
-	// Check if motor actually started spinning
-	if ((SystemGetReverseVelocity() == Set && MotorGetActualVelocity() < MOTOR_CONFIG_ENCODER_INIT_SPEED) || (SystemGetReverseVelocity() == Clear && MotorGetActualVelocity() > -1 * MOTOR_CONFIG_ENCODER_INIT_SPEED)) {
-		tmc4671_setTargetTorque_raw(TMC4671_CS, 0);
-		return 1;
-	}
+        // Use Motion Mode (UQ_UD_EXT)
+        tmc4671_switchToMotionMode(TMC4671_CS, 8);
 
-	uint8_t initState = 1;
-	uint16_t actualInitWaitTime;
-	int16_t hall_phi_e_old;
-	int16_t hall_phi_e_new;
-	int16_t hall_actual_coarse_offset;
+        HAL_Delay(300);
 
-	uint8_t c = 0;
+        // If the motor is not rotating, reverse direction.
+        if (abs(MotorGetActualVelocity()) <= 2) {
+                // Reverse motor
+                tmc4671_writeInt(TMC4671_CS, TMC4671_OPENLOOP_VELOCITY_TARGET, t * -1);
+                HAL_Delay(300);
+        }
 
-	MotorInitEncoderPeriodicJob(TMC4671_CS, &initState, &actualInitWaitTime, &hall_phi_e_old, &hall_phi_e_new, &hall_actual_coarse_offset);
+        if (abs(MotorGetActualVelocity()) < 2) {
+                return 1;
+        }
 
-	while (initState != 0 && c <= 4) {
-		HAL_Delay(300);
-		
-		MotorInitEncoderPeriodicJob(TMC4671_CS, &initState, &actualInitWaitTime, &hall_phi_e_old, &hall_phi_e_new, &hall_actual_coarse_offset);
-		c++;
-	}
+        // Stop the motor
+        tmc4671_writeInt(TMC4671_CS, TMC4671_OPENLOOP_VELOCITY_TARGET, 0);
 
-	// Failed to init encoder
-	if (initState != 0) {
-		return 1;
-	}
+        int32_t openLoopPhiE = tmc4671_readInt(TMC4671_CS, TMC4671_PHI_E);
 
-	// Stop motor
-	tmc4671_setTargetTorque_raw(TMC4671_CS, 0);
-	HAL_Delay(200);
+        // TODO: What is the difference between these?
+        tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT, 0);
+        tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT_N, 0);
 
-	// switch to encoder
-	tmc4671_writeRegister16BitValue(TMC4671_CS, TMC4671_PHI_E_SELECTION, BIT_0_TO_15, ENC);
-	tmc4671_setTargetTorque_raw(TMC4671_CS, t);
-	HAL_Delay(600);
 
-	if ((SystemGetReverseVelocity() == Set && MotorGetActualVelocity() < MOTOR_CONFIG_ENCODER_INIT_SPEED) || (SystemGetReverseVelocity() == Clear && MotorGetActualVelocity() > -1 * MOTOR_CONFIG_ENCODER_INIT_SPEED)) {
-		tmc4671_setTargetTorque_raw(TMC4671_CS, 0);
-		return 1;
-	}
+        // Shift the open loop angle to the most significant 16 bits of the number. The mechanical offset is set to 0.
+        tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_PHI_E_PHI_M_OFFSET, openLoopPhiE << 16);
 
-	tmc4671_setTargetTorque_raw(TMC4671_CS, 0);
-	return 0;
+        // Set ABN Encoder as Phi E Selection
+        tmc4671_writeInt(TMC4671_CS, TMC4671_PHI_E_SELECTION, 3);
+
+        return 0;
 }
 
 PUBLIC uint8_t MotorPeriodicJob()

@@ -47,20 +47,17 @@ PRIVATE void MotorTask(void *argument)
 	DebugPrint("%s Initializing MotorTask", MOT_TAG);
 	uint8_t motorInitialized = MotorInit();
 
-	for (;;)
-	{
+	for (;;) {
             // Increment cycleTick and wait until the delay has passed
             cycleTick += TIMER_MOTOR_TASK;
             osDelayUntil(cycleTick);
 
             MotorSelect(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_15) == GPIO_PIN_SET ? MOTOR_LOW_SPEED : MOTOR_HIGH_SPEED);
 
+#if MOTOR_MODE == 0 || MOTOR_MODE == 1
             // Store Motor RPM from TMC in the Aggregator
             SystemSetMotorVelocity(MotorGetActualVelocity());
 
-            DebugPrint("Motor Task: Motor mode [%d]", SystemGetMotorMode());
-
-#if MOTOR_MODE == 0 || MOTOR_MODE == 1
             // Enable 6200 depending on state stored in Aggregator
             HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, SystemGetDriverEnabled() == Set ? GPIO_PIN_SET : GPIO_PIN_RESET);
 
@@ -79,10 +76,10 @@ PRIVATE void MotorTask(void *argument)
                 // Motor failed to initialize, wait and then reinit
                 motorInitialized = MotorInit();
             }
-#endif
 
-		// Read registers in TMC6200 and check for faults
-		MotorPrintFaults();
+            // Read registers in TMC6200 and check for faults
+            MotorPrintFaults();
+#endif
 	}
 	/// [task]
 }

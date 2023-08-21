@@ -287,12 +287,12 @@
 #elif MOTOR == 2
 
 #define ABN
-
 #define MOTOR_CONFIG_ABN_DECODER_MODE (uint32_t)0x00000000     // 0x25: Polarity of A pulse.
 #define MOTOR_CONFIG_ABN_DECODER_PPR (uint32_t)0x00000B40      // 0x26: Decoder pulses per mechanical revolution.
-#define MOTOR_CONFIG_ABN_DECODER_COUNT (uint32_t)0x00000A26    // 0x27: Raw decoder count; the digital decoder engine counts modulo (decoder_ppr).
-#define MOTOR_CONFIG_ABN_DECODER_COUNT_N (uint32_t)0x00000494  // 0x28: Decoder count latched on N pulse, when N pulse clears decoder_count also decoder_count_n is 0.
-#define MOTOR_CONFIG_ABN_DECODER_PHI_E_PHI_M_OFFSET 0xC1800000 // 0x29: ABN_DECODER_PHI_M_OFFSET to shift (rotate) angle DECODER_PHI_M.
+#define MOTOR_CONFIG_ABN_INIT_VELOCITY 10
+#define MOTOR_CONFIG_ABN_INIT_ACCELERATION 60
+#define MOTOR_CONFIG_ABN_INIT_UQ_UD_EXIT 700
+
 #endif
 /*********************************************************************************
  *
