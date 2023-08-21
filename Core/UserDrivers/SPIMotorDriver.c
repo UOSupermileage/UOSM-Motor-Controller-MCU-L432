@@ -29,6 +29,9 @@ static ramp_point_t motorLowSpeedRamp[] = {
     {2400,60},
     {3000, 30}
 };
+/**
+ * Config and state of the low speed motor
+ */
 static motor_t motorLowSpeed = {
     MOTOR_LOW_SPEED,
     0,
@@ -45,6 +48,9 @@ static ramp_point_t motorHighSpeedRamp[] = {
     {2400,60},
     {3000, 30}
 };
+/**
+ * Config and state of the high speed motor
+ */
 static motor_t motorHighSpeed = {
     MOTOR_HIGH_SPEED,
     0,
@@ -53,12 +59,20 @@ static motor_t motorHighSpeed = {
     6
 };
 
+/**
+ * Pointer to the motor that is actively being used.
+ * Use this when you want to reference the config and state of the active motor.
+ */
 static motor_t* activeMotor = &motorLowSpeed;
 
 
 // => SPI wrapper
 /**
- * Return the result of writing a single byte.
+ * @brief Perform SPI read and write operation for TMC4671 chip.
+ * @param motor Motor ID.
+ * @param data Data byte to be sent.
+ * @param lastTransfer Flag indicating if this is the last transfer in the sequence.
+ * @return Received data byte.
  */
 uint8_t tmc4671_readwriteByte(const uint8_t motor, uint8_t data, uint8_t lastTransfer)
 {
@@ -103,6 +117,13 @@ uint8_t tmc4671_readwriteByte(const uint8_t motor, uint8_t data, uint8_t lastTra
 	return *rx_data;
 }
 
+/**
+ * @brief Wrapper function for TMC6200 read and write using tmc4671_readwriteByte.
+ * @param motor Motor ID.
+ * @param data Data byte to be sent.
+ * @param lastTransfer Flag indicating if this is the last transfer in the sequence.
+ * @return Received data byte.
+ */
 uint8_t tmc6200_readwriteByte(uint8_t motor, uint8_t data, uint8_t lastTransfer)
 {
 	return tmc4671_readwriteByte(motor, data, lastTransfer);
@@ -110,6 +131,11 @@ uint8_t tmc6200_readwriteByte(uint8_t motor, uint8_t data, uint8_t lastTransfer)
 
 // <= SPI wrapper
 
+/**
+ * @brief Set the Chip Select (CS) pin state for a specific motor.
+ * @param cs Motor ID.
+ * @param state GPIO pin state (GPIO_PIN_SET or GPIO_PIN_RESET).
+ */
 void MotorSetCS(uint8_t cs, GPIO_PinState state)
 {
 	switch (cs) {
@@ -124,6 +150,11 @@ void MotorSetCS(uint8_t cs, GPIO_PinState state)
 	}
 }
 
+/**
+ * @brief Select a motor by setting the activeMotor pointer and related configurations.
+ * Disables the motor driver while switching motors.
+ * @param code MotorCode enum indicating the selected motor.
+ */
 void MotorSelect(MotorCode code) {
         uint8_t didChange = activeMotor->id != code;
 
@@ -140,6 +171,10 @@ void MotorSelect(MotorCode code) {
         }
 }
 
+/**
+ * @brief Initialize the motor and associated peripherals.
+ * @return 1 on success, 0 on failure.
+ */
 PUBLIC uint8_t MotorInit()
 {
         // Enable Software Fault Light to signal init
@@ -284,7 +319,8 @@ PUBLIC uint8_t MotorInit()
 }
 
 /**
- * Basic function for validation connection to the TMC4671
+ * @brief Basic function for validating connection to the TMC4671 and TMC6200.
+ * @return 1 if the connection is valid, 0 otherwise.
  */
 PUBLIC uint32_t MotorValidateSPI()
 {
@@ -293,6 +329,11 @@ PUBLIC uint32_t MotorValidateSPI()
 
 // ===== Motor interaction =====
 
+/**
+ * @brief Rotate the motor at a specified velocity.
+ * @param velocity Target velocity in RPM.
+ * @return 0 on success.
+ */
 PUBLIC uint8_t MotorRotateVelocity(velocity_t velocity)
 {
         // If the motor is not turning
@@ -314,59 +355,11 @@ PRIVATE int16_t MotorGetS16CircleDifference(int16_t newValue, int16_t oldValue)
 	return (newValue - oldValue);
 }
 
-PRIVATE static void MotorInitEncoderPeriodicJob(uint8_t motor, uint8_t *initState, uint16_t *actualInitWaitTime,
-		int16_t *hall_phi_e_old, int16_t *hall_phi_e_new, int16_t *hall_actual_coarse_offset)
-{
-#define STATE_NOTHING_TO_DO 0
-#define STATE_START_INIT 1
-#define STATE_WAIT_INIT_TIME 2
-
-	switch (*initState)
-	{
-	case STATE_NOTHING_TO_DO:
-		*actualInitWaitTime = 0;
-		break;
-	case STATE_START_INIT: // started by writing 1 to initState
-		// set ABN_DECODER_PHI_E_OFFSET to zero
-		tmc4671_writeRegister16BitValue(motor, TMC4671_ABN_DECODER_PHI_E_PHI_M_OFFSET, BIT_16_TO_31, 0);
-
-		// read actual hall angle
-		*hall_phi_e_old = TMC4671_FIELD_READ(motor, TMC4671_HALL_PHI_E_INTERPOLATED_PHI_E, TMC4671_HALL_PHI_E_MASK, TMC4671_HALL_PHI_E_SHIFT);
-
-		// read actual abn_decoder angle and compute difference to actual hall angle
-		*hall_actual_coarse_offset = MotorGetS16CircleDifference(*hall_phi_e_old, (int16_t) tmc4671_readRegister16BitValue(motor, TMC4671_ABN_DECODER_PHI_E_PHI_M, BIT_16_TO_31));
-
-		// set ABN_DECODER_PHI_E_OFFSET to actual hall-abn-difference, to use the actual hall angle for coarse initialization
-		tmc4671_writeRegister16BitValue(motor, TMC4671_ABN_DECODER_PHI_E_PHI_M_OFFSET, BIT_16_TO_31, *hall_actual_coarse_offset);
-
-		*initState = STATE_WAIT_INIT_TIME;
-		break;
-	case STATE_WAIT_INIT_TIME:
-		// read actual hall angle
-		*hall_phi_e_new = TMC4671_FIELD_READ(motor, TMC4671_HALL_PHI_E_INTERPOLATED_PHI_E, TMC4671_HALL_PHI_E_MASK, TMC4671_HALL_PHI_E_SHIFT);
-
-		// wait until hall angle changed
-		if(*hall_phi_e_old != *hall_phi_e_new)
-		{
-			// estimated value = old value + diff between old and new (handle int16_t overrun)
-			int16_t hall_phi_e_estimated = *hall_phi_e_old + MotorGetS16CircleDifference(*hall_phi_e_new, *hall_phi_e_old)/2;
-
-			// read actual abn_decoder angle and consider last set abn_decoder_offset
-			int16_t abn_phi_e_actual = (int16_t) tmc4671_readRegister16BitValue(motor, TMC4671_ABN_DECODER_PHI_E_PHI_M, BIT_16_TO_31) - *hall_actual_coarse_offset;
-
-			// set ABN_DECODER_PHI_E_OFFSET to actual estimated angle - abn_phi_e_actual difference
-			tmc4671_writeRegister16BitValue(motor, TMC4671_ABN_DECODER_PHI_E_PHI_M_OFFSET, BIT_16_TO_31, MotorGetS16CircleDifference(hall_phi_e_estimated, abn_phi_e_actual));
-			
-			// go to ready state
-			*initState = 0;
-		}
-		break;
-	default:
-		*initState = 0;
-		break;
-	}
-}
-
+/**
+ * @brief Initialize the encoder for the motor.
+ * This will set the motor to open loop and rotate in reverse while initializing.
+ * @return 0 on success, 1 on failure.
+ */
 PUBLIC uint8_t MotorInitEncoder() {
 
 	uint8_t t = MOTOR_CONFIG_ABN_INIT_VELOCITY;
@@ -422,13 +415,18 @@ PUBLIC uint8_t MotorInitEncoder() {
         return 0;
 }
 
+/**
+ * @brief Perform periodic tasks related to the motor control.
+ * Effectuate velocity ramping
+ * @return 0 on success.
+ */
 PUBLIC uint8_t MotorPeriodicJob()
 {
 	DebugPrint("Writing Velocity Target: %d", TMC4671_PID_VELOCITY_TARGET);
         // Ramp logic
         velocity_t actualVelocity = MotorGetActualVelocity();
 
-        // If motor is needs negatives to advance, flip actual velocity
+        // If motor needs negative velocities to advance, flip actual velocity
         if (SystemGetReverseVelocity() == Set) {
                 actualVelocity *= -1;
         }
