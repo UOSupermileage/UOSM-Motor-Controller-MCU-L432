@@ -17,7 +17,6 @@
 
 PUBLIC void InitSafetyTask(void);
 
-// TODO: Get LP to make table of safe, dangerous, etc ranges of operation.
 PRIVATE void SafetyTask(void *argument);
 
 #endif /* TASKS_SAFETYTASK_H_ */

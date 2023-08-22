@@ -52,7 +52,7 @@ PRIVATE void MotorTask(void *argument)
             cycleTick += TIMER_MOTOR_TASK;
             osDelayUntil(cycleTick);
 
-            MotorSelect(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_15) == GPIO_PIN_SET ? MOTOR_LOW_SPEED : MOTOR_HIGH_SPEED);
+            // MotorSelect(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_15) == GPIO_PIN_SET ? MOTOR_LOW_SPEED : MOTOR_HIGH_SPEED);
 
 #if MOTOR_MODE == 0 || MOTOR_MODE == 1
             // Store Motor RPM from TMC in the Aggregator

@@ -16,7 +16,7 @@
 void RunTaskManager( void )
 {
 	InitDataAggregator();
+        InitMotorTask();
 	InitInternalCommsTask();
 	InitSafetyTask();
-	InitMotorTask();
 }

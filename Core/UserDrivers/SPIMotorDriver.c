@@ -191,11 +191,11 @@ PUBLIC uint8_t MotorInit()
 	tmc4671_writeInt(TMC4671_CS, TMC4671_MODE_RAMP_MODE_MOTION, 0);
 
 	MotorEnableDriver(ENABLED);
-	HAL_Delay(500);
+	HAL_Delay(100);
 
 #ifdef MOTOR_CLEAR_CHARGE_PUMP_FAULT
 	MotorClearChargePump();
-	HAL_Delay(250);
+	HAL_Delay(100);
 #endif
 
 #if MOTOR_MODE == 0 || MOTOR_MODE == 1
@@ -260,14 +260,12 @@ PUBLIC uint8_t MotorInit()
 	uint32_t nPolePairs = tmc4671_readInt(TMC4671_CS, TMC4671_MOTOR_TYPE_N_POLE_PAIRS);
 
 	// Read TMC6200 values for validation.
-	uint32_t generalConf = tmc6200_readInt(TMC6200_CS, TMC6200_GCONF);
 	uint32_t shortConf = tmc6200_readInt(TMC6200_CS, TMC6200_SHORT_CONF);
-	uint32_t driveConf = tmc6200_readInt(TMC6200_CS, TMC6200_DRV_CONF);
 
 	DebugPrint("Read [%08x]", nPolePairs);
-	DebugPrint("Read [%08x], [%08x], [%08x]", generalConf, shortConf, driveConf);
+	DebugPrint("Read [%08x]", shortConf);
 
-	if ((generalConf == MOTOR_CONFIG_DRIVER_GENERAL_CONFIG) && (shortConf == MOTOR_CONFIG_DRIVER_SHORT_CONFIG) && (driveConf == MOTOR_CONFIG_DRIVER_DRIVE_CONFIG))
+	if (shortConf == MOTOR_CONFIG_DRIVER_SHORT_CONFIG)
 	{
 		DebugPrint("Motor Driver [" MOTOR_DRIVER_LABEL "] successfuly initialized!");
 	}
@@ -401,10 +399,13 @@ PUBLIC uint8_t MotorInitEncoder() {
 
         int32_t openLoopPhiE = tmc4671_readInt(TMC4671_CS, TMC4671_PHI_E);
 
-        // TODO: What is the difference between these?
-        tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT, 0);
-        tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT_N, 0);
+        // Need to clear both decoder counters
 
+        // Raw decoder count, number of ticks counted
+        tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT, 0);
+
+        // Decoder count latched on N pulse.
+        tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT_N, 0);
 
         // Shift the open loop angle to the most significant 16 bits of the number. The mechanical offset is set to 0.
         tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_PHI_E_PHI_M_OFFSET, openLoopPhiE << 16);
