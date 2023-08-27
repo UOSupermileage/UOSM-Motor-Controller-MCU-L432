@@ -42,7 +42,7 @@ PRIVATE void MotorTask(void *argument)
 {
 	// Keep track of current tick count
 	uint32_t cycleTick = osKernelGetTickCount();
-
+        
 	// Initialize the system as configured in MotorParameters.h
 	DebugPrint("%s Initializing MotorTask", MOT_TAG);
 	uint8_t motorInitialized = MotorInit();
@@ -51,8 +51,6 @@ PRIVATE void MotorTask(void *argument)
             // Increment cycleTick and wait until the delay has passed
             cycleTick += TIMER_MOTOR_TASK;
             osDelayUntil(cycleTick);
-
-            // MotorSelect(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_15) == GPIO_PIN_SET ? MOTOR_LOW_SPEED : MOTOR_HIGH_SPEED);
 
 #if MOTOR_MODE == 0 || MOTOR_MODE == 1
             // Store Motor RPM from TMC in the Aggregator

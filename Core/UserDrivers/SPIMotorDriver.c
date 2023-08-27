@@ -159,7 +159,7 @@ void MotorSelect(MotorCode code) {
         uint8_t didChange = activeMotor->id != code;
 
         if (didChange) {
-                MotorEnableDriver(DISABLED);
+                MotorEnableDriver(RESET);
                 osDelayUntil(osKernelGetTickCount() + 100);
         }
 
@@ -190,7 +190,7 @@ PUBLIC uint8_t MotorInit()
         // Stop the motor.
 	tmc4671_writeInt(TMC4671_CS, TMC4671_MODE_RAMP_MODE_MOTION, 0);
 
-	MotorEnableDriver(ENABLED);
+	MotorEnableDriver(Set);
 	HAL_Delay(100);
 
 #ifdef MOTOR_CLEAR_CHARGE_PUMP_FAULT
@@ -296,6 +296,8 @@ PUBLIC uint8_t MotorInit()
 	MotorClearChargePump();
 #endif
 #endif
+
+        MotorSelect(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_15) == GPIO_PIN_SET ? MOTOR_LOW_SPEED : MOTOR_HIGH_SPEED);
 
         // AKA BANG BANG
 	#ifdef ABN
@@ -460,10 +462,10 @@ PUBLIC velocity_t MotorGetActualVelocity()
 	return tmc4671_getActualVelocity(TMC4671_CS);
 }
 
-PUBLIC uint8_t MotorEnableDriver(Enable_t enabled)
+PUBLIC uint8_t MotorEnableDriver(flag_status_t enabled)
 {
         // 4671
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, enabled == ENABLED ? GPIO_PIN_SET : GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, enabled == Set ? GPIO_PIN_SET : GPIO_PIN_RESET);
 
 	return 0;
 }

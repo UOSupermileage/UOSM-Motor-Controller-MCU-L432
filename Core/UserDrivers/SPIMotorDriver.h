@@ -58,7 +58,7 @@ PUBLIC uint8_t MotorRotateVelocity(velocity_t velocity);
 
 PUBLIC uint8_t MotorPeriodicJob();
 
-PUBLIC uint8_t MotorEnableDriver(Enable_t enabled);
+PUBLIC uint8_t MotorEnableDriver(flag_status_t enabled);
 
 PUBLIC velocity_t MotorGetActualVelocity();
 /**
