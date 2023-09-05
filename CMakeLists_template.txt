@@ -48,11 +48,24 @@ else ()
     add_compile_options(-Og -g)
 endif ()
 
-include_directories(${includes})
+include_directories(
+    ${includes}
+    Core/Inc
+    Core/Modules
+    Core/Src
+    Core/Startup
+    Core/Tasks
+    Core/UserDrivers
+    UOSM-Core/Inc
+    UOSM-Core/Drivers
+    UOSM-Core/Modules
+    UOSM-Core/Utils
+    Drivers
+)
 
-add_definitions(${defines})
+add_definitions(${defines} -DSTM)
 
-file(GLOB_RECURSE SOURCES ${sources})
+file(GLOB_RECURSE SOURCES ${sources} "UOSM-Core/*.*")
 
 set(LINKER_SCRIPT $${CMAKE_SOURCE_DIR}/${linkerScript})
 
