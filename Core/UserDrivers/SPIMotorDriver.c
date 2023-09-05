@@ -161,6 +161,7 @@ void MotorSelect(MotorCode code) {
         if (didChange) {
                 MotorEnableDriver(RESET);
                 osDelayUntil(osKernelGetTickCount() + 100);
+                MotorInitEncoder();
         }
 
         activeMotor = code == MOTOR_LOW_SPEED ? &motorLowSpeed : &motorHighSpeed;
@@ -191,7 +192,10 @@ PUBLIC uint8_t MotorInit()
 	tmc4671_writeInt(TMC4671_CS, TMC4671_MODE_RAMP_MODE_MOTION, 0);
 
 	MotorEnableDriver(Set);
-	HAL_Delay(100);
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+
+	HAL_Delay(200);
+
 
 #ifdef MOTOR_CLEAR_CHARGE_PUMP_FAULT
 	MotorClearChargePump();
@@ -297,7 +301,7 @@ PUBLIC uint8_t MotorInit()
 #endif
 #endif
 
-        MotorSelect(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_15) == GPIO_PIN_SET ? MOTOR_LOW_SPEED : MOTOR_HIGH_SPEED);
+//        MotorSelect(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_15) == GPIO_PIN_SET ? MOTOR_LOW_SPEED : MOTOR_HIGH_SPEED);
 
         // AKA BANG BANG
 	#ifdef ABN
@@ -361,7 +365,6 @@ PRIVATE int16_t MotorGetS16CircleDifference(int16_t newValue, int16_t oldValue)
  * @return 0 on success, 1 on failure.
  */
 PUBLIC uint8_t MotorInitEncoder() {
-
 	uint8_t t = MOTOR_CONFIG_ABN_INIT_VELOCITY;
 	
 	// If not reversing, then reverse t because we want this to spin in reverse
