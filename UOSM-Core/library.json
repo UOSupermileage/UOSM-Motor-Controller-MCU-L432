@@ -1,0 +1,34 @@
+{
+  "name": "UOSM-Core",
+  "version": "1.0.0",
+  "description": "Core files for UOSM embedded C projects",
+  "keywords": "UOSupermileage, uOttawa, Core",
+  "repository":
+  {
+    "type": "git",
+    "url": "git@github.com:UOSupermileage/UOSM-Core.git"
+  },
+  "authors":
+  [
+    {
+      "name": "Jeremy Cote",
+      "email": "jcote034@uottawa.ca",
+      "url": "jeremycote.github.io/Portfolio",
+      "maintainer": true
+    }
+  ],
+  "frameworks": "*",
+  "platforms": "*",
+  "build": {
+    "libArchive": false,
+    "flags": [
+      "-I Drivers",
+      "-I Inc",
+      "-I Modules",
+      "-I Utils"
+    ]
+  },
+  "dependencies": {
+    "UOSM-Core-Config": "*"
+  }
+}
