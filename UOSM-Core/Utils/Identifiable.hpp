@@ -2,8 +2,6 @@
 // Created by Jeremy Cote on 2023-07-29.
 //
 
-#ifdef UOSM_OBSERVABLES
-
 #ifndef UOSM_CORE_IDENTIFIABLE_HPP
 #define UOSM_CORE_IDENTIFIABLE_HPP
 
@@ -47,4 +45,3 @@ public:
 };
 
 #endif //UOSM_CORE_IDENTIFIABLE_HPP
-#endif
