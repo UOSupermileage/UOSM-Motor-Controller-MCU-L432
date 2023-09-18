@@ -78,6 +78,25 @@ typedef struct {
     uint8_t data[8];
 } iCommsMessage_t;
 
+typedef struct {
+    float x;
+    float y;
+    float z;
+} acceleration_t;
+
+typedef struct {
+    float latitude;
+    float longitude;
+    float speed_kmh;
+    float heading;
+    float altitude;
+} gps_coordinate_t;
+
+typedef struct {
+    double pressure;
+    double temp;
+} pressure_t;
+
 #ifdef __cplusplus
 }
 #endif
