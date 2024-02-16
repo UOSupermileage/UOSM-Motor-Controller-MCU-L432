@@ -40,6 +40,9 @@ PUBLIC void InitMotorTask(void)
  */
 PRIVATE void MotorTask(void *argument)
 {
+//    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+
+
 	// Keep track of current tick count
 	uint32_t cycleTick = osKernelGetTickCount();
         
@@ -52,20 +55,23 @@ PRIVATE void MotorTask(void *argument)
             cycleTick += TIMER_MOTOR_TASK;
             osDelayUntil(cycleTick);
 
-#if MOTOR_MODE == 0 || MOTOR_MODE == 1
             // Store Motor RPM from TMC in the Aggregator
             SystemSetMotorVelocity(MotorGetActualVelocity());
 
             // Enable 6200 depending on state stored in Aggregator
-//            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, SystemGetDriverEnabled() == Set ? GPIO_PIN_SET : GPIO_PIN_RESET);
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, SystemGetDriverEnabled() == Set ? GPIO_PIN_SET : GPIO_PIN_RESET);
 
             if (motorInitialized) {
+#if MOTOR_MODE == 0
                 velocity_t v = (MAX_VELOCITY / MAX_PERCENTAGE) * SystemGetThrottlePercentage();
-
                 DebugPrint("%s Target Velocity [%d RPM]", MOT_TAG, v);
                 MotorRotateVelocity(v);
-
                 MotorPeriodicJob();
+#elif MOTOR_MODE == 3
+                DebugPrint("Dynamometer Operation");
+                MotorDynamometerJob(-8000, -10);
+#endif
+
             } else {
                 // Motor was not initialized. This indicates that communication with the TMC4671 or TMC6200 failed.
                 SystemSetSPIError(Set);
@@ -77,7 +83,6 @@ PRIVATE void MotorTask(void *argument)
 
             // Read registers in TMC6200 and check for faults
             MotorPrintFaults();
-#endif
 	}
 	/// [task]
 }

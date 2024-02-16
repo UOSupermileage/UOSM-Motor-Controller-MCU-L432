@@ -58,6 +58,8 @@ PUBLIC uint8_t MotorRotateVelocity(velocity_t velocity);
 
 PUBLIC uint8_t MotorPeriodicJob();
 
+PUBLIC void MotorDynamometerJob(torque_t torque, velocity_t disableThreshold);
+
 PUBLIC uint8_t MotorEnableDriver(flag_status_t enabled);
 
 PUBLIC velocity_t MotorGetActualVelocity();

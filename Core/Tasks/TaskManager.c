@@ -7,6 +7,9 @@
  *  This Task manages all other tasks by checking flags and running the appropriate tasks
  */
 #include "TaskManager.h"
+
+#include "MotorParameters.h"
+
 #include "SafetyTask.h"
 #include "InternalCommsTask.h"
 #include "MotorTask.h"
@@ -17,6 +20,8 @@ void RunTaskManager( void )
 {
 	InitDataAggregator();
         InitMotorTask();
+#if MOTOR_MODE != 3
 	InitInternalCommsTask();
 	InitSafetyTask();
+#endif
 }

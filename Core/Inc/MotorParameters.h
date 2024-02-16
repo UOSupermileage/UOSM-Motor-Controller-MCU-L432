@@ -29,6 +29,7 @@
  * 0 == Normal operation, set registers in TMC chips, make motor spin
  * 1 == RTMI operation, set registers in TMC chips, do not make motor spin
  * 2 == Idle operation, do nothing except enable driver and clear charge pump if configured
+ * 3 == Dynamometer operation
  */
 
 #define MOTOR_MODE 0
@@ -108,6 +109,40 @@
 #define MOTOR_CONFIG_N_POLE_PAIRS (uint32_t)0x00030004
 #elif MOTOR == 2
 #define MOTOR_CONFIG_N_POLE_PAIRS (uint32_t)0x00030004
+#endif
+
+
+/*********************************************************************************
+ *
+ * 		ABN Decoder Parameters
+ *
+ * 		#define ABN -> Enable ABN in code. Preserve parameters and disable ABN by removing this define.
+ *
+ **********************************************************************************/
+
+#if MOTOR == 0
+
+#elif MOTOR == 1
+
+/**
+ * Defining ABN will add extra lines of code to init to enable ABN encoder
+ */
+#define ABN
+
+#define MOTOR_CONFIG_ABN_DECODER_MODE (uint32_t)0x00000000     // 0x25: Polarity of A pulse.
+#define MOTOR_CONFIG_ABN_DECODER_PPR (uint32_t)0x00000B40      // 0x26: Decoder pulses per mechanical revolution.
+#define MOTOR_CONFIG_ABN_DECODER_COUNT (uint32_t)0x00000A26    // 0x27: Raw decoder count; the digital decoder engine counts modulo (decoder_ppr).
+#define MOTOR_CONFIG_ABN_DECODER_COUNT_N (uint32_t)0x0000096C  // 0x28: Decoder count latched on N pulse, when N pulse clears decoder_count also decoder_count_n is 0.
+#define MOTOR_CONFIG_ABN_DECODER_PHI_E_PHI_M_OFFSET 0x00000000 // 0x29: ABN_DECODER_PHI_M_OFFSET to shift (rotate) angle DECODER_PHI_M.
+#elif MOTOR == 2
+
+#define ABN
+#define MOTOR_CONFIG_ABN_DECODER_MODE (uint32_t)0x00000000     // 0x25: Polarity of A pulse.
+#define MOTOR_CONFIG_ABN_DECODER_PPR (uint32_t)0x00000B40      // 0x26: Decoder pulses per mechanical revolution.
+#define MOTOR_CONFIG_ABN_INIT_VELOCITY 10
+#define MOTOR_CONFIG_ABN_INIT_ACCELERATION 60
+#define MOTOR_CONFIG_ABN_INIT_UQ_UD_EXIT 700
+
 #endif
 
 /*********************************************************************************
@@ -204,10 +239,15 @@
 #elif MOTOR == 2
 
 #define MOTOR_CONFIG_STARTING_PHI_E_SELECTION (uint32_t)0x00000005
-#define MOTOR_CONFIG_TARGET_PHI_E_SELECTION (uint32_t)0x00000003
 
+#ifdef ABN
 #define MOTOR_CONFIG_PHI_E_SELECTION (uint32_t)0x00000003
 #define MOTOR_CONFIG_VELOCITY_SELECTION (uint32_t)0x00000009
+#else
+// hall
+#define MOTOR_CONFIG_PHI_E_SELECTION (uint32_t)0x00000005
+#define MOTOR_CONFIG_VELOCITY_SELECTION (uint32_t)0x0000000C
+#endif
 #define MOTOR_INIT_MODE 2
 #endif
 
@@ -258,41 +298,16 @@
 #define MOTOR_CONFIG_PID_FLUX_P_FLUX_I (uint32_t)0x01000100
 #define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x00000000
 #elif MOTOR == 2
+#ifdef ABN
 #define MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I (uint32_t)0x0041001E
 #define MOTOR_CONFIG_PID_FLUX_P_FLUX_I (uint32_t)0x0041001E
 #define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x6D600100
+#else
+// Hall values
+#define MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I (uint32_t)0x00640004
+#define MOTOR_CONFIG_PID_FLUX_P_FLUX_I (uint32_t)0x00640004
+#define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x0FA00080
 #endif
-/*********************************************************************************
- *
- * 		ABN Decoder Parameters
- *
- * 		#define ABN -> Enable ABN in code. Preserve parameters and disable ABN by removing this define.
- *
- **********************************************************************************/
-
-#if MOTOR == 0
-
-#elif MOTOR == 1
-
-/**
- * Defining ABN will add extra lines of code to init to enable ABN encoder
- */
-#define ABN
-
-#define MOTOR_CONFIG_ABN_DECODER_MODE (uint32_t)0x00000000     // 0x25: Polarity of A pulse.
-#define MOTOR_CONFIG_ABN_DECODER_PPR (uint32_t)0x00000B40      // 0x26: Decoder pulses per mechanical revolution.
-#define MOTOR_CONFIG_ABN_DECODER_COUNT (uint32_t)0x00000A26    // 0x27: Raw decoder count; the digital decoder engine counts modulo (decoder_ppr).
-#define MOTOR_CONFIG_ABN_DECODER_COUNT_N (uint32_t)0x0000096C  // 0x28: Decoder count latched on N pulse, when N pulse clears decoder_count also decoder_count_n is 0.
-#define MOTOR_CONFIG_ABN_DECODER_PHI_E_PHI_M_OFFSET 0x00000000 // 0x29: ABN_DECODER_PHI_M_OFFSET to shift (rotate) angle DECODER_PHI_M.
-#elif MOTOR == 2
-
-#define ABN
-#define MOTOR_CONFIG_ABN_DECODER_MODE (uint32_t)0x00000000     // 0x25: Polarity of A pulse.
-#define MOTOR_CONFIG_ABN_DECODER_PPR (uint32_t)0x00000B40      // 0x26: Decoder pulses per mechanical revolution.
-#define MOTOR_CONFIG_ABN_INIT_VELOCITY 10
-#define MOTOR_CONFIG_ABN_INIT_ACCELERATION 60
-#define MOTOR_CONFIG_ABN_INIT_UQ_UD_EXIT 700
-
 #endif
 /*********************************************************************************
  *
@@ -356,7 +371,7 @@
  * Short detection / Safety parameters
  * 0x13010606 is the factory default value
  */
-#define MOTOR_CONFIG_DRIVER_SHORT_CONFIG (uint32_t)0x13010606
+#define MOTOR_CONFIG_DRIVER_SHORT_CONFIG (uint32_t)0x13010A06
 
 /**
  * Drive parameters

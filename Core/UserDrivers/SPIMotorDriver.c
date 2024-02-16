@@ -192,17 +192,16 @@ PUBLIC uint8_t MotorInit()
 	tmc4671_writeInt(TMC4671_CS, TMC4671_MODE_RAMP_MODE_MOTION, 0);
 
 	MotorEnableDriver(Set);
-        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+//        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
 
 	HAL_Delay(200);
-
 
 #ifdef MOTOR_CLEAR_CHARGE_PUMP_FAULT
 	MotorClearChargePump();
 	HAL_Delay(100);
 #endif
 
-#if MOTOR_MODE == 0 || MOTOR_MODE == 1
+#if MOTOR_MODE == 0 || MOTOR_MODE == 1 || MOTOR_MODE == 3
 	// Motor type &  PWM configuration
 	tmc4671_writeInt(TMC4671_CS, TMC4671_MOTOR_TYPE_N_POLE_PAIRS, MOTOR_CONFIG_N_POLE_PAIRS);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PWM_MAXCNT, MOTOR_CONFIG_PWM_MAXCNT);
@@ -302,6 +301,8 @@ PUBLIC uint8_t MotorInit()
 #endif
 
 //        MotorSelect(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_15) == GPIO_PIN_SET ? MOTOR_LOW_SPEED : MOTOR_HIGH_SPEED);
+
+        tmc4671_writeInt(TMC4671_CS, TMC4671_MODE_RAMP_MODE_MOTION, 0);
 
         // AKA BANG BANG
 	#ifdef ABN
@@ -460,6 +461,25 @@ PUBLIC uint8_t MotorPeriodicJob()
 	return 0;
 }
 
+PUBLIC void MotorDynamometerJob(torque_t torque, velocity_t disableThreshold) {
+        // If no Torque. Stop the motor.
+//        if (torque == 0) {
+//                tmc4671_switchToMotionMode(TMC4671_CS, 0);
+//                return;
+//        }
+
+        tmc4671_switchToMotionMode(TMC4671_CS, TMC4671_MOTION_MODE_TORQUE);
+
+        DebugPrint("Motor Velocity: %d, Disable Threshold: %d", SystemGetMotorVelocity(), disableThreshold);
+
+        if ((disableThreshold < 0 && SystemGetMotorVelocity() > disableThreshold) || (disableThreshold > 0 && SystemGetMotorVelocity() < disableThreshold)) {
+                DebugPrint("Driving Motor with %d mA of torque.", torque);
+                tmc4671_setTargetTorque_raw(TMC4671_CS, torque);
+        } else {
+                tmc4671_setTargetTorque_raw(TMC4671_CS, 0);
+        }
+}
+
 PUBLIC velocity_t MotorGetActualVelocity()
 {
 	return tmc4671_getActualVelocity(TMC4671_CS);
@@ -482,8 +502,9 @@ PUBLIC void MotorClearChargePump()
 
 PUBLIC void MotorPrintFaults()
 {
+        uint32_t conf = tmc6200_readInt(TMC6200_CS, TMC6200_SHORT_CONF);
 	uint32_t stats = tmc6200_readInt(TMC6200_CS, TMC6200_GSTAT);
         if (stats != 0 && stats != 1) {
-                DebugPrint("FAULTS: %04x", stats);
+                DebugPrint("FAULTS: %04x. CONF: %04x.", stats, conf);
         }
 }
