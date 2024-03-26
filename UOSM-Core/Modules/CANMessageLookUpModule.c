@@ -36,7 +36,7 @@ const ICommsMessageInfo CANMessageLookUpTable[NUMBER_CAN_MESSAGE_IDS] = {
         {MOTOR_RPM_DATA_ID,            0x0003, 4, &MotorRPMDataCallback},
         {EVENT_DATA_ID,                0x0400, 2, &EventDataCallback},
         {ERROR_DATA_ID,                0x0401, 2, &ErrorDataCallback},
-        {CURRENT_VOLTAGE_DATA_ID,      0x0004, 2, &CurrentVoltageDataCallback},
+        {CURRENT_VOLTAGE_DATA_ID,      0x0004, 4, &CurrentVoltageDataCallback},
         {LIGHT_DATA_ID,                0x0305, 4, &LightsDataCallback},
         {PRESSURE_TEMPERATURE_DATA_ID, 0x0005, 8, &PressureTemperatureDataCallback},
         {EFFICIENCY_DATA_ID,           0x0007, 4, &EfficiencyDataCallback}
