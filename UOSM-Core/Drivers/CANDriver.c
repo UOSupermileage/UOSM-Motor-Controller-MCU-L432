@@ -37,8 +37,6 @@ void CANSPI_Sleep(void)
 /* CAN */
 bool CANSPI_Initialize(void)
 {
-	DebugPrint("CanSPI Initialize");
-
   RXF0 RXF0reg;
   RXF1 RXF1reg;
   RXF2 RXF2reg;

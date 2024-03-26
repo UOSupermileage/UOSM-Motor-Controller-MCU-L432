@@ -5,13 +5,10 @@
 #ifndef UOSM_TELEMETRY_CANLOGENTRY_HPP
 #define UOSM_TELEMETRY_CANLOGENTRY_HPP
 
+#include <cstdio>
 #include "Identifiable.hpp"
 #include "CANMessageLookUpModule.h"
-
-enum CANLogEntryFormat {
-    CAN_DECIMAL,
-    CAN_HEX
-};
+#include "ApplicationTypes.h"
 
 /**
  * @class CANLogEntry
@@ -20,7 +17,7 @@ enum CANLogEntryFormat {
  * An instance of the CANLogEntry class represents a CAN message type
  * and their associated data. It formats and stores log messages for further processing and display.
  */
-class CANLogEntry: Identifiable {
+class CANLogEntry : Identifiable {
 private:
     /**
      * The maximum length of the message.
@@ -44,7 +41,8 @@ public:
      * @param value The value associated with the message.
      * @param style The formatting style for the log message (default is 0). 0 is decimal. 1 is hexadecimal.
      */
-    CANLogEntry(ICommsMessageLookUpIndex type, uint32_t value, CANLogEntryFormat style): messageLength(20), type(type) {
+    CANLogEntry(ICommsMessageLookUpIndex type, uint32_t value, CANLogEntryFormat style) : messageLength(20),
+                                                                                          type(type) {
         message = new char[messageLength];
         const char* format = style == CAN_DECIMAL ? "%s: [%d]" : "%s: [%04x]";
         sprintf(message, format, prettyType(), value);
@@ -57,7 +55,7 @@ public:
      * @param b The second value associated with the message.
      * @param style The formatting style for the log message (default is 0). 0 is decimal. 1 is hexadecimal.
      */
-    CANLogEntry(ICommsMessageLookUpIndex type, uint32_t a, uint32_t b, uint8_t style): messageLength(24), type(type) {
+    CANLogEntry(ICommsMessageLookUpIndex type, uint32_t a, uint32_t b, uint8_t style) : messageLength(24), type(type) {
         message = new char[messageLength];
         const char* format = style == CAN_DECIMAL ? "%s: [%d] [%d]" : "%s: [%04x] [%04x]";
         sprintf(message, format, prettyType(), a, b);
@@ -67,7 +65,7 @@ public:
      * @brief Copy constructor for creating a copy of a CANLogEntry object.
      * @param other The CANLogEntry object to copy.
      */
-    CANLogEntry(const CANLogEntry& other): messageLength(other.messageLength), type(other.type) {
+    CANLogEntry(const CANLogEntry& other) : messageLength(other.messageLength), type(other.type) {
         message = new char[messageLength];
         strcpy(message, other.message);
     }
@@ -91,6 +89,8 @@ public:
                 return "Error";
             case CURRENT_VOLTAGE_DATA_ID:
                 return "Cur/Volt";
+            case PRESSURE_TEMPERATURE_DATA_ID:
+                return "Pres/Temp";
         }
 
         return "ExecEr";

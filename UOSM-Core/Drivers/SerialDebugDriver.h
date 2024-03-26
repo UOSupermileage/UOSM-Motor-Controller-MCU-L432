@@ -14,9 +14,10 @@ extern "C" {
 
 #include "UOSMCoreConfig.h"
 
+#include <stdio.h>
+
 // Standard Lib
 #include <stdarg.h>
-#include <stdio.h>
 #include <string.h>
 
 void SerialPrint(const char* message, ...);
