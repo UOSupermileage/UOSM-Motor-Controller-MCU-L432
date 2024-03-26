@@ -14,7 +14,6 @@ void ThrottleDataCallback(iCommsMessage_t* msg)
 	Safety_SetThrottlePercentage(throttle);
 }
 
-
 void EventDataCallback(iCommsMessage_t *msg) {
     DebugPrint("EventDataCallback! %d", msg->standardMessageID);
 
@@ -34,8 +33,3 @@ void EventDataCallback(iCommsMessage_t *msg) {
         DebugPrint("msg.dataLength does not match lookup table. %d != %d", msg->dataLength, CANMessageLookUpTable[ERROR_DATA_ID].numberOfBytes);
     }
 }
-
-void ErrorDataCallback(iCommsMessage_t *msg) { DebugPrint("ErrorDataCallback not implemented! %d", msg->standardMessageID); }
-void SpeedDataCallback(iCommsMessage_t *msg) { DebugPrint("SpeedDataCallback not implemented! %d", msg->standardMessageID); }
-void MotorRPMDataCallback(iCommsMessage_t *msg) { DebugPrint("MotorRPMDataCallback not implemented! %d", msg->standardMessageID); }
-void CurrentVoltageDataCallback(iCommsMessage_t *msg) { DebugPrint("CurrentVoltageDataCallback not implemented! %d", msg->standardMessageID); }
