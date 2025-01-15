@@ -8,21 +8,20 @@
 #include "CANMessageLookUpModule.h"
 #include "CANDriver.h"
 
-#ifndef MBED
-#define WEAK __weak
-#else
-#define WEAK
-#endif
+/**
+ * Do not mark these as weak, if it's not implemented somewhere else, the code will crash
+ */
 
-extern WEAK void ThrottleDataCallback(iCommsMessage_t *msg);
-extern WEAK void ErrorDataCallback(iCommsMessage_t *msg);
-extern WEAK void SpeedDataCallback(iCommsMessage_t *msg);
-extern WEAK void EventDataCallback(iCommsMessage_t *msg);
-extern WEAK void MotorRPMDataCallback(iCommsMessage_t *msg);
-extern WEAK void CurrentVoltageDataCallback(iCommsMessage_t *msg);
-extern WEAK void PressureTemperatureDataCallback(iCommsMessage_t *msg);
-extern WEAK void LightsDataCallback(iCommsMessage_t *msg);
-extern WEAK void EfficiencyDataCallback(iCommsMessage_t *msg);
+
+extern void ThrottleDataCallback(iCommsMessage_t *msg);
+extern void ErrorDataCallback(iCommsMessage_t *msg);
+extern void SpeedDataCallback(iCommsMessage_t *msg);
+extern void EventDataCallback(iCommsMessage_t *msg);
+extern void MotorRPMDataCallback(iCommsMessage_t *msg);
+extern void CurrentVoltageDataCallback(iCommsMessage_t *msg);
+extern void PressureTemperatureDataCallback(iCommsMessage_t *msg);
+extern void LightsDataCallback(iCommsMessage_t *msg);
+extern void EfficiencyDataCallback(iCommsMessage_t *msg);
 
 /*********************************************************************************
  *
