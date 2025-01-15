@@ -35,42 +35,42 @@ typedef struct {
  * Read Write a single byte over SPI.
  * CS is held low until function is called with lastTransfer == 12.
  */
-PUBLIC uint8_t tmc4671_readwriteByte(uint8_t motor, uint8_t data, uint8_t lastTransfer);
+uint8_t tmc4671_readwriteByte(uint8_t motor, uint8_t data, uint8_t lastTransfer);
 
 /**
  * Set the Chip Select (CS) pin for a particular slave to state
  */
-PRIVATE void MotorSetCS(uint8_t cs, GPIO_PinState state);
+void MotorSetCS(uint8_t cs, GPIO_PinState state);
 
 /**
  * Set which motor is being driven
  * @param motor
  */
-PRIVATE void MotorSelect(MotorCode motor);
+void MotorSelect(MotorCode motor);
 
-PUBLIC uint32_t MotorValidateSPI();
+uint32_t MotorValidateSPI();
 
 // ===== Functions for interacting with motor =====
 /**
  * Rotate the motor
  */
-PUBLIC uint8_t MotorRotateVelocity(velocity_t velocity);
+uint8_t MotorRotateVelocity(velocity_t velocity);
 
-PUBLIC uint8_t MotorPeriodicJob();
+uint8_t MotorPeriodicJob();
 
-PUBLIC uint8_t MotorEnableDriver(flag_status_t enabled);
+uint8_t MotorEnableDriver(flag_status_t enabled);
 
-PUBLIC velocity_t MotorGetActualVelocity();
+velocity_t MotorGetActualVelocity();
 /**
  * Initialize registers in the TMC4671 and TMC6200. Must be called before motor
  * will function properly. Returns true if motor init was successful.
  */
-PUBLIC uint8_t MotorInit();
+uint8_t MotorInit();
 
-PUBLIC uint8_t MotorInitEncoder();
+uint8_t MotorInitEncoder();
 
-PUBLIC void MotorClearChargePump();
+void MotorClearChargePump();
 
-PUBLIC void MotorPrintFaults();
+void MotorPrintFaults();
 
 #endif /* USERDRIVERS_SPIMOTORDRIVER_H_ */

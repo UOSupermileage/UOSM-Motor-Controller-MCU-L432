@@ -15,8 +15,8 @@
 // Our headers
 #include "ApplicationTypes.h"
 
-PUBLIC void InitSafetyTask(void);
+void InitSafetyTask(void);
 
-PRIVATE void SafetyTask(void *argument);
+void SafetyTask(void *argument);
 
 #endif /* TASKS_SAFETYTASK_H_ */

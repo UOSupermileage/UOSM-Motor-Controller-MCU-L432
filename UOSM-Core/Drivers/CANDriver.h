@@ -31,30 +31,30 @@ typedef union {
 #define dSTANDARD_CAN_MSG_ID_2_0B 1
 #define dEXTENDED_CAN_MSG_ID_2_0B 2
 
-PUBLIC bool CANSPI_Initialize(void);
+bool CANSPI_Initialize(void);
 
-PUBLIC void CANSPI_Sleep(void);
+void CANSPI_Sleep(void);
 
-PUBLIC uint8_t CANSPI_Transmit(iCommsMessage_t* txMsg);
+uint8_t CANSPI_Transmit(iCommsMessage_t* txMsg);
 
-PUBLIC uint8_t CANSPI_Receive(iCommsMessage_t* rxMsg);
+uint8_t CANSPI_Receive(iCommsMessage_t* rxMsg);
 
-PUBLIC uint8_t CANSPI_messagesInBuffer(void);
+uint8_t CANSPI_messagesInBuffer(void);
 
-PUBLIC uint8_t CANSPI_isBussOff(void);
+uint8_t CANSPI_isBussOff(void);
 
-PUBLIC uint8_t CANSPI_isRxErrorPassive(void);
+uint8_t CANSPI_isRxErrorPassive(void);
 
-PUBLIC uint8_t CANSPI_isTxErrorPassive(void);
+uint8_t CANSPI_isTxErrorPassive(void);
 
 /**
  * Convert message contents into a 32 bit unsigned integer
  * @param msg
  * @return
  */
-PUBLIC uint32_t readMsg(iCommsMessage_t* msg);
+uint32_t readMsg(iCommsMessage_t* msg);
 
-PUBLIC iCommsMessage_t createMsg(uint16_t msgId, uint32_t data);
+iCommsMessage_t createMsg(uint16_t msgId, uint32_t data);
 
 #ifdef __cplusplus
 }

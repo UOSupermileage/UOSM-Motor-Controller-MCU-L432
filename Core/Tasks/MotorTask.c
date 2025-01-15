@@ -18,8 +18,8 @@
 
 const char MOT_TAG[] = "#MOT:";
 
-PUBLIC void InitMotorTask(void);
-PRIVATE void MotorTask(void *argument);
+void InitMotorTask(void);
+void MotorTask(void *argument);
 
 osThreadId_t MotorTaskHandle;
 const osThreadAttr_t MotorTask_attributes = {
@@ -28,7 +28,7 @@ const osThreadAttr_t MotorTask_attributes = {
 	.priority = MOTOR_TASK_PRIORITY,
 };
 
-PUBLIC void InitMotorTask(void)
+void InitMotorTask(void)
 {
 #ifdef PROFILE_MOTOR
 	MotorTaskHandle = osThreadNew(MotorTask, NULL, &MotorTask_attributes);
@@ -38,7 +38,7 @@ PUBLIC void InitMotorTask(void)
 /**
  * Execution Loop for Motor Task.
  */
-PRIVATE void MotorTask(void *argument)
+void MotorTask(void *argument)
 {
 	// Keep track of current tick count
 	uint32_t cycleTick = osKernelGetTickCount();

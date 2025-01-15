@@ -11,7 +11,7 @@
 
 static const char SFT_TAG[] = "#SFT:";
 
-PUBLIC result_t Safety_SetThrottlePercentage(percentage_t percentage) {
+result_t Safety_SetThrottlePercentage(percentage_t percentage) {
 	#ifdef CLIP_THROTTLE
 	if (SystemGetThrottlePercentage() == 0 && percentage >= SAFETY_THROTTLE_PERCENTAGE) {
 		DebugPrint("%s Desired throttle value is too high a jump [%d]. Ignoring...", SFT_TAG, percentage);

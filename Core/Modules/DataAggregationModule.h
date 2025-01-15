@@ -37,51 +37,51 @@ void InitDataAggregator();
 
 // ===== Motor Config Getters and Setters =====
 
-PUBLIC percentage_t SystemGetThrottlePercentage();
-PUBLIC void SystemSetThrottlePercentage(percentage_t throttle);
+percentage_t SystemGetThrottlePercentage();
+void SystemSetThrottlePercentage(percentage_t throttle);
 
-PUBLIC MotorMode SystemGetMotorMode();
-PUBLIC void SystemSetMotorMode(MotorMode mode);
+MotorMode SystemGetMotorMode();
+void SystemSetMotorMode(MotorMode mode);
 
-PUBLIC flag_status_t SystemGetIgnoreThrottle();
-PUBLIC void SystemSetIgnoreThrottle(flag_status_t ignore);
+flag_status_t SystemGetIgnoreThrottle();
+void SystemSetIgnoreThrottle(flag_status_t ignore);
 
-PUBLIC uint16_t SystemGetMaxVelocity();
-PUBLIC void SystemSetMaxVelocity(uint16_t velocity);
+uint16_t SystemGetMaxVelocity();
+void SystemSetMaxVelocity(uint16_t velocity);
 
-PUBLIC flag_status_t SystemGetReverseVelocity();
-PUBLIC void SystemSetReverseVelocity(flag_status_t reverse);
+flag_status_t SystemGetReverseVelocity();
+void SystemSetReverseVelocity(flag_status_t reverse);
 
-PUBLIC uint8_t SystemGetMotionMode();
-PUBLIC void SystemSetMotionMode(uint8_t mode);
+uint8_t SystemGetMotionMode();
+void SystemSetMotionMode(uint8_t mode);
 
-PUBLIC flag_status_t SystemGetDriverEnabled();
-PUBLIC void SystemSetDriverEnabled(flag_status_t enabled);
+flag_status_t SystemGetDriverEnabled();
+void SystemSetDriverEnabled(flag_status_t enabled);
 
 // ===== Motor Status Getters and Setters =====
 
-PUBLIC const uint32_t SystemGetStatusCode();
+const uint32_t SystemGetStatusCode();
 
-PUBLIC flag_status_t SystemGetiCommsError();
+flag_status_t SystemGetiCommsError();
 
-PUBLIC void SystemSetiCommsError(flag_status_t status);
+void SystemSetiCommsError(flag_status_t status);
 
-PUBLIC flag_status_t SystemGetSPIError();
+flag_status_t SystemGetSPIError();
 
-PUBLIC void SystemSetSPIError(flag_status_t status);
+void SystemSetSPIError(flag_status_t status);
 
-PUBLIC flag_status_t SystemGetSafetyError();
+flag_status_t SystemGetSafetyError();
 
-PUBLIC void SystemSetSafetyError(flag_status_t status);
+void SystemSetSafetyError(flag_status_t status);
 
-PUBLIC flag_status_t SystemGetThrottleError();
+flag_status_t SystemGetThrottleError();
 
-PUBLIC void SystemSetThrottleError(flag_status_t status);
+void SystemSetThrottleError(flag_status_t status);
 
-PUBLIC flag_status_t  SystemGetMotorInitializing();
-PUBLIC void SystemSetMotorInitializing(flag_status_t status);
+flag_status_t  SystemGetMotorInitializing();
+void SystemSetMotorInitializing(flag_status_t status);
 
-PUBLIC velocity_t SystemGetMotorVelocity();
-PUBLIC void SystemSetMotorVelocity(velocity_t velocity);
+velocity_t SystemGetMotorVelocity();
+void SystemSetMotorVelocity(velocity_t velocity);
 
 #endif /* MODULES_DATAAGGREGATIONMODULE_H_ */

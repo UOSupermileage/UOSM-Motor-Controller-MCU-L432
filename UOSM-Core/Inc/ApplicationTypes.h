@@ -20,9 +20,6 @@ extern "C" {
 
 #include <stdint.h>
 
-#define PUBLIC
-#define PRIVATE
-
 #define PI_T2 6.28318530718 // Pi * 2
 
 #define MAX_PERCENTAGE 1000
@@ -44,17 +41,14 @@ typedef enum {
 } MotorCode;
 
 typedef enum {
-    THROTTLE_TOO_HIGH
-} ErrorCode;
-
-typedef enum {
     DEADMAN,
     EVENT_TIMER,
     MOTOR_INITIALIZING,
     UNDERVOLTAGE,
     DRIVER_ENABLED,
     NEW_LAP,
-    BRAKES_ENABLED
+    BRAKES_ENABLED,
+    THROTTLE_TOO_HIGH
 } EventCode;
 
 typedef enum {

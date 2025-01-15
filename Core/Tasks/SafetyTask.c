@@ -24,8 +24,8 @@
 
 const char SFT_TAG[] = "#SFT:";
 
-PUBLIC void InitSafetyTask(void);
-PRIVATE void SafetyTask(void *argument);
+void InitSafetyTask(void);
+void SafetyTask(void *argument);
 
 osThreadId_t SafetyTaskHandle;
 const osThreadAttr_t SafetyTask_attributes = {
@@ -34,11 +34,11 @@ const osThreadAttr_t SafetyTask_attributes = {
 	.priority = SAFETY_TASK_PRIORITY,
 };
 
-PUBLIC void InitSafetyTask(void)
+void InitSafetyTask(void)
 {
 	SafetyTaskHandle = osThreadNew(SafetyTask, NULL, &SafetyTask_attributes);
 }
-PRIVATE void SafetyTask(void *argument)
+void SafetyTask(void *argument)
 {
 	uint32_t cycleTick = osKernelGetTickCount();
 	DebugPrint("%s safety", SFT_TAG);
