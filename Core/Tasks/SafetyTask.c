@@ -17,6 +17,7 @@
 
 //#include "LEDStatusDriver.h"
 #include "Profiles.h"
+#include "main.h"
 
 #define STACK_SIZE 128*4
 #define SAFETY_TASK_PRIORITY (osPriority_t) osPriorityHigh
@@ -38,6 +39,7 @@ void InitSafetyTask(void)
 {
 	SafetyTaskHandle = osThreadNew(SafetyTask, NULL, &SafetyTask_attributes);
 }
+
 void SafetyTask(void *argument)
 {
 	uint32_t cycleTick = osKernelGetTickCount();
@@ -53,7 +55,7 @@ void SafetyTask(void *argument)
 
 		static uint8_t s = 0;
 
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, s);
+		HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, s);
 
 		s = !s;
 #endif

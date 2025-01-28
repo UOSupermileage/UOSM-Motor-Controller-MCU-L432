@@ -20,6 +20,7 @@
 #define DEADMAN_BROADCAST_RATE 3
 #define MOTOR_INIT_BROADCAST_RATE 3
 #define MOTOR_RPM_BROADCAST_RATE 3
+#define MOTOR_TEMPERATURE_BROADCAST_RATE 10
 
 void InitInternalCommsTask(void);
 _Noreturn void InternalCommsTask(void *argument);
@@ -46,6 +47,7 @@ _Noreturn void InternalCommsTask(void *argument) {
     uint8_t deadmanBroadcastCounter = 0;
     uint8_t motorInitCounter = 0;
     uint8_t motorRPMBroadcastCounter = 0;
+    uint8_t motorTemperatureBroadcastCounter = 0;
 
     if (Backup_GetFaultStatus() != Status_NoFault) {
         // TODO: Improve error reporting
@@ -74,6 +76,16 @@ _Noreturn void InternalCommsTask(void *argument) {
         } else {
             DebugPrint("Increment");
             throttleErrorBroadcastCounter++;
+        }
+
+        // Send current temperature of the motor
+        if (motorTemperatureBroadcastCounter >= MOTOR_TEMPERATURE_BROADCAST_RATE) {
+            iCommsMessage_t tempTxMsg = IComms_CreatePairUInt16BitMessage(MOTOR_TEMPERATURE_DATA_ID, 0, 0);
+            result_t r = IComms_Transmit(&tempTxMsg);
+
+            motorTemperatureBroadcastCounter = 0;
+        } else {
+            motorTemperatureBroadcastCounter++;
         }
 
         // Send Deadman signal to CANBUS to confirm system init

@@ -1,9 +1,9 @@
 #include "ApplicationTypes.h"
 
-#include "CANMessageLookUpModule.h"
-#include "SafetyModule.h"
 #include "CANDriver.h"
+#include "CANMessageLookUpModule.h"
 #include "DataAggregationModule.h"
+#include "SafetyModule.h"
 
 void ThrottleDataCallback(iCommsMessage_t* msg)
 {
@@ -41,3 +41,4 @@ void CurrentVoltageDataCallback(iCommsMessage_t *msg){}
 void PressureTemperatureDataCallback(iCommsMessage_t *msg){}
 void LightsDataCallback(iCommsMessage_t *msg){}
 void EfficiencyDataCallback(iCommsMessage_t *msg){}
+void MotorTemperatureDataCallback(iCommsMessage_t *msg){}
