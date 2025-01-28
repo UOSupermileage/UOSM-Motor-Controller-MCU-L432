@@ -34,7 +34,6 @@ typedef uint16_t MessageCANID_t;
 
 typedef struct {
     ICommsMessageLookUpIndex index;
-    MessageCANID_t messageID;
     uint8_t numberOfBytes;
 
     // Lambda Function. Instructions to execute when a message of this type is received.
@@ -44,7 +43,7 @@ typedef struct {
 
 extern const ICommsMessageInfo CANMessageLookUpTable[NUMBER_CAN_MESSAGE_IDS];
 
-PUBLIC const ICommsMessageInfo* CANMessageLookUpGetInfo(ICommsMessageLookUpIndex id);
+const ICommsMessageInfo* CANMessageLookUpGetInfo(ICommsMessageLookUpIndex id);
 
 #ifdef __cplusplus
 }
