@@ -56,6 +56,26 @@ void SafetyTask(void *argument)
 		static uint8_t s = 0;
 
 		HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, s);
+	    // If Safety Error, flash red, GetSPIE, flash orange, and Comms Flash blue
+	    // If multiple errors, flash the applicable ones
+	    // If no errors, flash green
+	        if (SystemGetSafetyError() >= 1) {
+			HAL_GPIO_WritePin(Safety_LED_GPIO_Port, Safety_LED_Pin, 1);
+		} else {
+			HAL_GPIO_WritePin(Safety_LED_GPIO_Port, Safety_LED_Pin, 0);
+		}
+
+	        if (SystemGetSPIError() >= 1) {
+			    HAL_GPIO_WritePin(SPI_LED_GPIO_Port, SPI_LED_Pin, 1);
+		    } else {
+			    HAL_GPIO_WritePin(SPI_LED_GPIO_Port, SPI_LED_Pin, 0);
+		    }
+
+	        if (SystemGetiCommsError() >= 1) {
+			    HAL_GPIO_WritePin(iComms_LED_GPIO_Port, iComms_LED_Pin, 1);
+		    } else {
+			    HAL_GPIO_WritePin(iComms_LED_GPIO_Port, iComms_LED_Pin, 0);
+		    }
 
 		s = !s;
 #endif
