@@ -108,7 +108,7 @@ void Send_Whole_Ring_from_Ring_Memory(void){
 
 
 
-void SafetyTask(void *argument)
+void SafetyTask(void *argument);
 {
 	uint32_t cycleTick = osKernelGetTickCount();
         uint8_t LED_Number_Per_Ring = 60;
