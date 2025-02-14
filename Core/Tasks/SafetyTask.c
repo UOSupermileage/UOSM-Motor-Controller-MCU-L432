@@ -46,48 +46,30 @@ void InitSafetyTask(void)
 void Embeded_One(void)
 {
     HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin,GPIO_PIN_RESET);
+    // Adjust the delay to meet the timing requirements of the LED
+    for (volatile int i = 0; i < 10; i++);
+    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_RESET);
+    for (volatile int i = 0; i < 5; i++);
 }
 
 void Embeded_Zero(void)
 {
     HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_SET);
+    // Adjust the delay to meet the timing requirements of the LED
+    for (volatile int i = 0; i < 5; i++);
     HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_RESET);
+    for (volatile int i = 0; i < 10; i++);
 }
 
 void Send_Whole_Ring_from_Ring_Memory(void){
     uint8_t j=0;
     uint32_t x,y;
-    for (uint8_t i=0; i<LED_Number_Per_Ring+10; i++)
+    for (uint8_t i=0; i<LED_Number_Per_Ring; i++)
     {
         y = Ring_0_Display_memory[i];
-        for (j=0; j<8; j++)
+        for (j=0; j<24; j++)
         {
             x = (y & 0x800000);
-            if (x>0)
-                Embeded_One();
-            else
-                Embeded_Zero();
-            y = y << 1;
-        }
-        y = Ring_0_Display_memory[i];
-        for (j=0; j<8; j++)
-        {
-            x = (y & 0x008000);
-            if (x>0)
-                Embeded_One();
-            else
-                Embeded_Zero();
-            y = y << 1;
-        }
-        y = Ring_0_Display_memory[i];
-        for (j=0; j<8; j++)
-        {
-            x = (y & 0x000080);
             if (x>0)
                 Embeded_One();
             else
@@ -129,7 +111,7 @@ void SafetyTask(void *argument)
                 HAL_Delay(1000);
 
                 // Ring_0 takes a hex value for colour
-                Ring_0_Display_memory[3] = 0x00FF00;
+                Ring_0_Display_memory[0] = 0x00FF00;
 
                 Send_Whole_Ring_from_Ring_Memory();
             } else {
