@@ -45,18 +45,18 @@ void InitSafetyTask(void)
 
 void Embeded_One(void)
 {
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin,GPIO_PIN_RESET);
 }
 
 void Embeded_Zero(void)
 {
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_RESET);
 }
 
 void Send_Whole_Ring_from_Ring_Memory(void){
@@ -122,35 +122,34 @@ void SafetyTask(void *argument)
 
         // Green means All Good
         // Red means Safety Error
+        // Teal means SPI Error
         // Yellow means iCommsError
         // Purple means Throttle Error
-        // add CONST for color hex code
             if (SafetyErrors == 0 &&  SPIErrors == 0 &&  iCommsErrors == 0 && throttleErrors == 0) {
                 HAL_Delay(1000);
-                Ring_0_Display_memory[3] = 0xFFFFFF;
+
+                // Ring_0 takes a hex value for colour
+                Ring_0_Display_memory[3] = 0x00FF00;
+
                 Send_Whole_Ring_from_Ring_Memory();
             } else {
                 if (SafetyErrors >= 1) {
-                    // SafetyError Flashes Red
-                    // HAL_GPIO_WritePin(Safety_LED_GPIO_Port, Safety_LED_Pin, 1);
                     Ring_0_Display_memory[0] = 0xFF0000;
                     Send_Whole_Ring_from_Ring_Memory();
                     HAL_Delay(1000);
                 }
                 if (SPIErrors >= 1) {
-                    Ring_0_Display_memory[1] = 0x00FF00;
+                    Ring_0_Display_memory[1] = 0x008080;
                     Send_Whole_Ring_from_Ring_Memory();
                     HAL_Delay(1000);
                 }
-
                 if (iCommsErrors >= 1) {
-                    Ring_0_Display_memory[2] = 0x0000FF;
+                    Ring_0_Display_memory[2] = 0xFFFF00;
                     Send_Whole_Ring_from_Ring_Memory();
                     HAL_Delay(1000);
                 }
-
                 if (throttleErrors >= 1) {
-                    Ring_0_Display_memory[3] = 0x00FF00;
+                    Ring_0_Display_memory[3] = 0xA020F0;
                     Send_Whole_Ring_from_Ring_Memory();
                     HAL_Delay(1000);
                 }
