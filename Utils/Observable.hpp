@@ -8,6 +8,8 @@
 #include "Identifiable.hpp"
 #include <functional>
 
+#include <algorithm>
+
 /** @ingroup core-ui-utils
  *  A class that represents a token that can be used to cancel an observation.
  *  It holds a function that can be called to cancel the observation.

@@ -16,6 +16,7 @@ extern void CurrentVoltageDataCallback(iCommsMessage_t *msg);
 extern void PressureTemperatureDataCallback(iCommsMessage_t *msg);
 extern void LightsDataCallback(iCommsMessage_t *msg);
 extern void EfficiencyDataCallback(iCommsMessage_t *msg);
+extern void MotorTemperatureDataCallback(iCommsMessage_t *msg);
 
 /*********************************************************************************
  *
