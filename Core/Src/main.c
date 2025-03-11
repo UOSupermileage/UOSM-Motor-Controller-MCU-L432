@@ -410,10 +410,6 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : ENABLE_6200_Pin Status_LED_Pin */
   GPIO_InitStruct.Pin = ENABLE_6200_Pin|Status_LED_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : EnableTMC_Pin CS_CAN_Pin CS_TMC4671_Pin CS_TMC6200_Pin
                            Motor_Select_Pin */

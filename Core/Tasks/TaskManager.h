@@ -11,5 +11,4 @@
 
 void RunTaskManager(void);
 
-
 #endif /* TASKS_TASKMANAGER_H_ */
