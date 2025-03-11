@@ -31,7 +31,7 @@
  * 2 == Idle operation, do nothing except enable driver and clear charge pump if configured
  */
 
-#define MOTOR_MODE 0
+#define MOTOR_MODE 2
 
 #define MOTOR_CONFIG_AUTO_INIT_ENCODER
 

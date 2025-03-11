@@ -59,20 +59,16 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define Motor_Select_Switch_Pin GPIO_PIN_15
 #define Motor_Select_Switch_GPIO_Port GPIOC
-#define ENABLE_6200_Pin GPIO_PIN_0
-#define ENABLE_6200_GPIO_Port GPIOA
 #define EnableTMC_Pin GPIO_PIN_0
 #define EnableTMC_GPIO_Port GPIOB
 #define CS_CAN_Pin GPIO_PIN_1
 #define CS_CAN_GPIO_Port GPIOB
 #define Status_LED_Pin GPIO_PIN_8
 #define Status_LED_GPIO_Port GPIOA
+#define Drive_Enable_Pin GPIO_PIN_11
+#define Drive_Enable_GPIO_Port GPIOA
 #define CS_TMC4671_Pin GPIO_PIN_4
 #define CS_TMC4671_GPIO_Port GPIOB
-#define CS_TMC6200_Pin GPIO_PIN_5
-#define CS_TMC6200_GPIO_Port GPIOB
-#define Motor_Select_Pin GPIO_PIN_7
-#define Motor_Select_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

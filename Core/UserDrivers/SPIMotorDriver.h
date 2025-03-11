@@ -16,7 +16,6 @@
 #include "ApplicationTypes.h"
 
 #define TMC4671_CS 0
-#define TMC6200_CS 1
 
 typedef struct {
         velocity_t rpm_target;
@@ -68,9 +67,5 @@ velocity_t MotorGetActualVelocity();
 uint8_t MotorInit();
 
 uint8_t MotorInitEncoder();
-
-void MotorClearChargePump();
-
-void MotorPrintFaults();
 
 #endif /* USERDRIVERS_SPIMOTORDRIVER_H_ */

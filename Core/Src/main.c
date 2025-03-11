@@ -111,17 +111,6 @@ int main(void)
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
-  uint32_t resetCause = RCC->CSR;
-
-  if (resetCause & RCC_CSR_BORRSTF) {
-      // Brown out occured
-      for (int i = 0; i < 100; i++) {
-          HAL_GPIO_TogglePin(ENABLE_6200_GPIO_Port, ENABLE_6200_Pin);
-          HAL_Delay(10);
-      }
-      HAL_GPIO_WritePin(ENABLE_6200_GPIO_Port, ENABLE_6200_Pin, 0);
-  }
-
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -396,11 +385,10 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, ENABLE_6200_Pin|Status_LED_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, EnableTMC_Pin|CS_CAN_Pin|CS_TMC4671_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, EnableTMC_Pin|CS_CAN_Pin|CS_TMC4671_Pin|CS_TMC6200_Pin
-                          |Motor_Select_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, Status_LED_Pin|Drive_Enable_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : Motor_Select_Switch_Pin */
   GPIO_InitStruct.Pin = Motor_Select_Switch_Pin;
@@ -408,27 +396,19 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(Motor_Select_Switch_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : ENABLE_6200_Pin Status_LED_Pin */
-  GPIO_InitStruct.Pin = ENABLE_6200_Pin|Status_LED_Pin;
+  /*Configure GPIO pins : EnableTMC_Pin CS_CAN_Pin CS_TMC4671_Pin */
+  GPIO_InitStruct.Pin = EnableTMC_Pin|CS_CAN_Pin|CS_TMC4671_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : Status_LED_Pin Drive_Enable_Pin */
+  GPIO_InitStruct.Pin = Status_LED_Pin|Drive_Enable_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : EnableTMC_Pin CS_CAN_Pin CS_TMC4671_Pin CS_TMC6200_Pin
-                           Motor_Select_Pin */
-  GPIO_InitStruct.Pin = EnableTMC_Pin|CS_CAN_Pin|CS_TMC4671_Pin|CS_TMC6200_Pin
-                          |Motor_Select_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PB6 */
-  GPIO_InitStruct.Pin = GPIO_PIN_6;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
 
@@ -455,6 +435,27 @@ void StartDefaultTask(void *argument)
 }
 
 /**
+  * @brief  Period elapsed callback in non blocking mode
+  * @note   This function is called  when TIM1 interrupt took place, inside
+  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+  * a global variable "uwTick" used as application time base.
+  * @param  htim : TIM handle
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  /* USER CODE BEGIN Callback 0 */
+
+  /* USER CODE END Callback 0 */
+  if (htim->Instance == TIM1) {
+    HAL_IncTick();
+  }
+  /* USER CODE BEGIN Callback 1 */
+
+  /* USER CODE END Callback 1 */
+}
+
+/**
   * @brief  This function is executed in case of error occurrence.
   * @retval None
   */
@@ -463,12 +464,9 @@ void Error_Handler(void)
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
-  uint16_t i = 0;
   while (1)
   {
-    HAL_GPIO_TogglePin(ENABLE_6200_GPIO_Port, ENABLE_6200_Pin);
-    HAL_Delay(10 * (i % 3) + 1);
-    i++;
+
   }
   /* USER CODE END Error_Handler_Debug */
 }
