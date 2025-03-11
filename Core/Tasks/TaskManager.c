@@ -10,7 +10,7 @@
 #include "SafetyTask.h"
 #include "InternalCommsTask.h"
 #include "MotorTask.h"
-
+#include "TempTask.h"
 #include "DataAggregationModule.h"
 
 void RunTaskManager( void )
@@ -19,4 +19,6 @@ void RunTaskManager( void )
         InitMotorTask();
 	InitInternalCommsTask();
 	InitSafetyTask();
+        InitTempTask();
 }
+

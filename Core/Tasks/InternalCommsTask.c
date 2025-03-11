@@ -21,6 +21,9 @@
 #define MOTOR_INIT_BROADCAST_RATE 3
 #define MOTOR_RPM_BROADCAST_RATE 3
 
+// =======MOTOR TEMP=============
+#define MOTOR_TEMP_BROADCAST_RATE 3
+// ==============================
 void InitInternalCommsTask(void);
 _Noreturn void InternalCommsTask(void *argument);
 
@@ -42,6 +45,11 @@ _Noreturn void InternalCommsTask(void *argument) {
     DebugPrint("%s icomms", ICT_TAG);
 
     // Create counters to keep track of when to send messages
+
+    // ======For motor temp========
+    uint8_t motorTempBroadcastCounter = 0;
+    // ============================
+
     uint8_t throttleErrorBroadcastCounter = 0;
     uint8_t deadmanBroadcastCounter = 0;
     uint8_t motorInitCounter = 0;
@@ -94,6 +102,16 @@ _Noreturn void InternalCommsTask(void *argument) {
         } else {
             motorInitCounter++;
         }
+        // =======MOTOR TEMP========
+        if (motorTempBroadcastCounter == MOTOR_TEMP_BROADCAST_RATE) {
+            iCommsMessage_t tmpTxMsg = IComms_CreateUint32BitMessage(MOTOR_TEMP_DATA_ID, SystemGetTemperature());
+            IComms_Transmit(&tmpTxMsg);
+
+            motorTempBroadcastCounter = 0;
+        } else {
+            motorTempBroadcastCounter++;
+        }
+        // ========================
 
         if (motorRPMBroadcastCounter == MOTOR_RPM_BROADCAST_RATE) {
             iCommsMessage_t rpmTxMsg = IComms_CreateInt32BitMessage(MOTOR_RPM_DATA_ID, SystemGetMotorVelocity());

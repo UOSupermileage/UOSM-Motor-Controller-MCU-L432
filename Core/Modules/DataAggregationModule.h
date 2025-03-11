@@ -84,4 +84,7 @@ void SystemSetMotorInitializing(flag_status_t status);
 velocity_t SystemGetMotorVelocity();
 void SystemSetMotorVelocity(velocity_t velocity);
 
+temperature_t SystemGetTemperature();
+void SystemSetTemperature(temperature_t temperature);
+
 #endif /* MODULES_DATAAGGREGATIONMODULE_H_ */

@@ -16,7 +16,7 @@ extern void CurrentVoltageDataCallback(iCommsMessage_t *msg);
 extern void PressureTemperatureDataCallback(iCommsMessage_t *msg);
 extern void LightsDataCallback(iCommsMessage_t *msg);
 extern void EfficiencyDataCallback(iCommsMessage_t *msg);
-
+extern void MotorTemperatureDataCallback(iCommsMessage_t *msg);
 /*********************************************************************************
  *
  * 		Look up table for CAN ID and meta data about its payload
@@ -32,7 +32,8 @@ const ICommsMessageInfo CANMessageLookUpTable[NUMBER_CAN_MESSAGE_IDS] = {
         {CURRENT_VOLTAGE_DATA_ID,      4, &CurrentVoltageDataCallback},
         {LIGHT_DATA_ID,                4, &LightsDataCallback},
         {PRESSURE_TEMPERATURE_DATA_ID, 8, &PressureTemperatureDataCallback},
-        {EFFICIENCY_DATA_ID,           4, &EfficiencyDataCallback}
+        {EFFICIENCY_DATA_ID,           4, &EfficiencyDataCallback},
+        {MOTOR_TEMP_DATA_ID,            4, &MotorTemperatureDataCallback},
 };
 
 const ICommsMessageInfo*

@@ -15,7 +15,7 @@
 motor_config_t motorConfig;
 motor_status_t motorStatus;
 velocity_t velocity;
-
+temperature_t temperature; // TEMPERATURE
 void InitDataAggregator() {
 	#ifdef MOTOR_FIXED_THROTTLE
 		motorConfig.throttle = MOTOR_FIXED_THROTTLE;
