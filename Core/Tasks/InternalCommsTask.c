@@ -105,7 +105,7 @@ _Noreturn void InternalCommsTask(void *argument) {
         }
         // =======MOTOR TEMP========
         if (motorTempBroadcastCounter == MOTOR_TEMP_BROADCAST_RATE) {
-            iCommsMessage_t tmpTxMsg = IComms_CreateUint32BitMessage(MOTOR_TEMP_DATA_ID, SystemGetTemperature());
+            iCommsMessage_t tmpTxMsg = IComms_CreateUint32BitMessage(MOTOR_TEMPERATURE_DATA_ID, SystemGetTemperature());
             IComms_Transmit(&tmpTxMsg);
 
             motorTempBroadcastCounter = 0;

@@ -34,7 +34,7 @@ const ICommsMessageInfo CANMessageLookUpTable[NUMBER_CAN_MESSAGE_IDS] = {
         {LIGHT_DATA_ID,                4, &LightsDataCallback},
         {PRESSURE_TEMPERATURE_DATA_ID, 8, &PressureTemperatureDataCallback},
         {EFFICIENCY_DATA_ID,           4, &EfficiencyDataCallback},
-        {MOTOR_TEMP_DATA_ID,            4, &MotorTemperatureDataCallback},
+        {MOTOR_TEMPERATURE_DATA_ID,            4, &MotorTemperatureDataCallback},
 };
 
 const ICommsMessageInfo*
