@@ -230,11 +230,7 @@
 #define MAX_VELOCITY 3000
 #elif MOTOR == 2
 
-#if MOTOR_CONFIG_MODE_RAMP_MODE_MOTION == 2
-	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t)5000 // TODO: around 9 amps
-#else
-	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t)5000
-#endif
+#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t)5000 // TODO: around 9 amps
 
 #define MOTOR_CONFIG_PID_UQ_UD_LIMITS 5000 // TODO: What should this be?
 #define MAX_VELOCITY 3000
