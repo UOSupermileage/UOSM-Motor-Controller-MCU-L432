@@ -78,7 +78,7 @@ void MotorTask(void *argument)
             }
 
             // Read registers in TMC6200 and check for faults
-            MotorPrintFaults();
+//            MotorPrintFaults();
 #endif
 	}
 	/// [task]

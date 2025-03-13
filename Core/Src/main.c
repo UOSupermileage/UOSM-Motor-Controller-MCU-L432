@@ -388,7 +388,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOB, EnableTMC_Pin|CS_CAN_Pin|CS_TMC4671_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, Status_LED_Pin|Drive_Enable_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8|Drive_Enable_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : Motor_Select_Switch_Pin */
   GPIO_InitStruct.Pin = Motor_Select_Switch_Pin;
@@ -396,7 +396,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(Motor_Select_Switch_GPIO_Port, &GPIO_InitStruct);
 
-<<<<<<< HEAD
   /*Configure GPIO pins : EnableTMC_Pin CS_CAN_Pin CS_TMC4671_Pin */
   GPIO_InitStruct.Pin = EnableTMC_Pin|CS_CAN_Pin|CS_TMC4671_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -404,16 +403,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : Status_LED_Pin Drive_Enable_Pin */
-  GPIO_InitStruct.Pin = Status_LED_Pin|Drive_Enable_Pin;
+  /*Configure GPIO pins : PA8 Drive_Enable_Pin */
+  GPIO_InitStruct.Pin = GPIO_PIN_8|Drive_Enable_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-=======
-  /*Configure GPIO pins : ENABLE_6200_Pin Status_LED_Pin */
-  GPIO_InitStruct.Pin = ENABLE_6200_Pin|Status_LED_Pin;
->>>>>>> main
 
 }
 

@@ -45,20 +45,20 @@ void InitSafetyTask(void)
 
 void Embeded_One(void)
 {
-    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_SET);
-    // Adjust the delay to meet the timing requirements of the LED
-    for (volatile int i = 0; i < 10; i++);
-    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_RESET);
-    for (volatile int i = 0; i < 5; i++);
+//    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_SET);
+//    // Adjust the delay to meet the timing requirements of the LED
+//    for (volatile int i = 0; i < 10; i++);
+//    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_RESET);
+//    for (volatile int i = 0; i < 5; i++);
 }
 
 void Embeded_Zero(void)
 {
-    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_SET);
-    // Adjust the delay to meet the timing requirements of the LED
-    for (volatile int i = 0; i < 5; i++);
-    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_RESET);
-    for (volatile int i = 0; i < 10; i++);
+//    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_SET);
+//    // Adjust the delay to meet the timing requirements of the LED
+//    for (volatile int i = 0; i < 5; i++);
+//    HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, GPIO_PIN_RESET);
+//    for (volatile int i = 0; i < 10; i++);
 }
 
 void Send_Whole_Ring_from_Ring_Memory(void){
@@ -100,7 +100,7 @@ void SafetyTask(void *argument)
 
         static uint8_t s = 0;
 
-        HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, s);
+//        HAL_GPIO_WritePin(Status_LED_GPIO_Port, Status_LED_Pin, s);
 
         // Green means All Good
         // Red means Safety Error

@@ -354,9 +354,7 @@ uint8_t MotorInitEncoder() {
                 HAL_Delay(300);
         }
 
-        if (abs(MotorGetActualVelocity()) < 2) {
-                return 1;
-        }
+        bool success = abs(MotorGetActualVelocity()) > 2;
 
         // Stop the motor
         tmc4671_writeInt(TMC4671_CS, TMC4671_OPENLOOP_VELOCITY_TARGET, 0);
@@ -377,7 +375,7 @@ uint8_t MotorInitEncoder() {
         // Set ABN Encoder as Phi E Selection
         tmc4671_writeInt(TMC4671_CS, TMC4671_PHI_E_SELECTION, 3);
 
-        return 0;
+        return success;
 }
 
 /**

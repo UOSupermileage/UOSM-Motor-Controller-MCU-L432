@@ -31,7 +31,7 @@
  * 2 == Idle operation, do nothing except enable driver and clear charge pump if configured
  */
 
-#define MOTOR_MODE 2
+#define MOTOR_MODE 0
 
 #define MOTOR_CONFIG_AUTO_INIT_ENCODER
 
@@ -164,8 +164,8 @@
 #define MOTOR_CONFIG_dsADC_MCLK_A (uint32_t)0x20000000
 #define MOTOR_CONFIG_dsADC_MCLK_B (uint32_t)0x00000000
 #define MOTOR_CONFIG_dsADC_MDEC_B_MDEC_A (uint32_t)0x014E014E
-#define MOTOR_CONFIG_ADC_I0_SCALE_OFFSET (uint32_t)0x010081C9
-#define MOTOR_CONFIG_ADC_I1_SCALE_OFFSET (uint32_t)0x010081AE
+#define MOTOR_CONFIG_ADC_I0_SCALE_OFFSET (uint32_t)0x01008201
+#define MOTOR_CONFIG_ADC_I1_SCALE_OFFSET (uint32_t)0x010082C9
 #endif
 
 /*********************************************************************************
@@ -231,13 +231,12 @@
 #elif MOTOR == 2
 
 #if MOTOR_CONFIG_MODE_RAMP_MODE_MOTION == 2
-	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t)25000
+	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t)5000 // TODO: around 9 amps
 #else
-	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t)32000
+	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t)5000
 #endif
 
-#define MOTOR_CONFIG_PID_TORQUE_FLUX_THROTTLE_LIMITS (uint32_t)28000
-#define MOTOR_CONFIG_PID_UQ_UD_LIMITS 28000
+#define MOTOR_CONFIG_PID_UQ_UD_LIMITS 5000 // TODO: What should this be?
 #define MAX_VELOCITY 3000
 #define MOTOR_CONFIG_ACCELERATION_LIMIT 300
 #endif
