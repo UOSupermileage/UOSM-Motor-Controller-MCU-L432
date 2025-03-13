@@ -179,15 +179,7 @@ iCommsMessage_t IComms_CreateEventMessage(uint8_t code, uint8_t status) {
     return IComms_CreateMessage(EVENT_DATA_ID, 2, data);
 }
 
-iCommsMessage_t IComms_CreatePairUInt16BitMessage(uint16_t standardMessageID, uint16_t a, uint16_t b) {
-    uint8_t data[8];
-    data[0] = a >> 8;
-    data[1] = a;
-    data[2] = b >> 8;
-    data[3] = b;
 
-    return IComms_CreateMessage(standardMessageID, 4, data);
-}
 
 iCommsMessage_t IComms_CreateLightsMessage(lights_status_t lights) {
     uint8_t data[8];

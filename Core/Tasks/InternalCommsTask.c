@@ -22,6 +22,9 @@
 #define MOTOR_RPM_BROADCAST_RATE 3
 #define MOTOR_TEMPERATURE_BROADCAST_RATE 10
 
+// =======MOTOR TEMP=============
+#define MOTOR_TEMP_BROADCAST_RATE 3
+// ==============================
 void InitInternalCommsTask(void);
 _Noreturn void InternalCommsTask(void *argument);
 
@@ -43,11 +46,15 @@ _Noreturn void InternalCommsTask(void *argument) {
     DebugPrint("%s icomms", ICT_TAG);
 
     // Create counters to keep track of when to send messages
+
+    // ======For motor temp========
+    uint8_t motorTempBroadcastCounter = 0;
+    // ============================
+
     uint8_t throttleErrorBroadcastCounter = 0;
     uint8_t deadmanBroadcastCounter = 0;
     uint8_t motorInitCounter = 0;
     uint8_t motorRPMBroadcastCounter = 0;
-    uint8_t motorTemperatureBroadcastCounter = 0;
 
     if (Backup_GetFaultStatus() != Status_NoFault) {
         // TODO: Improve error reporting
@@ -78,16 +85,6 @@ _Noreturn void InternalCommsTask(void *argument) {
             throttleErrorBroadcastCounter++;
         }
 
-        // Send current temperature of the motor
-        if (motorTemperatureBroadcastCounter >= MOTOR_TEMPERATURE_BROADCAST_RATE) {
-            iCommsMessage_t tempTxMsg = IComms_CreatePairUInt16BitMessage(MOTOR_TEMPERATURE_DATA_ID, 0, 0);
-            result_t r = IComms_Transmit(&tempTxMsg);
-
-            motorTemperatureBroadcastCounter = 0;
-        } else {
-            motorTemperatureBroadcastCounter++;
-        }
-
         // Send Deadman signal to CANBUS to confirm system init
         if (deadmanBroadcastCounter == DEADMAN_BROADCAST_RATE) {
             iCommsMessage_t deadmanTxMsg = IComms_CreateEventMessage(DEADMAN, 1);
@@ -106,6 +103,16 @@ _Noreturn void InternalCommsTask(void *argument) {
         } else {
             motorInitCounter++;
         }
+        // =======MOTOR TEMP========
+        if (motorTempBroadcastCounter == MOTOR_TEMP_BROADCAST_RATE) {
+            iCommsMessage_t tmpTxMsg = IComms_CreateUint32BitMessage(MOTOR_TEMPERATURE_DATA_ID, SystemGetTemperature());
+            IComms_Transmit(&tmpTxMsg);
+
+            motorTempBroadcastCounter = 0;
+        } else {
+            motorTempBroadcastCounter++;
+        }
+        // ========================
 
         if (motorRPMBroadcastCounter == MOTOR_RPM_BROADCAST_RATE) {
             iCommsMessage_t rpmTxMsg = IComms_CreateInt32BitMessage(MOTOR_RPM_DATA_ID, SystemGetMotorVelocity());
