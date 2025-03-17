@@ -75,7 +75,7 @@ typedef uint16_t current_t;
 typedef uint16_t watt_hour_t;
 typedef uint8_t brightness_t;
 typedef int32_t pressure_t;
-typedef int32_t temperature_t;
+typedef uint16_t temperature_t; // centi Celcius
 
 typedef struct {
     uint16_t standardMessageID; // 11 bit max
