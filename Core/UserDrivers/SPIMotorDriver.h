@@ -67,7 +67,7 @@ velocity_t MotorGetActualVelocity();
  */
 uint8_t MotorInit();
 
-uint8_t MotorInitEncoder();
+result_t MotorInitEncoder();
 
 void MotorClearChargePump();
 

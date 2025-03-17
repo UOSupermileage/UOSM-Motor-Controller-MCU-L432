@@ -31,7 +31,7 @@
  * 2 == Idle operation, do nothing except enable driver and clear charge pump if configured
  */
 
-#define MOTOR_MODE 0
+#define MOTOR_MODE 1
 
 #define MOTOR_CONFIG_AUTO_INIT_ENCODER
 
@@ -289,7 +289,7 @@
 #define ABN
 #define MOTOR_CONFIG_ABN_DECODER_MODE (uint32_t)0x00000000     // 0x25: Polarity of A pulse.
 #define MOTOR_CONFIG_ABN_DECODER_PPR (uint32_t)0x00000B40      // 0x26: Decoder pulses per mechanical revolution.
-#define MOTOR_CONFIG_ABN_INIT_VELOCITY 10
+#define MOTOR_CONFIG_ABN_INIT_VELOCITY (-10)
 #define MOTOR_CONFIG_ABN_INIT_ACCELERATION 60
 #define MOTOR_CONFIG_ABN_INIT_UQ_UD_EXIT 700
 
