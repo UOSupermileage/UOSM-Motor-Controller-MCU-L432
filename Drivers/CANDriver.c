@@ -300,7 +300,7 @@ uint8_t CANSPI_isBussOff(void)
 }
 
 /* Rx Passive Error 상태인지 체크 */
-PUBLIC uint8_t CANSPI_isRxErrorPassive(void)
+uint8_t CANSPI_isRxErrorPassive(void)
 {
   uint8_t returnValue = 0;
 
@@ -315,7 +315,7 @@ PUBLIC uint8_t CANSPI_isRxErrorPassive(void)
 }
 
 /* Tx Passive Error 상태인지 체크 */
-PUBLIC uint8_t CANSPI_isTxErrorPassive(void)
+uint8_t CANSPI_isTxErrorPassive(void)
 {
   uint8_t returnValue = 0;
 
@@ -401,7 +401,7 @@ static void convertCANid2Reg(uint32_t tempPassedInID, uint8_t canIdType, id_reg_
   }
 }
 
-PUBLIC uint32_t readMsg(iCommsMessage_t *msg) {
+uint32_t readMsg(iCommsMessage_t *msg) {
 	int32_t value = msg->data[msg->dataLength - 1];
 
 	for (int i = msg->dataLength - 1; i > 0; i--) {
@@ -412,7 +412,7 @@ PUBLIC uint32_t readMsg(iCommsMessage_t *msg) {
 	return value;
 }
 
-PUBLIC iCommsMessage_t createMsg(uint16_t msgId, uint32_t data) {
+iCommsMessage_t createMsg(uint16_t msgId, uint32_t data) {
 	iCommsMessage_t msg;
 	msg.standardMessageID = msgId;
 	msg.dataLength = 4;
