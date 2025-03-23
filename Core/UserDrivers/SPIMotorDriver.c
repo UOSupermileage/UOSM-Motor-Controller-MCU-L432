@@ -22,12 +22,12 @@ extern SPI_HandleTypeDef hspi1;
 static velocity_t targetVelocity;
 
 static ramp_point_t motorLowSpeedRamp[] = {
-    {-1,500},
-    {100, 80},
-    {300, 70},
-    {1200, 60},
-    {2400,60},
-    {3000, 30}
+    {-1,3000},
+    {100, 3000 },
+    {300, 3000 },
+    {1200, 3000 },
+    {2400,3000 },
+    {3000, 3000 }
 };
 /**
  * Config and state of the low speed motor
@@ -365,37 +365,55 @@ int16_t MotorGetS16CircleDifference(int16_t newValue, int16_t oldValue)
  * @return 0 on success, 1 on failure.
  */
 result_t MotorInitEncoder() {
-	uint8_t t = MOTOR_CONFIG_ABN_INIT_VELOCITY;
+	velocity_t t = MOTOR_CONFIG_ABN_INIT_VELOCITY;
 	
 	// If not reversing, then reverse t because we want this to spin in reverse
 	if (SystemGetReverseVelocity() == Clear) {
 		t *= -1;
 	}
 
-        // Set acceleration to 60
         tmc4671_writeInt(TMC4671_CS, TMC4671_OPENLOOP_ACCELERATION, MOTOR_CONFIG_ABN_INIT_ACCELERATION);
-
-        // Set velocity to reverse at 10 RPM
         tmc4671_writeInt(TMC4671_CS, TMC4671_OPENLOOP_VELOCITY_TARGET, t);
 
-        tmc4671_writeInt(TMC4671_CS, TMC4671_UQ_UD_EXT, MOTOR_CONFIG_ABN_INIT_UQ_UD_EXIT);
+        // Set open loop strength
+        tmc4671_writeInt(TMC4671_CS, TMC4671_UQ_UD_EXT, MOTOR_CONFIG_ABN_INIT_UQ_UD_EXT);
 
         // Use Open Loop Mode (Phi E Selection)
-        tmc4671_writeInt(TMC4671_CS, TMC4671_PHI_E_SELECTION, 2);
+        tmc4671_writeInt(TMC4671_CS, TMC4671_PHI_E_SELECTION, TMC4671_PHI_E_OPEN_LOOP);
 
         // Use Motion Mode (UQ_UD_EXT)
         tmc4671_switchToMotionMode(TMC4671_CS, TMC4671_MOTION_MODE_UQ_UD_EXT);
 
-        HAL_Delay(300);
+//        int32_t count = tmc4671_readInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT_N);
 
-        if (abs(MotorGetActualVelocity()) < 2) {
-                return RESULT_FAIL;
-        }
+        // Check for rotation
+//        bool success = false;
+//        for (uint8_t i = 0; i < 30; i++) {
+//            int32_t new_count = tmc4671_readInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT_N);
+//
+//            if (abs(count - new_count) > 2) {
+//                success = true;
+//                break;
+//            }
+//
+//            osDelay(2);
+//        }
 
-        // Stop the motor
-        tmc4671_writeInt(TMC4671_CS, TMC4671_OPENLOOP_VELOCITY_TARGET, 0);
+        osDelay(2000);
 
         tmc4671_switchToMotionMode(TMC4671_CS, TMC4671_MOTION_MODE_STOPPED);
+
+//        if (!success) {
+//            return RESULT_FAIL;
+//        }
+
+        // Get difference between PHI_E and ABN_PHI_E
+        int16_t openloop_phi_e = (int16_t) tmc4671_readRegister16BitValue(TMC4671_CS, TMC4671_OPENLOOP_PHI, BIT_0_TO_15);
+        int16_t encoder_phi_e = (int16_t) tmc4671_readRegister16BitValue(TMC4671_CS, TMC4671_ABN_DECODER_PHI_E_PHI_M, BIT_16_TO_31);
+
+        int16_t difference = openloop_phi_e - encoder_phi_e;
+
+        tmc4671_writeRegister16BitValue(TMC4671_CS, TMC4671_ABN_DECODER_PHI_E_PHI_M_OFFSET, BIT_16_TO_31, difference);
 
         // Set ABN Encoder as Phi E Selection
         tmc4671_writeInt(TMC4671_CS, TMC4671_PHI_E_SELECTION, 3);
