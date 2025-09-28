@@ -113,6 +113,8 @@ _Noreturn void InternalCommsTask(void *argument) {
             }
 
             motorCurrentBroadcastCounter = 0;
+        } else {
+            motorCurrentBroadcastCounter++;
         }
 #endif
     }
