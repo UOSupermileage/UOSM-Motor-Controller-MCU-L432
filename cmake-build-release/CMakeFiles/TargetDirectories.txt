@@ -1,3 +1,0 @@
-/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/CMakeFiles/UOSM-Motor-Controller-MCU-L432.elf.dir
-/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/CMakeFiles/edit_cache.dir
-/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/CMakeFiles/rebuild_cache.dir
