@@ -97,7 +97,7 @@ _Noreturn void InternalCommsTask(void *argument) {
             motorInitCounter++;
         }
 
-        if (motorRPMBroadcastCounter == MOTOR_RPM_BROADCAST_RATE) {`
+        if (motorRPMBroadcastCounter == MOTOR_RPM_BROADCAST_RATE) {
             iCommsMessage_t rpmTxMsg = IComms_CreateInt32BitMessage(MOTOR_RPM_DATA_ID, SystemGetMotorVelocity());
             IComms_Transmit(&rpmTxMsg);
 
