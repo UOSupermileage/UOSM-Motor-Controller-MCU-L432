@@ -14,7 +14,8 @@
 
 motor_config_t motorConfig;
 motor_status_t motorStatus;
-velocity_t velocity;
+velocity_t velocity = 0;
+current_t current = 0;
 
 void InitDataAggregator() {
 	#ifdef MOTOR_FIXED_THROTTLE
@@ -137,6 +138,13 @@ velocity_t SystemGetMotorVelocity() {
 }
 void SystemSetMotorVelocity(velocity_t v) {
 	velocity = v;
+}
+
+current_t SystemGetMotorTorque() {
+    return current;
+}
+void SystemSetMotorTorque(current_t c) {
+    current = c;
 }
 
 flag_status_t SystemGetDriverEnabled(){

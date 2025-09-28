@@ -1,0 +1,755 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="UOSM-Motor-Controller-MCU-L432"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/opt/homebrew/bin/gmake -j10 -f &quot;/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/opt/homebrew/bin/gmake -j10 -f &quot;/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/opt/homebrew/bin/gmake -j10 -f &quot;/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/opt/homebrew/bin/gmake -j10 -f &quot;/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="UOSM-Motor-Controller-MCU-L432.elf">
+				<Option output="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/UOSM-Motor-Controller-MCU-L432.elf" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DARM_MATH_CM4"/>
+					<Add option="-DARM_MATH_MATRIX_CHECK"/>
+					<Add option="-DARM_MATH_ROUNDING"/>
+					<Add option="-DDEBUG"/>
+					<Add option="-DUSE_HAL_DRIVER"/>
+					<Add option="-DSTM32L432xx"/>
+					<Add option="-DSTM"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Inc"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/Legacy"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/include"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Device/ST/STM32L4xx/Include"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Modules"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Src"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Startup"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Tasks"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/UserDrivers"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Inc"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Drivers"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Modules"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Utils"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers"/>
+					<Add directory="/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/include/c++/12.3.1"/>
+					<Add directory="/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/include/c++/12.3.1/arm-none-eabi"/>
+					<Add directory="/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/include/c++/12.3.1/backward"/>
+					<Add directory="/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/include"/>
+					<Add directory="/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/include-fixed"/>
+					<Add directory="/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/opt/homebrew/bin/gmake -j10 -f &quot;/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/Makefile&quot;  VERBOSE=1 UOSM-Motor-Controller-MCU-L432.elf"/>
+					<CompileFile command="/opt/homebrew/bin/gmake -j10 -f &quot;/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/opt/homebrew/bin/gmake -j10 -f &quot;/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/opt/homebrew/bin/gmake -j10 -f &quot;/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="UOSM-Motor-Controller-MCU-L432.elf/fast">
+				<Option output="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/UOSM-Motor-Controller-MCU-L432.elf" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DARM_MATH_CM4"/>
+					<Add option="-DARM_MATH_MATRIX_CHECK"/>
+					<Add option="-DARM_MATH_ROUNDING"/>
+					<Add option="-DDEBUG"/>
+					<Add option="-DUSE_HAL_DRIVER"/>
+					<Add option="-DSTM32L432xx"/>
+					<Add option="-DSTM"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Inc"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/Legacy"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/include"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Device/ST/STM32L4xx/Include"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Modules"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Src"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Startup"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Tasks"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/UserDrivers"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Inc"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Drivers"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Modules"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Utils"/>
+					<Add directory="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers"/>
+					<Add directory="/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/include/c++/12.3.1"/>
+					<Add directory="/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/include/c++/12.3.1/arm-none-eabi"/>
+					<Add directory="/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/include/c++/12.3.1/backward"/>
+					<Add directory="/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/include"/>
+					<Add directory="/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/include-fixed"/>
+					<Add directory="/Applications/ArmGNUToolchain/12.3.rel1/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/opt/homebrew/bin/gmake -j10 -f &quot;/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/Makefile&quot;  VERBOSE=1 UOSM-Motor-Controller-MCU-L432.elf/fast"/>
+					<CompileFile command="/opt/homebrew/bin/gmake -j10 -f &quot;/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/opt/homebrew/bin/gmake -j10 -f &quot;/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/opt/homebrew/bin/gmake -j10 -f &quot;/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/opt/homebrew/bin/gmake -j10 -f &quot;/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/opt/homebrew/bin/gmake -j10 -f &quot;/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/opt/homebrew/bin/gmake -j10 -f &quot;/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/opt/homebrew/bin/gmake -j10 -f &quot;/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/opt/homebrew/bin/gmake -j10 -f &quot;/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/opt/homebrew/bin/gmake -j10 -f &quot;/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/opt/homebrew/bin/gmake -j10 -f &quot;/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/opt/homebrew/bin/gmake -j10 -f &quot;/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/cmake-build-release/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Inc/FreeRTOSConfig.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Inc/MotorParameters.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Inc/Profiles.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Inc/UOSMCoreConfig.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Inc/main.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Inc/stm32l4xx_hal_conf.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Inc/stm32l4xx_it.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Modules/CANCallbacks.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Modules/DataAggregationModule.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Modules/DataAggregationModule.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Modules/SafetyModule.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Modules/SafetyModule.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Src/freertos.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Src/main.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Src/stm32l4xx_hal_msp.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Src/stm32l4xx_it.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Src/syscalls.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Src/sysmem.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Src/system_stm32l4xx.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Startup/startup_stm32l432kcux.s">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Tasks/InternalCommsTask.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Tasks/InternalCommsTask.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Tasks/MotorTask.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Tasks/MotorTask.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Tasks/SafetyTask.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Tasks/SafetyTask.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Tasks/TaskManager.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/Tasks/TaskManager.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/UserDrivers/LEDStatusDriver.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/UserDrivers/LEDStatusDriver.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/UserDrivers/SPIMotorDriver.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Core/UserDrivers/SPIMotorDriver.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/.DS_Store">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l432xx.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l4xx.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Device/ST/STM32L4xx/Include/system_stm32l4xx.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Device/ST/STM32L4xx/LICENSE.txt">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Device/ST/STM32L4xx/License.md">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/cmsis_armcc.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/cmsis_armclang.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/cmsis_armclang_ltm.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/cmsis_compiler.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/cmsis_gcc.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/cmsis_iccarm.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/cmsis_version.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/core_armv81mml.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/core_armv8mbl.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/core_armv8mml.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/core_cm0.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/core_cm0plus.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/core_cm1.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/core_cm23.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/core_cm3.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/core_cm33.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/core_cm35p.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/core_cm4.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/core_cm7.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/core_sc000.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/core_sc300.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/mpu_armv7.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/mpu_armv8.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/Include/tz_context.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/CMSIS/LICENSE.txt">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_cortex.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_def.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_dma.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_dma_ex.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_exti.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_flash.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_flash_ex.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_flash_ramfunc.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_gpio.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_gpio_ex.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_i2c.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_i2c_ex.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_pwr.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_pwr_ex.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_rcc.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_rcc_ex.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_rtc.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_rtc_ex.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_spi.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_spi_ex.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_tim.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_tim_ex.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart_ex.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_bus.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_cortex.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_crs.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_dma.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_dmamux.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_exti.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_gpio.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_lpuart.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_pwr.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_rcc.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_rtc.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_system.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_usart.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_utils.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/LICENSE.txt">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/License.md">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_cortex.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dma.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_dma_ex.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_exti.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash_ex.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_flash_ramfunc.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_gpio.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_i2c_ex.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pwr_ex.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc_ex.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rtc.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rtc_ex.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_spi_ex.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_tim_ex.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_uart_ex.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/.DS_Store">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/helpers/API_Header.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/helpers/Bits.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/helpers/CRC.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/helpers/CRC.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/helpers/Config.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/helpers/Constants.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/helpers/Functions.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/helpers/Functions.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/helpers/Macros.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/helpers/RegisterAccess.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/helpers/Types.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/ic/.DS_Store">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/ic/TMC4671/TMC4671.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/ic/TMC4671/TMC4671.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/ic/TMC4671/TMC4671_Constants.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/ic/TMC4671/TMC4671_Fields.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/ic/TMC4671/TMC4671_Register.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/ic/TMC4671/TMC4671_Variants.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/ic/TMC6200/TMC6200.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/ic/TMC6200/TMC6200.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/ic/TMC6200/TMC6200_Constants.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/ic/TMC6200/TMC6200_Fields.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Drivers/tmc/ic/TMC6200/TMC6200_Register.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/freertos_mpool.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/freertos_os2.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/croutine.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/include/StackMacros.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/include/atomic.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/include/croutine.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/include/list.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/include/message_buffer.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/include/mpu_prototypes.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/include/portable.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/include/queue.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/include/stack_macros.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/include/stream_buffer.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/include/task.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/include/timers.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/list.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/queue.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/tasks.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/Middlewares/Third_Party/FreeRTOS/Source/timers.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/STM32L432KCUX_FLASH.ld">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/.gitignore">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Drivers/BackupRegister.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Drivers/BackupRegister.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Drivers/CANDriver.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Drivers/CANDriver.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Drivers/MCP2515.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Drivers/MCP2515.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Drivers/SerialDebugDriver.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Drivers/SerialDebugDriver.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Inc/ApplicationTypes.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Modules/CANMessageLookUpModule.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Modules/CANMessageLookUpModule.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Modules/InternalCommsModule.c">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Modules/InternalCommsModule.h">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/README.md">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Utils/CANLogEntry.hpp">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Utils/Identifiable.cpp">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Utils/Identifiable.hpp">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/Utils/Observable.hpp">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/UOSM-Core/library.json">
+			<Option target="UOSM-Motor-Controller-MCU-L432.elf"/>
+		</Unit>
+		<Unit filename="/Users/jeremy/Projects/Supermileage/UOSM-Motor-Controller-MCU-L432/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

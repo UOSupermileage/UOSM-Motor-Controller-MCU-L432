@@ -75,6 +75,13 @@ void MotorTask(void *argument)
                 motorInitialized = MotorInit();
             }
 
+            current_t current = 0;
+            if (MotorReadCurrent(&current) != RESULT_OK) {
+                DebugPrint("%s Failed to read current!", MOT_TAG);
+                current = 0;
+            }
+            SystemSetMotorTorque(current);
+
             // Read registers in TMC6200 and check for faults
             MotorPrintFaults();
 #endif

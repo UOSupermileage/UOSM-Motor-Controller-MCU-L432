@@ -69,6 +69,8 @@ uint8_t MotorInit();
 
 result_t MotorInitEncoder();
 
+result_t MotorReadCurrent(current_t *current);
+
 void MotorClearChargePump();
 
 void MotorPrintFaults();

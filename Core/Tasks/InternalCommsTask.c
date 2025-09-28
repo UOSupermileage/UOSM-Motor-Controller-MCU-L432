@@ -20,6 +20,7 @@
 #define DEADMAN_BROADCAST_RATE 3
 #define MOTOR_INIT_BROADCAST_RATE 3
 #define MOTOR_RPM_BROADCAST_RATE 3
+#define CURRENT_BROADCAST_RATE 1
 
 void InitInternalCommsTask(void);
 _Noreturn void InternalCommsTask(void *argument);
@@ -46,6 +47,7 @@ _Noreturn void InternalCommsTask(void *argument) {
     uint8_t deadmanBroadcastCounter = 0;
     uint8_t motorInitCounter = 0;
     uint8_t motorRPMBroadcastCounter = 0;
+    uint8_t motorCurrentBroadcastCounter = 0;
 
     if (Backup_GetFaultStatus() != Status_NoFault) {
         // TODO: Improve error reporting
@@ -95,13 +97,22 @@ _Noreturn void InternalCommsTask(void *argument) {
             motorInitCounter++;
         }
 
-        if (motorRPMBroadcastCounter == MOTOR_RPM_BROADCAST_RATE) {
+        if (motorRPMBroadcastCounter == MOTOR_RPM_BROADCAST_RATE) {`
             iCommsMessage_t rpmTxMsg = IComms_CreateInt32BitMessage(MOTOR_RPM_DATA_ID, SystemGetMotorVelocity());
             IComms_Transmit(&rpmTxMsg);
 
             motorRPMBroadcastCounter = 0;
         } else {
             motorRPMBroadcastCounter++;
+        }
+
+        if (motorCurrentBroadcastCounter == CURRENT_BROADCAST_RATE) {
+            iCommsMessage_t currentTxMsg = IComms_CreatePairUInt16BitMessage(CURRENT_VOLTAGE_DATA_ID, SystemGetMotorTorque(), 0);
+            if (IComms_Transmit(&currentTxMsg) != RESULT_OK) {
+                DebugPrint("Failed to send current signal!");
+            }
+
+            motorCurrentBroadcastCounter = 0;
         }
 #endif
     }

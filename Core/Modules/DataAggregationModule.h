@@ -84,4 +84,7 @@ void SystemSetMotorInitializing(flag_status_t status);
 velocity_t SystemGetMotorVelocity();
 void SystemSetMotorVelocity(velocity_t velocity);
 
+current_t SystemGetMotorTorque();
+void SystemSetMotorTorque(current_t current);
+
 #endif /* MODULES_DATAAGGREGATIONMODULE_H_ */
