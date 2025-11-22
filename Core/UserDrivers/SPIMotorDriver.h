@@ -66,6 +66,6 @@ velocity_t MotorGetActualVelocity();
  */
 uint8_t MotorInit();
 
-uint8_t MotorInitEncoder();
+result_t MotorInitEncoder();
 
 #endif /* USERDRIVERS_SPIMOTORDRIVER_H_ */

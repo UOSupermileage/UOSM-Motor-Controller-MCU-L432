@@ -52,7 +52,7 @@ void MotorTask(void *argument)
             cycleTick += TIMER_MOTOR_TASK;
             osDelayUntil(cycleTick);
 
-#if MOTOR_MODE == 0 || MOTOR_MODE == 1
+#if MOTOR_MODE == 0
             // Store Motor RPM from TMC in the Aggregator
             SystemSetMotorVelocity(MotorGetActualVelocity());
 

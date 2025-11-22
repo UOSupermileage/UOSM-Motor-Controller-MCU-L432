@@ -284,9 +284,9 @@
 #define ABN
 #define MOTOR_CONFIG_ABN_DECODER_MODE (uint32_t)0x00000000     // 0x25: Polarity of A pulse.
 #define MOTOR_CONFIG_ABN_DECODER_PPR (uint32_t)0x00000B40      // 0x26: Decoder pulses per mechanical revolution.
-#define MOTOR_CONFIG_ABN_INIT_VELOCITY 10
+#define MOTOR_CONFIG_ABN_INIT_VELOCITY (5)
 #define MOTOR_CONFIG_ABN_INIT_ACCELERATION 60
-#define MOTOR_CONFIG_ABN_INIT_UQ_UD_EXIT 700
+#define MOTOR_CONFIG_ABN_INIT_UQ_UD_EXT 500
 
 #endif
 /*********************************************************************************
