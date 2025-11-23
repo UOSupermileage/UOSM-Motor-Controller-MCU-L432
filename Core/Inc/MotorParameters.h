@@ -231,7 +231,7 @@
 #elif MOTOR == 2
 
 #define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t)1050 // Set to about 2 amps with 2 mOhm sense resistors.
-
+#define MAX_TORQUE_THROTTLE 1500 //Set to about 3 amps with 2 mOhm sense resistors. (We are testing the current limiting functionality).
 #define MOTOR_CONFIG_PID_UQ_UD_LIMITS 1050 // Set to about 2 amps with 2 mOhm sense resistors.
 #define MAX_VELOCITY 0 //We don't want to use the velocity controller (a bit dangerous).
 #define MOTOR_CONFIG_ACCELERATION_LIMIT 300
@@ -296,7 +296,7 @@
  **********************************************************************************/
 
 #define POSITION_SCALE_MAX (int32_t)65536
-#define MOTOR_CONFIG_TORQUE_MESUREMENT_FACTOR (uint32_t)256
+#define MOTOR_CONFIG_TORQUE_MEASUREMENT_FACTOR (uint32_t)256
 
 /*********************************************************************************
  *

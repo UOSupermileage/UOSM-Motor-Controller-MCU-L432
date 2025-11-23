@@ -70,6 +70,9 @@ void MotorTask(void *argument)
 //
                 //Get throttle percentage using systemgetthrottlepercentage
                 //tmc4671_setThrottle
+                throttle_raw_t throttleRaw = (MAX_TORQUE_THROTTLE / MAX_PERCENTAGE) * SystemGetThrottlePercentage();
+                DebugPrint("%s Target Throttle (not mA) [%d]", MOT_TAG, throttleRaw);
+                tmc4671_setTargetTorque_mA(TMC4671_CS, MOTOR_CONFIG_TORQUE_MEASUREMENT_FACTOR, throttleRaw);
 
 
 #endif
