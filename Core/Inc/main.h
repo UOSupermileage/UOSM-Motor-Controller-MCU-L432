@@ -67,6 +67,7 @@ void Error_Handler(void);
 #define Drive_Enable_GPIO_Port GPIOA
 #define CS_TMC4671_Pin GPIO_PIN_4
 #define CS_TMC4671_GPIO_Port GPIOB
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

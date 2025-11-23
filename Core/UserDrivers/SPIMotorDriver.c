@@ -234,7 +234,7 @@ uint8_t MotorInit()
 	// PI settings
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_TORQUE_P_TORQUE_I, MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I);
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_FLUX_P_FLUX_I, MOTOR_CONFIG_PID_FLUX_P_FLUX_I);
-	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_P_VELOCITY_I, MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I);
+	//tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_P_VELOCITY_I, MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I);
 
 	// Stop motor
 	tmc4671_writeInt(TMC4671_CS, TMC4671_PID_VELOCITY_TARGET, 0);
@@ -248,7 +248,7 @@ uint8_t MotorInit()
 	// Read TMC4671 values for validation
 	uint32_t nPolePairs = tmc4671_readInt(TMC4671_CS, TMC4671_MOTOR_TYPE_N_POLE_PAIRS);
 
-	// If value is read is correct, than motor registers were properly set
+	// If value is read is correct, then motor registers were properly set
 	if (nPolePairs == MOTOR_CONFIG_N_POLE_PAIRS)
 	{
 		DebugPrint("Motor Controller [" MOTOR_LABEL "] successfuly initialized!");
@@ -337,7 +337,7 @@ uint8_t MotorInitEncoder() {
         // Set velocity to reverse at 10 RPM
         tmc4671_writeInt(TMC4671_CS, TMC4671_OPENLOOP_VELOCITY_TARGET, t);
 
-        tmc4671_writeInt(TMC4671_CS, TMC4671_UQ_UD_EXT, MOTOR_CONFIG_ABN_INIT_UQ_UD_EXIT);
+        tmc4671_writeInt(TMC4671_CS, TMC4671_UQ_UD_EXT, MOTOR_CONFIG_ABN_INIT_UQ_UD_EXT);
 
         // Use Open Loop Mode (Phi E Selection)
         tmc4671_writeInt(TMC4671_CS, TMC4671_PHI_E_SELECTION, 2);
@@ -426,7 +426,7 @@ uint8_t MotorEnableDriver(flag_status_t enabled)
 {
         // 4671
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, enabled == Set ? GPIO_PIN_SET : GPIO_PIN_RESET);
-
+        //STDRIVEG
         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, enabled == Set ? GPIO_PIN_SET : GPIO_PIN_RESET);
 
 	return 0;

@@ -47,7 +47,7 @@
  *
  **********************************************************************************/
 
-#define MOTOR_CONFIG_MODE_RAMP_MODE_MOTION 2
+#define MOTOR_CONFIG_MODE_RAMP_MODE_MOTION 1
 /*********************************************************************************
  *
  * 		Fixed Throttle Value in RPM (Use for testing only)
@@ -232,8 +232,8 @@
 
 #define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t)5000 // TODO: around 9 amps
 
-#define MOTOR_CONFIG_PID_UQ_UD_LIMITS 5000 // TODO: What should this be?
-#define MAX_VELOCITY 3000
+#define MOTOR_CONFIG_PID_UQ_UD_LIMITS 1050 // Set to about 2 amps with 2 mOhm sense resistors.
+#define MAX_VELOCITY 0 //We don't want to use the velocity controller (a bit dangerous).
 #define MOTOR_CONFIG_ACCELERATION_LIMIT 300
 #endif
 /*********************************************************************************
@@ -255,7 +255,7 @@
 #elif MOTOR == 2
 #define MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I (uint32_t)0x0041001E
 #define MOTOR_CONFIG_PID_FLUX_P_FLUX_I (uint32_t)0x0041001E
-#define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x6D600100
+#define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x0
 #endif
 /*********************************************************************************
  *

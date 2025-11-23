@@ -57,8 +57,8 @@ void MotorTask(void *argument)
             SystemSetMotorVelocity(MotorGetActualVelocity());
 
             // Enable 6200 depending on state stored in Aggregator
-//            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, SystemGetDriverEnabled() == Set ? GPIO_PIN_SET : GPIO_PIN_RESET);
-
+            // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, SystemGetDriverEnabled() == Set ? GPIO_PIN_SET : GPIO_PIN_RESET);
+            // This does the new GaN board
             if (motorInitialized) {
 #if MOTOR_MODE == 0
                 velocity_t v = (MAX_VELOCITY / MAX_PERCENTAGE) * SystemGetThrottlePercentage();

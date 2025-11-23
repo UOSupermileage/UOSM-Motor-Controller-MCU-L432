@@ -19,6 +19,6 @@ void RunTaskManager( void )
         InitMotorTask();
 	InitInternalCommsTask();
 	InitSafetyTask();
-        InitTempTask();
+        //InitTempTask();
 }
 
