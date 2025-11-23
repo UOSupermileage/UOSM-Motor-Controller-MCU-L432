@@ -162,10 +162,10 @@
 #define MOTOR_CONFIG_ADC_I_SELECT (uint32_t)0x24000100
 #define MOTOR_CONFIG_dsADC_MCFG_B_MCFG_A (uint32_t)0x00100010
 #define MOTOR_CONFIG_dsADC_MCLK_A (uint32_t)0x20000000
-#define MOTOR_CONFIG_dsADC_MCLK_B (uint32_t)0x00000000
+#define MOTOR_CONFIG_dsADC_MCLK_B (uint32_t)0x20000000 //Changed from previous board
 #define MOTOR_CONFIG_dsADC_MDEC_B_MDEC_A (uint32_t)0x014E014E
-#define MOTOR_CONFIG_ADC_I0_SCALE_OFFSET (uint32_t)0x01008201
-#define MOTOR_CONFIG_ADC_I1_SCALE_OFFSET (uint32_t)0x010082C9
+#define MOTOR_CONFIG_ADC_I0_SCALE_OFFSET (uint32_t)0x010081C0
+#define MOTOR_CONFIG_ADC_I1_SCALE_OFFSET (uint32_t)0x010081F7
 #endif
 
 /*********************************************************************************
@@ -230,7 +230,7 @@
 #define MAX_VELOCITY 3000
 #elif MOTOR == 2
 
-#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t)5000 // TODO: around 9 amps
+#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t)1050 // Set to about 2 amps with 2 mOhm sense resistors.
 
 #define MOTOR_CONFIG_PID_UQ_UD_LIMITS 1050 // Set to about 2 amps with 2 mOhm sense resistors.
 #define MAX_VELOCITY 0 //We don't want to use the velocity controller (a bit dangerous).
@@ -253,8 +253,8 @@
 #define MOTOR_CONFIG_PID_FLUX_P_FLUX_I (uint32_t)0x01000100
 #define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x00000000
 #elif MOTOR == 2
-#define MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I (uint32_t)0x0041001E
-#define MOTOR_CONFIG_PID_FLUX_P_FLUX_I (uint32_t)0x0041001E
+#define MOTOR_CONFIG_PID_TORQUE_P_TORQUE_I (uint32_t)0x01000100
+#define MOTOR_CONFIG_PID_FLUX_P_FLUX_I (uint32_t)0x01000100
 #define MOTOR_CONFIG_PID_VELOCITY_P_VELOCITY_I (uint32_t)0x0
 #endif
 /*********************************************************************************
@@ -284,9 +284,9 @@
 #define ABN
 #define MOTOR_CONFIG_ABN_DECODER_MODE (uint32_t)0x00000000     // 0x25: Polarity of A pulse.
 #define MOTOR_CONFIG_ABN_DECODER_PPR (uint32_t)0x00000B40      // 0x26: Decoder pulses per mechanical revolution.
-#define MOTOR_CONFIG_ABN_INIT_VELOCITY (5)
-#define MOTOR_CONFIG_ABN_INIT_ACCELERATION 60
-#define MOTOR_CONFIG_ABN_INIT_UQ_UD_EXT 500
+#define MOTOR_CONFIG_ABN_INIT_VELOCITY 10
+#define MOTOR_CONFIG_ABN_INIT_ACCELERATION 5
+#define MOTOR_CONFIG_ABN_INIT_UQ_UD_EXT 880
 
 #endif
 /*********************************************************************************

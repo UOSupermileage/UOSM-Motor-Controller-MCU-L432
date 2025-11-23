@@ -61,12 +61,17 @@ void MotorTask(void *argument)
             // This does the new GaN board
             if (motorInitialized) {
 #if MOTOR_MODE == 0
-                velocity_t v = (MAX_VELOCITY / MAX_PERCENTAGE) * SystemGetThrottlePercentage();
+//                velocity_t v = (MAX_VELOCITY / MAX_PERCENTAGE) * SystemGetThrottlePercentage();
+//
+//                DebugPrint("%s Target Velocity [%d RPM]", MOT_TAG, v);
+//                MotorRotateVelocity(v);
+//
+//                MotorPeriodicJob();
+//
+                //Get throttle percentage using systemgetthrottlepercentage
+                //tmc4671_setThrottle
 
-                DebugPrint("%s Target Velocity [%d RPM]", MOT_TAG, v);
-                MotorRotateVelocity(v);
 
-                MotorPeriodicJob();
 #endif
             } else {
                 // Motor was not initialized. This indicates that communication with the TMC4671 or TMC6200 failed.
