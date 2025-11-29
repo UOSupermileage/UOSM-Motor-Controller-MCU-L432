@@ -60,12 +60,23 @@ void MotorTask(void *argument)
 //            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, SystemGetDriverEnabled() == Set ? GPIO_PIN_SET : GPIO_PIN_RESET);
 
             if (motorInitialized) {
+            #if MOTOR_CONFIG_MODE_RAMP_MODE_MOTION == 2
                 velocity_t v = (MAX_VELOCITY / MAX_PERCENTAGE) * SystemGetThrottlePercentage();
 
                 DebugPrint("%s Target Velocity [%d RPM]", MOT_TAG, v);
                 MotorRotateVelocity(v);
 
                 MotorPeriodicJob();
+            #elif MOTOR_CONFIG_MODE_RAMP_MODE_MOTION == 1
+
+                  throttle_raw_t throttleRaw = (MOTOR_MAX_TORQUE / MAX_PERCENTAGE) * SystemGetThrottlePercentage();
+                  DebugPrint("%s Target Throttle (not mA) [%d]", MOT_TAG, throttleRaw);
+                  //Negative sign due to the way the board is configured.
+                  if (SystemGetReverseVelocity() == Set) {
+                      throttleRaw *= -1;
+                  }
+                  tmc4671_setTargetTorque_mA(TMC4671_CS, MOTOR_CONFIG_TORQUE_MESUREMENT_FACTOR, throttleRaw);
+            #endif
             } else {
                 // Motor was not initialized. This indicates that communication with the TMC4671 or TMC6200 failed.
                 SystemSetSPIError(Set);
