@@ -47,7 +47,7 @@
  *
  **********************************************************************************/
 
-#define MOTOR_CONFIG_MODE_RAMP_MODE_MOTION 1
+#define MOTOR_CONFIG_MODE_RAMP_MODE_MOTION 2
 /*********************************************************************************
  *
  * 		Fixed Throttle Value in RPM (Use for testing only)
@@ -233,8 +233,7 @@
 #if MOTOR_CONFIG_MODE_RAMP_MODE_MOTION == 2
 	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t) 25000
 #elif MOTOR_CONFIG_MODE_RAMP_MODE_MOTION == 1
-        #define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t)25000
-        #define MOTOR_MAX_TORQUE (int32_t)25000
+        #define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t)32000
 #else
 	#define MOTOR_CONFIG_PID_TORQUE_FLUX_LIMITS (uint32_t)32000
 #endif
