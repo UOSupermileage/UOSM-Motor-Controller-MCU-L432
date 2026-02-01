@@ -264,7 +264,7 @@ uint8_t MotorInit()
         // AKA BANG BANG
         #ifdef ABN
         #ifdef MOTOR_CONFIG_AUTO_INIT_ENCODER
-        if (MotorInitEncoder() != 0) {
+        if (MotorInitEncoder() != RESULT_OK) {
         DebugPrint("Failed to init encoder");
         return false;
         }
@@ -323,59 +323,61 @@ int16_t MotorGetS16CircleDifference(int16_t newValue, int16_t oldValue)
  * This will set the motor to open loop and rotate in reverse while initializing.
  * @return 0 on success, 1 on failure.
  */
-uint8_t MotorInitEncoder() {
-	uint8_t t = MOTOR_CONFIG_ABN_INIT_VELOCITY;
-	
-	// If not reversing, then reverse t because we want this to spin in reverse
-	if (SystemGetReverseVelocity() == Clear) {
-		t *= -1;
-	}
+result_t MotorInitEncoder() {
+    velocity_t t = MOTOR_CONFIG_ABN_INIT_VELOCITY;
 
-        // Set acceleration to 60
-        tmc4671_writeInt(TMC4671_CS, TMC4671_OPENLOOP_ACCELERATION, MOTOR_CONFIG_ABN_INIT_ACCELERATION);
+    // If not reversing, then reverse t because we want this to spin in reverse
+    if (SystemGetReverseVelocity() == Clear) {
+        t *= -1;
+    }
 
-        // Set velocity to reverse at 10 RPM
-        tmc4671_writeInt(TMC4671_CS, TMC4671_OPENLOOP_VELOCITY_TARGET, t);
+    tmc4671_writeInt(TMC4671_CS, TMC4671_OPENLOOP_ACCELERATION, MOTOR_CONFIG_ABN_INIT_ACCELERATION);
+    tmc4671_writeInt(TMC4671_CS, TMC4671_OPENLOOP_VELOCITY_TARGET, t);
 
-        tmc4671_writeInt(TMC4671_CS, TMC4671_UQ_UD_EXT, MOTOR_CONFIG_ABN_INIT_UQ_UD_EXT);
+    // Set open loop strength
+    tmc4671_writeInt(TMC4671_CS, TMC4671_UQ_UD_EXT, MOTOR_CONFIG_ABN_INIT_UQ_UD_EXT);
 
-        // Use Open Loop Mode (Phi E Selection)
-        tmc4671_writeInt(TMC4671_CS, TMC4671_PHI_E_SELECTION, 2);
+    // Use Open Loop Mode (Phi E Selection)
+    tmc4671_writeInt(TMC4671_CS, TMC4671_PHI_E_SELECTION, TMC4671_PHI_E_OPEN_LOOP);
 
-        // Use Motion Mode (UQ_UD_EXT)
-        tmc4671_switchToMotionMode(TMC4671_CS, 8);
+    // Use Motion Mode (UQ_UD_EXT)
+    tmc4671_switchToMotionMode(TMC4671_CS, TMC4671_MOTION_MODE_UQ_UD_EXT);
 
-        HAL_Delay(300);
+    //        int32_t count = tmc4671_readInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT_N);
 
-        // If the motor is not rotating, reverse direction.
-        if (abs(MotorGetActualVelocity()) <= 2) {
-                // Reverse motor
-                tmc4671_writeInt(TMC4671_CS, TMC4671_OPENLOOP_VELOCITY_TARGET, t * -1);
-                HAL_Delay(300);
-        }
+    // Check for rotation
+    //        bool success = false;
+    //        for (uint8_t i = 0; i < 30; i++) {
+    //            int32_t new_count = tmc4671_readInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT_N);
+    //
+    //            if (abs(count - new_count) > 2) {
+    //                success = true;
+    //                break;
+    //            }
+    //
+    //            osDelay(2);
+    //        }
 
-        bool success = abs(MotorGetActualVelocity()) > 2;
+    osDelay(2000);
 
-        // Stop the motor
-        tmc4671_writeInt(TMC4671_CS, TMC4671_OPENLOOP_VELOCITY_TARGET, 0);
+    tmc4671_switchToMotionMode(TMC4671_CS, TMC4671_MOTION_MODE_STOPPED);
 
-        int32_t openLoopPhiE = tmc4671_readInt(TMC4671_CS, TMC4671_PHI_E);
+    //        if (!success) {
+    //            return RESULT_FAIL;
+    //        }
 
-        // Need to clear both decoder counters
+    // Get difference between PHI_E and ABN_PHI_E
+    int16_t openloop_phi_e = (int16_t) tmc4671_readRegister16BitValue(TMC4671_CS, TMC4671_OPENLOOP_PHI, BIT_0_TO_15);
+    int16_t encoder_phi_e = (int16_t) tmc4671_readRegister16BitValue(TMC4671_CS, TMC4671_ABN_DECODER_PHI_E_PHI_M, BIT_16_TO_31);
 
-        // Raw decoder count, number of ticks counted
-        tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT, 0);
+    int16_t difference = openloop_phi_e - encoder_phi_e;
 
-        // Decoder count latched on N pulse.
-        tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT_N, 0);
+    tmc4671_writeRegister16BitValue(TMC4671_CS, TMC4671_ABN_DECODER_PHI_E_PHI_M_OFFSET, BIT_16_TO_31, difference);
 
-        // Shift the open loop angle to the most significant 16 bits of the number. The mechanical offset is set to 0.
-        tmc4671_writeInt(TMC4671_CS, TMC4671_ABN_DECODER_PHI_E_PHI_M_OFFSET, openLoopPhiE << 16);
+    // Set ABN Encoder as Phi E Selection
+    tmc4671_writeInt(TMC4671_CS, TMC4671_PHI_E_SELECTION, 3);
 
-        // Set ABN Encoder as Phi E Selection
-        tmc4671_writeInt(TMC4671_CS, TMC4671_PHI_E_SELECTION, 3);
-
-        return success;
+    return RESULT_OK;
 }
 
 /**
