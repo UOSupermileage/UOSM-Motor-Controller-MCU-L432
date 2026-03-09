@@ -252,6 +252,7 @@ uint8_t MotorInit()
 	if (nPolePairs == MOTOR_CONFIG_N_POLE_PAIRS)
 	{
 		DebugPrint("Motor Controller [" MOTOR_LABEL "] successfuly initialized!");
+	    //return true;
 	}
 	else
 	{
@@ -264,10 +265,12 @@ uint8_t MotorInit()
         // AKA BANG BANG
         #ifdef ABN
         #ifdef MOTOR_CONFIG_AUTO_INIT_ENCODER
-        if (MotorInitEncoder() != RESULT_OK) {
+    result_t r = MotorInitEncoder();
+    DebugPrint("MotorInitEncoder returned %d", r);
+    if (r == RESULT_FAIL) {
         DebugPrint("Failed to init encoder");
         return false;
-        }
+    }
         #endif
         #endif
 #endif
@@ -343,28 +346,28 @@ result_t MotorInitEncoder() {
     // Use Motion Mode (UQ_UD_EXT)
     tmc4671_switchToMotionMode(TMC4671_CS, TMC4671_MOTION_MODE_UQ_UD_EXT);
 
-    //        int32_t count = tmc4671_readInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT_N);
+            int32_t count = tmc4671_readInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT_N);
 
     // Check for rotation
-    //        bool success = false;
-    //        for (uint8_t i = 0; i < 30; i++) {
-    //            int32_t new_count = tmc4671_readInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT_N);
-    //
-    //            if (abs(count - new_count) > 2) {
-    //                success = true;
-    //                break;
-    //            }
-    //
-    //            osDelay(2);
-    //        }
+          //  bool success = false;
+            //for (uint8_t i = 0; i < 30; i++) {
+              //  int32_t new_count = tmc4671_readInt(TMC4671_CS, TMC4671_ABN_DECODER_COUNT_N);
 
-    osDelay(2000);
+                //if (abs(count - new_count) > 2) {
+                  //  success = true;
+                    //break;
+                //}
+
+   //             osDelay(2);
+     //       }
+
+    //osDelay(2000);
 
     tmc4671_switchToMotionMode(TMC4671_CS, TMC4671_MOTION_MODE_STOPPED);
 
-    //        if (!success) {
-    //            return RESULT_FAIL;
-    //        }
+      //      if (!success) {
+        //        return RESULT_FAIL;
+          //}
 
     // Get difference between PHI_E and ABN_PHI_E
     int16_t openloop_phi_e = (int16_t) tmc4671_readRegister16BitValue(TMC4671_CS, TMC4671_OPENLOOP_PHI, BIT_0_TO_15);

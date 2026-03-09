@@ -98,7 +98,7 @@ _Noreturn void InternalCommsTask(void *argument) {
         if (motorInitCounter == MOTOR_INIT_BROADCAST_RATE) {
             iCommsMessage_t initTxMsg = IComms_CreateEventMessage(MOTOR_INITIALIZING, SystemGetMotorInitializing());
             IComms_Transmit(&initTxMsg);
-
+            DebugPrint("motor is initializing result %d", SystemGetMotorInitializing());
             motorInitCounter = 0;
         } else {
             motorInitCounter++;
